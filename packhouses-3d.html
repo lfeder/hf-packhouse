@@ -1,0 +1,797 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Packhouse Models</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F5F5F1; --vellum:#FFFFFF; --vellum-2:#EDEEE8;
+  --ink:#15181C; --ink-2:#565D64; --ink-3:#848C92;
+  --rule:#D3D6CE; --rule-2:#BFC3B9;
+  --survey:#B23A2B; --flow-dry:#A9702B; --flow-crop:#3B7645; --flow-box:#43647F;
+  --ground:#E4E5DD; --hardstand:#DADCD2; --road:#C6C9BE;
+  --sel:rgba(178,58,43,.12);
+  --shadow:0 1px 0 rgba(21,24,28,.06), 0 8px 24px -18px rgba(21,24,28,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+    --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+    --rule:#2C3138; --rule-2:#3A4148;
+    --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
+    --ground:#191C21; --hardstand:#20242A; --road:#282D34;
+    --sel:rgba(228,121,106,.16);
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+  --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+  --rule:#2C3138; --rule-2:#3A4148;
+  --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
+  --ground:#191C21; --hardstand:#20242A; --road:#282D34;
+  --sel:rgba(228,121,106,.16);
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.6}
+.wrap{max-width:1240px;margin:0 auto;padding-block:22px 70px;padding-left:20px;padding-right:20px}
+.lbl{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--ink-3);margin:0}
+header{border-bottom:1px solid var(--rule-2);padding-bottom:16px;display:flex;flex-wrap:wrap;gap:16px 34px;align-items:flex-end;justify-content:space-between}
+h1{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.04;margin:6px 0 6px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--survey)}
+.sub{color:var(--ink-2);max-width:62ch;font-size:14.5px;margin:0}
+.back{display:inline-block;margin:0 0 12px;font:600 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--rule-2);background:var(--vellum);padding:7px 10px}
+.back:hover{border-color:var(--ink-3)}
+.back:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.stamp{display:flex;gap:24px;flex-wrap:wrap}
+.stamp b{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:14px;font-variant-numeric:tabular-nums}
+
+.switch{display:flex;gap:0;margin-top:18px;border-bottom:1px solid var(--rule-2)}
+.switch button{font:700 13px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;color:var(--ink-3);border:0;border-bottom:3px solid transparent;padding:12px 16px 10px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.switch button i{width:10px;height:10px;display:inline-block}
+.switch button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.switch .fp{margin-left:auto;align-self:center;box-shadow:none}
+.switch button:focus-visible,.grp button:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
+
+.viewer{position:relative;margin-top:14px;border:1px solid var(--rule-2);background:var(--vellum-2);overflow:hidden}
+#stage{display:block;width:100%;height:clamp(440px,66vh,740px);touch-action:none;cursor:grab}
+#stage.drag{cursor:grabbing}
+.overlay{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.tag{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Archivo Narrow",Arial,sans-serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;color:var(--ink);background:var(--vellum);border:1px solid var(--rule-2);padding:2px 7px}
+.tag.room{border-left-width:3px}
+.tag.mark{border-radius:999px;padding:1px 6px;font-size:10px;letter-spacing:.06em}
+.tag.mark.dock{background:var(--survey);border-color:var(--survey);color:var(--vellum)}
+.tag.flagged{border-style:dashed;border-color:var(--survey);color:var(--survey)}
+.tag.equip{font-size:9.5px;background:var(--vellum-2);color:var(--ink-2);padding:1px 5px}
+.tag.dim{background:transparent;border:0;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;letter-spacing:.02em;padding:0}
+.bar{position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.grp{display:flex;pointer-events:auto;box-shadow:var(--shadow)}
+.grp button{font:600 10.5px/1 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2);
+  background:var(--vellum);border:1px solid var(--rule-2);padding:7px 10px;cursor:pointer}
+.grp button+button{border-left:0}
+.grp button:hover{color:var(--ink);background:var(--vellum-2)}
+.grp button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.hint{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:var(--ink-3);pointer-events:none}
+.compass{position:absolute;right:14px;bottom:12px;width:50px;height:50px;color:var(--ink-2)}
+.compass text{font:700 11px "Archivo Narrow",Arial,sans-serif;letter-spacing:.1em}
+
+.legend{display:flex;flex-wrap:wrap;gap:4px 20px;margin-top:10px}
+.legend span{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2)}
+.legend i{width:12px;height:12px;display:block;border:1px solid rgba(0,0,0,.2)}
+
+section{margin-top:38px}
+h2{font:700 12px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;margin:0 0 6px}
+.lede{color:var(--ink-2);font-size:14px;max-width:72ch;margin:0 0 12px}
+.tbl{overflow-x:auto;border-top:1.5px solid var(--ink)}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:13.5px}
+th,td{text-align:left;padding:7px 12px 7px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 10.5px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);white-space:nowrap}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:16px}
+td.mk{font-family:"IBM Plex Mono",monospace;font-weight:600}
+tr[data-room]{cursor:pointer}
+tr[data-room]:hover td{background:var(--vellum-2)}
+tr.on td{background:var(--sel)}
+tfoot td{font-weight:600;border-bottom:0;border-top:1.5px solid var(--ink)}
+.sw{display:inline-block;width:9px;height:9px;margin-right:8px;border:1px solid rgba(0,0,0,.2)}
+.flag{color:var(--survey);font-weight:600}
+.note{border-left:3px solid var(--survey);padding:10px 0 10px 14px;margin-top:16px;font-size:13.5px;color:var(--ink-2);max-width:74ch}
+.note b{color:var(--ink)}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color:var(--ink-3);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 26px}
+@media (max-width:640px){ .compass,.hint{display:none} }
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:22px}
+.tabs a{font:700 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  text-decoration:none;padding:12px 16px 10px;border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs a:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+</style>
+
+<div class="wrap">
+<nav class="tabs" aria-label="Packhouse pages">
+  <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d" aria-current="page">3D models</a><a href="dock-detail.html">Dock detail</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
+</nav>
+<header>
+  <div class="stamp" id="stamp"></div>
+</header>
+
+<div class="switch" role="tablist" aria-label="Building">
+  <button type="button" role="tab" id="b-ph" aria-selected="true"><i style="background:#3B7645"></i>Packhouse</button>
+  <button type="button" role="tab" id="b-fert" aria-selected="false"><i style="background:#A9702B"></i>Fert Room &amp; Storage</button>
+  <div class="grp fp" role="group" aria-label="Footprint">
+    <button type="button" id="s-B" aria-pressed="true">160 × 50</button>
+    <button type="button" id="s-A" aria-pressed="false">100 × 80</button>
+  </div>
+</div>
+
+<div class="viewer">
+  <canvas id="stage"></canvas>
+  <div class="overlay" id="tags"></div>
+  <div class="bar">
+    <div class="grp">
+      <button type="button" id="v-iso" aria-pressed="true">Iso</button>
+      <button type="button" id="v-dock" aria-pressed="false">North end</button>
+      <button type="button" id="v-south" aria-pressed="false">South end</button>
+      <button type="button" id="v-plan" aria-pressed="false">Plan</button>
+    </div>
+    <div class="grp">
+      <button type="button" id="t-roof" aria-pressed="false">Roof</button>
+      <button type="button" id="t-ghost" aria-pressed="true">Ghost walls</button>
+      <button type="button" id="t-fit" aria-pressed="true">Fit-out</button>
+      <button type="button" id="t-tags" aria-pressed="true">Labels</button>
+    </div>
+  </div>
+  <p class="hint">Drag to orbit · Shift-drag to pan · scroll to zoom</p>
+  <svg class="compass" viewBox="0 0 60 60" aria-hidden="true">
+    <circle cx="30" cy="34" r="16" fill="none" stroke="currentColor" stroke-opacity=".35"/>
+    <path id="needle" d="M30 15 L35 34 L30 30 L25 34 Z" fill="currentColor"/>
+    <text x="30" y="10" text-anchor="middle" fill="currentColor" id="nlbl">N</text>
+  </svg>
+</div>
+<div class="legend" id="legend"></div>
+
+<section>
+  <h2>Room schedule</h2>
+  <p class="lede" id="roomLede"></p>
+  <div class="tbl"><table>
+    <thead><tr><th>Room</th><th class="n">ft²</th><th class="n">Size</th><th>As drawn</th></tr></thead>
+    <tbody id="sched"></tbody>
+    <tfoot><tr><td>Gross</td><td class="n" id="gross"></td><td class="n" id="grossSize"></td><td id="grossNote"></td></tr></tfoot>
+  </table></div>
+</section>
+
+<section>
+  <h2>Doors and openings</h2>
+  <p class="lede" id="openLede"></p>
+  <div class="tbl"><table>
+    <thead><tr><th>Mark</th><th>Type</th><th class="n">Size</th><th>Face</th><th>Into</th><th>Detail</th></tr></thead>
+    <tbody id="opens"></tbody>
+  </table></div>
+  <div class="note" id="note"></div>
+</section>
+
+<section id="addons">
+  <h2>Could add to the packhouse</h2>
+  <p class="lede">Not drawn yet. Pick what the operation needs and they can be placed.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Item</th><th>Why</th><th>Likely spot</th></tr></thead>
+    <tbody>
+      <tr><td>Scale / checkweigher</td><td>Hit box weights for Costco and Japanese specs</td><td>End of the packing machine, before palletizing</td></tr>
+      <tr><td>Label and lot-code printer</td><td>Traceability on every case and pallet</td><td>Palletizing area</td></tr>
+      <tr><td>Cull and reject bins</td><td>Off-grade out of the flow</td><td>Beside the machine infeed and the Keiki tables</td></tr>
+      <tr><td>Empty pallet stack</td><td>Pallets on hand for the line and the docks</td><td>Palletizing area, cooler side</td></tr>
+      <tr><td>Forklift and pallet jack parking</td><td>Charging, with an eyewash if batteries are lead-acid</td><td>Receiving, out of the walkway</td></tr>
+      <tr><td>Air compressor</td><td>Most box erectors run on shop air</td><td>Storage room or a small exterior enclosure</td></tr>
+      <tr><td>Boot wash and sanitiser station</td><td>Food safety at the way in</td><td>Pack room door and the break room door</td></tr>
+      <tr><td>PPE station</td><td>Hairnets, gloves, aprons</td><td>Storage room, by the break room door</td></tr>
+      <tr><td>Cardboard baler and recycling</td><td>Knocked-down cartons and wrap</td><td>Outside by the bin wash</td></tr>
+      <tr><td>Cleaning chemical lockup</td><td>Kept apart from packaging and product</td><td>Storage room, locked cabinet</td></tr>
+      <tr><td>Electrical and panel room</td><td>Line, cooler compressors, lighting</td><td>Wall between receiving and storage</td></tr>
+      <tr><td>Cooler temperature alarm</td><td>Cucumbers chill-injure below 50 °F</td><td>Cooler, readout at the desks</td></tr>
+      <tr><td>First aid and fire extinguishers</td><td>Required at exits</td><td>Each personnel door</td></tr>
+      <tr><td>Shipping paperwork spot</td><td>Bills of lading and pallet tags</td><td>Desks, or a stand at the docks</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer>
+  <span>Spec: packhouse-spec.md · 2026-09-11</span>
+  <span>Placement: site-placement.html</span>
+  <span>Layouts: packhouse-layouts.js</span>
+  <span>Compass is the CEAd drawing frame, not true north</span>
+</footer>
+</div>
+
+<script src="packhouse-layouts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var L = window.PH_LAYOUTS, $ = function(s){ return document.querySelector(s); };
+var RIG = 45, APRON = 115;   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
+var FACE = { N:"North", S:"South", E:"East", W:"West", I:"Partition" };
+var TYPE = { dock:"Loading dock", rollup:"At-grade roll-up", door:"Personnel", louvre:"Louvre", internal:"Internal opening" };
+var COPY = {
+  ph: {
+    lede: "Cooler on the dock end so finished goods never cross the pack room, receiving on the far end where harvest comes in. Break room and bathrooms share the far end with receiving, walled off at 12 ft. As the site map loads it, the docks are on the low south end and receiving is the north end.",
+    open: "Grade falls north to south, so the two 48 in docks sit on the low south end and the at-grade doors go high. The box-truck roll-up R2 is on the cooler's east wall at its north end; harvest mini-trucks come in through R1 on the north end.",
+    note: "<b>The spec's two docks and two roll-ups are all here.</b> Pack room plus receiving comes to 4,500 ft², above the 4,000 ft² practical minimum in the sizing model. Moving R2 to the side wall costs the cooler 6 floor positions to keep its aisle clear: 38 as drawn. Box trucks at R2 stand in the gap east of the packhouse, which the site map does not check.",
+    stamp: [["Footprint","160 × 50 ft"],["Eave","17 ft"],["Docks","2 + 2 roll-ups"]]
+  },
+  fert: {
+    lede: "End-on, with the dock and roll-up on one 50 ft end. Dry storage takes the dock end, the fert room the far end behind a full-height partition with its own bund. On the site map the docks face south, so the fert room is the north end.",
+    open: "One dock and one box-truck roll-up on the dock end, per the spec. Fertiliser pallets travel the length of the store to the fert room through I1.",
+    note: "<b>This turns the fert building end-on.</b> In the earlier side-by-side study the docks were on a long wall straddling the partition. On this site the long walls face the packhouse at 15 ft and the property line at 37 ft, so no apron fits there. The trade is a 100 ft forklift run for fertiliser, and the rack aisles are reach-truck width.",
+    stamp: [["Footprint","160 × 50 ft"],["Eave","17 ft"],["Docks","1 + 1 roll-up"]]
+  },
+  ph80: {
+    lede: "Cooler across the whole 80 ft dock face, pack room through the middle, and a band along the far wall split between cucumber receiving, bathrooms and the break room. Every room is at most 40 ft from a door.",
+    open: "Grade falls north to south. The two 48 in docks sit on the low south part of the east wall; both at-grade box-truck roll-ups are on the north wall: R2 on the east side into the cooler's dock aisle, and R1 on the west side into cucumber receiving.",
+    note: "<b>Shorter walks, a fuller cooler.</b> The line crosses the room with space on both sides for packing stations, and nobody works more than 50 ft from the break room. With R2 off the dock face, the cooler block-stacks 4 deep off the dock aisle up to the route to the pack-room door: 60 floor positions.",
+    stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","2 + 2 roll-ups"]]
+  },
+  fert80: {
+    lede: "Dry storage takes the north 70 ft on standard counterbalance aisles, the fert room the south 30 ft behind a full-height partition with its own bund. The same 5,600 / 2,400 split as the original fert room model.",
+    open: "Grade falls north to south, so on the east wall the dock sits on the low south part and the at-grade box-truck roll-up on the high north part. Fertiliser runs at most 70 ft from the dock to the fert room through I1. The fert room's exterior door and vents are on the east wall.",
+    note: "<b>This shape needs no reach truck.</b> Eight rack lines on 12 ft aisles carry 288 pallets two high on the floor plus a shelf, short of the 357 needed. The fert room holds 88 positions two-high against 77, with the tanks on the south wall.",
+    stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","1 + 1 roll-up"]]
+  }
+};
+
+/* ============ theme ============ */
+var cs = getComputedStyle(document.documentElement);
+function tok(n){ return (cs.getPropertyValue(n) || "").trim() || n; }
+function col(n){ return new THREE.Color(n.charAt(0) === "#" ? n : tok(n)); }
+
+/* ============ renderer ============ */
+var canvas = $("#stage");
+var renderer = new THREE.WebGLRenderer({ canvas:canvas, antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(36, 2, 1, 1400);
+var hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 0.62); scene.add(hemi);
+var sun = new THREE.DirectionalLight(0xffffff, 0.66);
+sun.position.set(-120, 170, -60); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+var sc = sun.shadow.camera; sc.left = -190; sc.right = 190; sc.top = 190; sc.bottom = -190; sc.near = 20; sc.far = 520;
+sun.shadow.bias = -0.0012; sun.target.position.set(25, 0, 60); scene.add(sun); scene.add(sun.target);
+var fillL = new THREE.DirectionalLight(0xffffff, 0.22); fillL.position.set(140, 60, 200); scene.add(fillL);
+
+var M = {};
+function mat(key, token, o){
+  o = o || {};
+  var m = new THREE.MeshLambertMaterial({ color:col(token), transparent:o.opacity !== undefined,
+    opacity:o.opacity === undefined ? 1 : o.opacity, side:o.side || THREE.FrontSide, depthWrite:o.depthWrite !== false });
+  m.userData.token = token; M[key] = m; return m;
+}
+function lmat(key, token, op){ var m = new THREE.LineBasicMaterial({ color:col(token), transparent:true, opacity:op }); m.userData.token = token; M[key] = m; return m; }
+mat("ground","--ground"); mat("hard","--hardstand"); mat("road","--road"); mat("slab","--vellum-2");
+mat("wall","--vellum",{opacity:0.22, side:THREE.DoubleSide, depthWrite:false});
+mat("part","--rule-2",{opacity:0.35, side:THREE.DoubleSide, depthWrite:false});
+mat("roof","--rule"); mat("steel","--ink-2"); mat("pallet","--flow-dry"); mat("crate","--rule-2");
+mat("bin","--flow-crop"); mat("truck","--vellum"); mat("truckd","--ink-3"); mat("tank","--ink-3");
+mat("table","--rule-2"); mat("conv","--flow-box");
+mat("canopy","--rule-2",{opacity:0.45, side:THREE.DoubleSide, depthWrite:false});
+lmat("edge","--ink-2",0.55); lmat("soft","--ink-3",0.3); lmat("mark","--survey",0.95); lmat("dim","--ink-3",0.6);
+["--flow-box","--flow-crop","--flow-dry","--ink-3","--survey"].forEach(function(t){
+  mat("floor" + t, t, { opacity:0.3 }); mat("skirt" + t, t, { opacity:0.9 });
+});
+var ghost = true;
+function retheme(){
+  cs = getComputedStyle(document.documentElement);
+  Object.keys(M).forEach(function(k){ M[k].color.copy(col(M[k].userData.token)); });
+  renderer.setClearColor(col("--vellum-2"), 1);
+  var dark = col("--paper").r < 0.3;
+  hemi.intensity = dark ? 0.8 : 0.62; sun.intensity = dark ? 0.46 : 0.66;
+  needsDraw = true;
+}
+
+/* ============ scene groups, rebuilt per building ============ */
+var root = new THREE.Group(); scene.add(root);
+var G = {};
+function resetGroups(){
+  while (root.children.length){
+    var c = root.children.pop();
+    c.traverse(function(o){ if (o.geometry) o.geometry.dispose(); });
+  }
+  ["site","shell","roof","parts","floors","fit","marks","dims"].forEach(function(k){
+    G[k] = new THREE.Group(); root.add(G[k]);
+  });
+}
+function box(w, h, d, m, x, y, z, g, shadow){
+  var o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  o.position.set(x, y, z);
+  if (shadow !== false){ o.castShadow = true; o.receiveShadow = true; }
+  (g || G.fit).add(o); return o;
+}
+function pad(x0, z0, x1, z1, y, t, m, g){ var o = box(x1 - x0, t, z1 - z0, m, (x0 + x1) / 2, y - t / 2, (z0 + z1) / 2, g, false); o.receiveShadow = true; return o; }
+function edges(o, m, g){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 18), m || M.edge); e.position.copy(o.position); e.rotation.copy(o.rotation); (g || o.parent).add(e); return e; }
+/* flat pad with rectangular holes, top at y; holes are [x0,z0,x1,z1] */
+function holedPad(x0, z0, x1, z1, y, t, m, holes, g){
+  var s = new THREE.Shape([[x0,-z0],[x1,-z0],[x1,-z1],[x0,-z1]].map(function(p){ return new THREE.Vector2(p[0], p[1]); }));
+  holes.forEach(function(h){ s.holes.push(new THREE.Path([[h[0],-h[1]],[h[0],-h[3]],[h[2],-h[3]],[h[2],-h[1]]].map(function(p){ return new THREE.Vector2(p[0], p[1]); }))); });
+  var o = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth:t, bevelEnabled:false }), m);
+  o.rotation.x = -Math.PI / 2; o.position.y = y - t; o.receiveShadow = true; (g || G.site).add(o); return o;
+}
+function rect(a, b, c, d){ return [[a,b],[c,b],[c,d],[a,d]]; }
+/* upright prism from a plan outline of [x, z] points, top at y, t tall */
+function prism(pts, y, t, m, g){
+  var s = new THREE.Shape(pts.map(function(p){ return new THREE.Vector2(p[0], -p[1]); }));
+  var o = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth:t, bevelEnabled:false }), m);
+  o.rotation.x = -Math.PI / 2; o.position.y = y - t;
+  o.castShadow = true; o.receiveShadow = true; (g || G.site).add(o); return o;
+}
+function shapeMesh(outline, holes, th, m, g){
+  var s = new THREE.Shape();
+  outline.forEach(function(p, i){ i ? s.lineTo(p[0], p[1]) : s.moveTo(p[0], p[1]); });
+  holes.forEach(function(h){ var pa = new THREE.Path(); h.forEach(function(p, i){ i ? pa.lineTo(p[0], p[1]) : pa.moveTo(p[0], p[1]); }); s.holes.push(pa); });
+  var o = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth:th, bevelEnabled:false }), m);
+  o.castShadow = true; o.receiveShadow = true; g.add(o); return o;
+}
+/* place a flat XY shape on a face: u along the face, v up */
+function onFace(o, face, B, th){
+  if (face === "N"){ o.position.set(0, 0, 0); }
+  else if (face === "S"){ o.position.set(0, 0, B.D - th); }
+  else { o.rotation.y = -Math.PI / 2; o.position.set(face === "W" ? th : B.W, 0, 0); }
+}
+function faceXZ(face, u, dist, B){
+  if (face === "N") return [u, -dist];
+  if (face === "S") return [u, B.D + dist];
+  if (face === "W") return [-dist, u];
+  return [B.W + dist, u];
+}
+function markRect(face, a, b, v0, v1, B, m){
+  var p = [], c = [[a, v0],[b, v0],[b, v1],[a, v1]];
+  function P(u, v){ var q = faceXZ(face, u, 0.15, B); return [q[0], v, q[1]]; }
+  for (var i = 0; i < 4; i++){ var s = P(c[i][0], c[i][1]), e = P(c[(i + 1) % 4][0], c[(i + 1) % 4][1]); p.push(s[0], s[1], s[2], e[0], e[1], e[2]); }
+  var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(p, 3));
+  G.marks.add(new THREE.LineSegments(g, m || M.mark));
+}
+function line(pts, m, g){ var a = []; pts.forEach(function(p){ a.push(p[0], p[1], p[2]); }); var geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.Float32BufferAttribute(a, 3)); (g || G.dims).add(new THREE.LineSegments(geo, m || M.dim)); }
+/* a truck backed square to an opening; len along the approach, bedH is its floor height */
+function truck(face, u, B, len, bedH, groundY, g){
+  var along = face === "N" || face === "S";
+  function put(w, h, d, m, du, y, dist){
+    var q = faceXZ(face, u + du, dist, B);
+    return along ? box(w, h, d, m, q[0], y, q[1], g) : box(d, h, w, m, q[0], y, q[1], g);
+  }
+  var boxH = len > 40 ? 9.2 : 7.5;
+  put(8.2, boxH, len, M.truck, 0, groundY + bedH + boxH / 2, 1 + len / 2);
+  put(8.2, 0.6, len, M.truckd, 0, groundY + bedH - 0.3, 1 + len / 2);
+  if (len > 40){
+    put(7.8, 5.2, 8, M.truckd, 0, groundY + 2.6 + 0.4, len + 5);
+    put(8, 8.6, 8, M.truck, 0, groundY + 4.3 + 0.8, len + 11);
+  } else {
+    put(7.8, 6.8, 7, M.truck, 0, groundY + 3.8, len + 5);
+  }
+}
+
+/* ============ build one building ============ */
+/* how the site map loads each layout: 160 × 50 docks south (turned 180°), 100 × 80 docks north */
+var SITE_ROT = { ph:2, fert:2, ph80:1, fert80:1 };
+var FACE_R1 = { N:"East", E:"South", S:"West", W:"North", I:"Partition" };
+/* world position of the building centre once turned */
+function centre(){ return SITE_ROT[B.id] === 1 ? [B.D / 2, B.W / 2] : [B.W / 2, B.D / 2]; }
+var FACE_R2 = { N:"South", S:"North", E:"West", W:"East", I:"Partition" };
+var TAGS = [], tagHost = $("#tags");
+function addTag(text, x, y, z, cls, tone){
+  var el = document.createElement("div"); el.className = "tag " + (cls || ""); el.textContent = text;
+  if (tone) el.style.borderLeftColor = tok(tone);
+  tagHost.appendChild(el); TAGS.push({ el:el, p:new THREE.Vector3(x, y, z) }); return el;
+}
+var B, selected = null, TH = 0.5;
+var seed = 7; function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+
+function build(id){
+  B = L[id]; resetGroups(); TAGS.length = 0; tagHost.replaceChildren(); seed = 7;
+  if (SITE_ROT[id] === 2){ root.position.set(B.W, 0, B.D); root.rotation.y = Math.PI; }
+  else if (SITE_ROT[id] === 1){ root.position.set(B.D, 0, 0); root.rotation.y = -Math.PI / 2; }
+  else { root.position.set(0, 0, 0); root.rotation.y = 0; }
+  root.updateMatrixWorld(true);
+  var W = B.W, D = B.D, E = B.eave, R = E + W / 2 / 12;   /* 1:12 roof, ridge down the length */
+  var hasDockN = B.openings.some(function(o){ return o.type === "dock" && o.face === "N"; });
+
+  /* site */
+  var wells = B.openings.filter(function(o){ return o.type === "dock" && !o.angle; }).map(function(o){ return [o.a - 2, -46, o.b + 2, 0]; });
+  holedPad(-90, -175, W + 90, D + 80, -0.1, 0.5, M.ground, wells);
+  var sq = B.openings.filter(function(o){ return o.type === "dock" && !o.angle; });          /* square docks share one straight apron */
+  var sqA = sq.length ? Math.max(-12, Math.min.apply(null, sq.map(function(o){ return o.a; })) - 6) : 0;
+  var sqB = sq.length ? Math.min(W + 12, Math.max.apply(null, sq.map(function(o){ return o.b; })) + 6) : 0;
+  if (sq.length) holedPad(sqA, -APRON, sqB, 0, -0.02, 0.4, M.hard, wells);                   /* 6 ft past the outer dock, as the plan draws it */
+  pad(-8, D, W + 8, D + 40, -0.04, 0.4, M.hard, G.site);            /* south yard */
+  if (sq.length){ line([[sqA, 0.05, -APRON], [sqB, 0.05, -APRON]], M.mark, G.dims);
+  addTag(APRON + " ft apron", (sqA + sqB) / 2, 0.4, -APRON, "dim"); }
+
+  /* dock wells: 4 ft deep under each dock, with a ramp */
+  /* angled docks: an insulated dock house on the wall, container rig backed in along the angle */
+  B.openings.filter(function(o){ return o.type === "dock" && o.angle; }).forEach(function(o){
+    var th = o.angle * Math.PI / 180, cx = (o.a + o.b) / 2;
+    var seal = o.seal || 1.5, face = (o.b - o.a) * Math.cos(th) + 2 * seal;
+    var tip = face * Math.cos(th), depth = face * Math.sin(th);
+    var h = Math.sin(th) * (tip - (cx - o.a));                                                    /* face distance on the axis */
+    var g = new THREE.Group(); g.position.set(cx, 0, 0); g.rotation.y = -th; G.site.add(g);
+    var tri = [[o.a, 0], [o.a + tip, 0], [o.a, -depth]];                                          /* dock house: a wedge, not a room */
+    edges(prism(tri, o.h + 3, o.h + 3, M.part), M.edge, G.site);
+    prism(tri, o.h + 3.4, 0.4, M.roof);
+    box(7, 1, 1, M.steel, 0, 3.5, -h - 0.5, g);                                                   /* edge-of-dock leveller */
+    box(8.2, 9.2, RIG, M.truck, 0, 4 + 4.6, -h - 1 - RIG / 2, g);                                 /* container on chassis */
+    box(8.2, 0.6, RIG, M.truckd, 0, 3.7, -h - 1 - RIG / 2, g);
+    box(7.8, 5.2, 8, M.truckd, 0, 3, -h - RIG - 5, g);
+    box(8, 8.6, 8, M.truck, 0, 5.1, -h - RIG - 11, g);
+    pad(-6, -h - APRON, 6, -h, 0, 0.3, M.hard, g);                                                  /* apron strip, a 12 ft dock bay */
+  });
+  B.openings.filter(function(o){ return o.type === "dock" && !o.angle; }).forEach(function(o){
+    var a = o.a - 2, b = o.b + 2;
+    pad(a, -16, b, 0, -4, 0.4, M.hard, G.site);
+    var ramp = new THREE.Mesh(new THREE.BoxGeometry(b - a, 0.4, 30.3), M.hard);
+    ramp.position.set((a + b) / 2, -2.05, -31); ramp.rotation.x = Math.atan(4 / 30); ramp.receiveShadow = true;
+    G.site.add(ramp);
+    [a, b].forEach(function(x){ edges(box(0.5, 4, 16, M.slab, x, -2, -8, G.site), M.soft, G.site); });
+    /* shelter and leveller */
+    var cx = (o.a + o.b) / 2;
+    [-5.4, 5.4].forEach(function(dx){ box(0.7, o.h + 1.4, 2.6, M.truckd, cx + dx, (o.h + 1.4) / 2, -1.3); });
+    box(11.5, 0.7, 2.6, M.truckd, cx, o.h + 1.05, -1.3);
+    var lev = box(7, 0.3, 8, M.steel, cx, -0.3, -3.6); lev.rotation.x = Math.atan(0.5 / 8);
+    truck("N", cx, B, RIG, 4, -4, G.site);
+  });
+  B.openings.filter(function(o){ return o.type === "rollup"; }).forEach(function(o, i){
+    var cx = (o.a + o.b) / 2;
+    if (o.face === "N" || o.face === "E" || o.face === "W"){ truck(o.face, cx, B, 24, 3.4, 0, G.site); }
+    else if (o.face === "S"){ truck("S", cx, B, 14, 2.8, 0, G.site); }
+  });
+
+  /* slab, floors */
+  edges(pad(0, 0, W, D, 0, 0.5, M.slab, G.shell), M.edge, G.shell);
+  B.rooms.forEach(function(r){
+    var f = pad(r.x0, r.z0, r.x1, r.z1, 0.07, 0.06, M["floor" + r.tone], G.floors); f.userData.room = r.id;
+    [[r.x0, r.z0, r.x1, r.z0], [r.x0, r.z1, r.x1, r.z1], [r.x0, r.z0, r.x0, r.z1], [r.x1, r.z0, r.x1, r.z1]].forEach(function(e){
+      box(Math.max(0.4, e[2] - e[0]), 0.8, Math.max(0.4, e[3] - e[1]), M["skirt" + r.tone], (e[0] + e[2]) / 2, 0.4, (e[1] + e[3]) / 2, G.floors, false);
+    });
+    addTag(r.name, (r.x0 + r.x1) / 2, 3.5, (r.z0 + r.z1) / 2, "room", r.tone);
+  });
+
+  /* exterior walls with openings cut */
+  var gable = [[0,0],[W,0],[W,E],[W/2,R],[0,E]], side = rect(0, 0, D, E);
+  ["N","S","E","W"].forEach(function(f){
+    var holes = B.openings.filter(function(o){ return o.face === f; }).map(function(o){ return rect(o.a, o.sill || 0, o.b, o.h); });
+    var m = shapeMesh(f === "N" || f === "S" ? gable : side, holes, TH, M.wall, G.shell);
+    onFace(m, f, B, TH); edges(m, M.edge, G.shell);
+  });
+  /* roof, two planes along the length */
+  (function(){
+    var hw = W / 2, run = Math.sqrt(hw * hw + (R - E) * (R - E)) + 1.2, a = Math.atan((R - E) / hw);
+    var p1 = box(run, 0.5, D + 2, M.roof, W / 4, (E + R) / 2 + 0.3, D / 2, G.roof); p1.rotation.z = a;
+    var p2 = box(run, 0.5, D + 2, M.roof, W * 3 / 4, (E + R) / 2 + 0.3, D / 2, G.roof); p2.rotation.z = -a;
+    edges(p1, M.edge, G.roof); edges(p2, M.edge, G.roof);
+  })();
+  /* partitions */
+  B.partitions.forEach(function(p){
+    var h = p.h === "eave" ? E : p.h, len = p.to - p.from;
+    var holes = p.holes.map(function(hh){ return rect(hh[0] - p.from, hh[2], hh[1] - p.from, hh[3]); });
+    var m = shapeMesh(rect(0, 0, len, h), holes, TH, M.part, G.parts);
+    if (p.axis === "z"){ m.position.set(p.from, 0, p.at - TH / 2); }
+    else { m.rotation.y = -Math.PI / 2; m.position.set(p.at + TH / 2, 0, p.from); }
+    edges(m, M.edge, G.parts);
+  });
+  /* opening marks and tags */
+  B.openings.forEach(function(o){
+    var cx = (o.a + o.b) / 2;
+    if (o.face === "I"){
+      var part = B.partitions[0];
+      var pts = [[o.a, 0],[o.b, 0],[o.b, o.h],[o.a, o.h]], arr = [];
+      for (var i = 0; i < 4; i++){ var s = pts[i], e = pts[(i + 1) % 4]; arr.push([s[0], s[1], part.at], [e[0], e[1], part.at]); }
+      line(arr, M.mark, G.marks);
+      addTag(o.mark + " — open item", cx, o.h + 1.5, part.at, "mark flagged");
+      return;
+    }
+    markRect(o.face, o.a, o.b, o.sill || 0, o.h, B);
+    if (o.hideTag) return;
+    var q = faceXZ(o.face, cx, 1.2, B);
+    addTag(o.mark, q[0], o.h + 1.6, q[1], "mark" + (o.type === "dock" ? " dock" : ""));
+  });
+
+  /* outdoor areas: covered bin wash pad, posts, awning, stacked bins */
+  (B.outdoor || []).forEach(function(o){
+    pad(o.x0, o.z0, o.x1, o.z1, 0.02, 0.3, M.slab, G.site);
+    [[o.x0, o.z0], [o.x0, o.z1], [o.x1 - 1, o.z0], [o.x1 - 1, o.z1]].forEach(function(c){ box(0.6, o.roof, 0.6, M.steel, c[0] + 0.3, o.roof / 2, c[1], G.shell); });
+    var cover = box(o.x1 - o.x0 + 2, 0.4, o.z1 - o.z0 + 2, M.canopy, (o.x0 + o.x1) / 2, o.roof + 0.2, (o.z0 + o.z1) / 2, G.shell, false);
+    edges(cover, M.edge, G.shell);
+    box(8, 3.5, 3, M.steel, o.x0 + 10, 1.75, (o.z0 + o.z1) / 2);   /* bin washer */
+    for (var bx = 0; bx < 3; bx++) for (var bz = 0; bz < 4; bz++) for (var bl = 0; bl < 3; bl++){
+      box(3.8, 2.3, 3.8, M.bin, o.x1 - 8 - bx * 4.3, 1.2 + bl * 2.4, o.z0 + 6 + bz * 4.3);
+    }
+    addTag(o.name, (o.x0 + o.x1) / 2, o.roof + 2, (o.z0 + o.z1) / 2, "room", "--flow-box");
+  });
+
+  /* fit-out */
+  FIT[id]();
+  target.set(centre()[0], 6, centre()[1]); Object.assign(cam, VIEWS.iso); goal = null;
+  ["iso","dock","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === "iso")); });
+
+  /* dims */
+  line([[-18, 0.1, 0], [-18, 0.1, D], [-20, 0.1, 0], [-16, 0.1, 0], [-20, 0.1, D], [-16, 0.1, D]]);
+  addTag(D + " ft", -18, 0.4, D / 2, "dim");
+  line([[0, 0.1, D + 62], [W, 0.1, D + 62], [0, 0.1, D + 60], [0, 0.1, D + 64], [W, 0.1, D + 60], [W, 0.1, D + 64]]);
+  addTag(W + " ft", W / 2, 0.4, D + 62, "dim");
+  line([[W + 14, 0, D], [W + 14, E, D], [W + 12, E, D], [W + 16, E, D]]);
+  addTag(E + " ft eave", W + 14, E / 2, D, "dim");
+  (function(){ var o = B.openings.filter(function(o){ return o.type === "dock"; })[0], th = (o.angle || 0) * Math.PI / 180, s = 32;
+    addTag(RIG + " ft container", (o.a + o.b) / 2 + Math.sin(th) * s, 12, -Math.cos(th) * s, "dim"); })();
+
+  applyState();
+  renderTables(id);
+  selectRoom(B.rooms[0].id);
+  needsDraw = true;
+}
+
+function pallets(x0, z0, nx, nz, stepx, stepz, levels, m, g, fillRate){
+  for (var i = 0; i < nx; i++) for (var k = 0; k < nz; k++) for (var l = 0; l < levels; l++){
+    if (fillRate && rnd() > fillRate) continue;
+    box(stepx - 0.3, 4.1, stepz - 0.3, m, x0 + i * stepx + stepx / 2, 2.15 + l * 4.3, z0 + k * stepz + stepz / 2, g);
+  }
+}
+
+function fitPackhouse(){
+  /* cooler: two double rows of floor pallets */
+  pallets(3, 13, 11, 2, 4.0, 4.0, 1, M.pallet, G.fit, 0.85);
+  pallets(16, 29, 8, 2, 4.0, 4.0, 1, M.pallet, G.fit, 0.85);   /* shortened: keeps the aisle to R2 clear */
+  /* pack line: infeed from receiving, grading, packing, to the cooler door */
+  box(3, 3, 52, M.conv, 25, 1.5, 70);
+  box(6, 3.2, 10, M.steel, 25, 1.6, 92);                /* grader */
+  for (var z = 50; z <= 86; z += 9){
+    box(3, 3, 6, M.table, 19.5, 1.5, z); box(3, 3, 6, M.table, 30.5, 1.5, z);
+  }
+  pallets(8, 44, 2, 1, 4.2, 4.2, 1, M.crate, G.fit);    /* empty cartons at the line head */
+  pallets(34, 44, 2, 1, 4.2, 4.2, 1, M.pallet, G.fit);  /* packed pallets to the cooler */
+  /* receiving: harvest bins stacked three high */
+  for (var bx = 0; bx < 4; bx++) for (var bz = 0; bz < 5; bz++) for (var bl = 0; bl < 3; bl++){
+    if (bl === 2 && rnd() > 0.6) continue;
+    box(3.8, 2.3, 3.8, M.bin, 29 + bx * 4.3, 1.2 + bl * 2.4, 106 + bz * 4.3);
+  }
+  /* break room tables and counter */
+  [[8, 130], [8, 142], [17, 130], [17, 142]].forEach(function(t){ box(3, 2.6, 7, M.table, t[0], 1.3, t[1]); });
+  box(2.2, 3, 18, M.table, 1.5, 1.5, 145);
+  /* two single-user bathrooms: toilet and sink each */
+  [[2, 6], [10, 14]].forEach(function(b){ box(2, 1.5, 2.6, M.table, b[0], 0.75, 106); box(2.4, 3, 1.6, M.table, b[1], 1.5, 107); });   /* toilet and sink, 8 x 8 bathrooms */
+  box(20, 6, 1.6, M.table, 12.5, 3, 118.8);   /* lockers */
+  /* dock staging */
+  pallets(5, 4, 5, 1, 4.1, 4.1, 1, M.pallet, G.fit, 0.7);
+}
+
+function racks(LINES, Z0, BAYS, BAY){
+  /* two pallets stacked on the floor, one on a shelf beam above */
+  var RD = 3.5, LVL = [0, 4.3, 9];
+  LINES.forEach(function(x0){
+    var cx = x0 + RD / 2;
+    for (var b = 0; b <= BAYS; b++) box(RD, 14, 0.3, M.steel, cx, 7, Z0 + b * BAY);
+    LVL.forEach(function(ly){
+      if (ly === 9) [-1.5, 1.5].forEach(function(off){ box(0.3, 0.4, BAYS * BAY, M.steel, cx + off, ly + 0.2, Z0 + BAYS * BAY / 2); });
+      for (var bb = 0; bb < BAYS; bb++){
+        if (rnd() < 0.2) continue;
+        box(3.2, 4, 3.8, M.pallet, cx, ly + 2.4, Z0 + bb * BAY + 2.3);
+        box(3.2, 4, 3.8, M.pallet, cx, ly + 2.4, Z0 + bb * BAY + 6.6);
+      }
+    });
+  });
+}
+function bund(r){
+  var cx = (r.x0 + r.x1) / 2, cz = (r.z0 + r.z1) / 2, w = r.x1 - r.x0, d = r.z1 - r.z0;
+  [[cx, r.z0 + 0.8, w - 1, 0.6], [cx, r.z1 - 0.6, w - 1, 0.6], [r.x0 + 0.6, cz, 0.6, d - 1], [r.x1 - 0.6, cz, 0.6, d - 1]]
+    .forEach(function(c){ box(c[2], 0.5, c[3], M.steel, c[0], 0.3, c[1], G.fit, false); });
+}
+function tanks(xs, z){
+  xs.forEach(function(x){
+    var t = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 7, 20), M.tank); t.position.set(x, 3.6, z); t.castShadow = true; G.fit.add(t);
+  });
+}
+function fitFert(){
+  racks([0.5, 13.3, 16.8, 29.7, 33.2, 46], 16, 11, 8.9);   /* six lines, reach-truck aisles */
+  pallets(18, 3, 4, 1, 4.1, 4.1, 1, M.crate, G.fit, 0.8);   /* dock staging */
+  bund(B.rooms[1]);
+  pallets(14, 119, 9, 3, 4.0, 4.0, 2, M.crate, G.fit, 0.92);   /* 3 deep lane */
+  pallets(14, 142.5, 9, 2, 4.0, 4.0, 2, M.crate, G.fit, 0.92); /* 2 deep lane */
+  tanks([17, 23, 29, 35, 41, 47], 155.5);
+  box(10, 4.5, 7, M.steel, 7, 2.35, 155);
+}
+function fitFert80(){
+  racks([2, 17.5, 21, 36.5, 40, 55.5, 59, 74.5], 16, 6, 8.5);   /* eight lines, 12 ft aisles */
+  pallets(58, 3, 5, 1, 4.1, 4.1, 1, M.crate, G.fit, 0.8);   /* dock staging behind D1 */
+  bund(B.rooms[1]);
+  pallets(14, 70.5, 16, 2, 4.0, 4.0, 2, M.crate, G.fit, 0.92); /* 2 deep lane along the partition */
+  pallets(54, 90.5, 6, 2, 4.0, 4.0, 2, M.crate, G.fit, 0.92);  /* 2 deep lane, south-east */
+  tanks([7, 13, 19, 25, 31, 37], 95.5);
+  box(10, 4.5, 7, M.steel, 47, 2.35, 95.5);
+}
+function fitPackhouse80(){
+  /* cooler: 4-deep lanes off the dock aisle, clear route to the pack-room door */
+  pallets(3, 13, 13, 4, 4.1, 4.0, 1, M.pallet, G.fit, 0.85);   /* up to the route to the pack-room door */
+  pallets(71, 13, 2, 4, 4.1, 4.0, 1, M.pallet, G.fit, 0.85);
+  pallets(55, 3, 5, 1, 4.1, 4.1, 1, M.pallet, G.fit, 0.7);   /* dock staging behind the docks */
+  /* Japanese / English packing machine, from the vendor's 36 x 36 ft cell drawing, in the north half of the pack room.
+     Infeed on the receiving side (high z), output toward the palletizing area (low z). 4 ft aisle kept along the north wall. */
+  (function(){
+    var X = 13, cell = [4, 39, 40, 75];
+    line([[cell[0], 0.12, cell[1]], [cell[2], 0.12, cell[1]], [cell[2], 0.12, cell[1]], [cell[2], 0.12, cell[3]],
+          [cell[2], 0.12, cell[3]], [cell[0], 0.12, cell[3]], [cell[0], 0.12, cell[3]], [cell[0], 0.12, cell[1]]], M.dim, G.fit);
+    box(2.5, 2.8, 5.5, M.conv, X, 1.4, 70);            /* infeed conveyor */
+    box(3, 3, 2, M.table, X + 5.5, 1.5, 69);            /* infeed table */
+    box(4, 4.2, 3.3, M.pallet, X + 6, 2.1, 63.5);       /* infeed pallet */
+    box(4.5, 5, 12.7, M.steel, X, 2.5, 60.8);           /* packers */
+    box(3, 3.5, 4.2, M.steel, X, 1.75, 52.4);           /* discharge unit */
+    var t = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 3, 24), M.table); t.position.set(X, 1.5, 48.3); t.castShadow = true; G.fit.add(t);   /* rotary table */
+    box(2.5, 3, 3.5, M.table, X - 4.5, 1.5, 45);         /* packing tables */
+    box(2.5, 3, 3.5, M.table, X + 4.5, 1.5, 45.5);
+    addTag("Packing machine", X, 7, 60.8, "equip");
+  })();
+  /* five Keiki tables in the open side of the machine cell, 8 x 4 ft, long side along z */
+  [[27, 49], [27, 59], [27, 69], [35, 54], [35, 64]].forEach(function(p){ box(4, 3, 8, M.table, p[0], 1.5, p[1]); });
+  addTag("5 Keiki tables", 31, 5, 60, "equip");
+  /* box erector between the tables and the palletizing area */
+  box(10, 5, 6, M.steel, 31, 2.5, 43);
+  addTag("Box erector", 31, 7, 43, "equip");
+  /* palletizing area kept clear in front of the cooler door: staging pallets and the wrapper */
+  line([[52, 0.12, 30.5], [80, 0.12, 30.5], [80, 0.12, 30.5], [80, 0.12, 46], [80, 0.12, 46], [52, 0.12, 46], [52, 0.12, 46], [52, 0.12, 30.5]], M.mark, G.fit);
+  pallets(53, 40, 3, 1, 4.2, 4.2, 1, M.pallet, G.fit, 0.7);
+  box(7, 0.6, 7, M.steel, 75, 0.3, 37); box(0.8, 9, 0.8, M.steel, 78.7, 4.5, 37);
+  addTag("Palletizing", 64, 4, 38, "equip");
+  /* three desks for the line lead, QA and shipping, on the north wall of the bathroom and storage block */
+  [80.5, 86.5, 97].forEach(function(z){ box(2.6, 2.5, 5, M.table, 46.6, 1.25, z); });   /* against the north wall of the bathroom/storage block, clear of the storage door */
+  addTag("3 desks", 46, 5, 86.5, "equip");
+  /* hand-wash sinks at the pack room door, the receiving edge and the break room door */
+  [[1.2, 46], [49.3, 73.8], [68.8, 73.8]].forEach(function(p){ box(2.2, 3, 1.4, M.steel, p[0], 1.5, p[1]); });
+  addTag("Hand sinks", 46, 5, 73.8, "equip");
+  /* receiving bins */
+  for (var bx = 0; bx < 4; bx++) for (var bz = 0; bz < 4; bz++) for (var bl = 0; bl < 3; bl++){
+    if (bl === 2 && rnd() > 0.6) continue;
+    box(3.8, 2.3, 3.8, M.bin, 18 + bx * 4.3, 1.2 + bl * 2.4, 79 + bz * 4.3);   /* clear of the lane in from R1 */
+  }
+  /* bathrooms and break room */
+  [[50, 54], [58, 62]].forEach(function(b){ box(2.6, 1.5, 2, M.table, b[0], 0.75, 81); box(1.6, 3, 2.4, M.table, b[1], 1.5, 82); });   /* toilet and sink, 8 x 8 bathrooms */
+  box(14, 6, 1.6, M.table, 56, 3, 98.8);   /* lockers */
+  [[68, 83], [68, 93], [74.5, 83], [74.5, 93]].forEach(function(t){ box(3, 2.6, 6, M.table, t[0], 1.3, t[1]); });
+  box(1.8, 3, 16, M.table, 78.5, 1.5, 88);
+}
+var FIT = { ph:fitPackhouse, fert:fitFert, ph80:fitPackhouse80, fert80:fitFert80 };
+
+/* ============ tables ============ */
+function fmt(n){ return n.toLocaleString("en-US"); }
+function renderTables(id){
+  var c = COPY[id], h = "", gross = 0;
+  B.rooms.forEach(function(r){
+    var a = (r.x1 - r.x0) * (r.z1 - r.z0); gross += a;
+    h += '<tr data-room="' + r.id + '"><td><i class="sw" style="background:var(' + r.tone + ')"></i>' + r.name + '</td><td class="n">' + fmt(a) +
+      '</td><td class="n">' + (r.z1 - r.z0) + " × " + (r.x1 - r.x0) + "</td><td>" + r.note + "</td></tr>";
+  });
+  $("#sched").innerHTML = h;
+  $("#gross").textContent = fmt(gross); $("#grossSize").textContent = Math.max(B.W, B.D) + " × " + Math.min(B.W, B.D);
+  $("#grossNote").textContent = gross === 8000 ? "Matches the spec's 8,000 ft²" : "Spec is 8,000 ft²";
+  $("#opens").innerHTML = B.openings.filter(function(o){ return !o.hideTag; }).map(function(o){
+    var fl = o.type === "internal";
+    return "<tr><td class='mk'" + (fl ? " style='color:var(--survey)'" : "") + ">" + o.mark + "</td><td" + (fl ? " class='flag'" : "") + ">" + TYPE[o.type] +
+      "</td><td class='n'>" + o.size + "</td><td>" + ({ 0:FACE, 1:FACE_R1, 2:FACE_R2 })[SITE_ROT[B.id]][o.face] + "</td><td>" + o.room + "</td><td>" + o.detail + "</td></tr>";
+  }).join("");
+  $("#addons").hidden = B.building !== "ph";
+  $("#roomLede").textContent = c.lede; $("#openLede").textContent = c.open; $("#note").innerHTML = c.note;
+  $("#stamp").innerHTML = c.stamp.map(function(s){ return "<div><p class='lbl'>" + s[0] + "</p><b>" + s[1] + "</b></div>"; }).join("");
+  $("#legend").innerHTML = B.rooms.map(function(r){ return '<span><i style="background:var(' + r.tone + ')"></i>' + r.name + "</span>"; }).join("") +
+    '<span><i style="background:var(--survey)"></i>Opening marks</span>';
+  document.querySelectorAll("tr[data-room]").forEach(function(tr){ tr.addEventListener("click", function(){ selectRoom(tr.dataset.room); }); });
+}
+function selectRoom(rid){
+  selected = rid;
+  G.floors.children.forEach(function(o){ if (o.userData.room) o.material = M["floor" + B.rooms.filter(function(r){ return r.id === o.userData.room; })[0].tone]; });
+  B.rooms.forEach(function(r){ M["floor" + r.tone].opacity = 0.3; });
+  var r = B.rooms.filter(function(x){ return x.id === rid; })[0]; M["floor" + r.tone].opacity = 0.62;
+  document.querySelectorAll("tr[data-room]").forEach(function(tr){ tr.classList.toggle("on", tr.dataset.room === rid); });
+  needsDraw = true;
+}
+
+/* ============ camera ============ */
+var target = new THREE.Vector3(25, 6, 60);
+/* camera az 0 stands south looking north, so every view reads like the site map: north up, east right */
+var VIEWS = { iso:{ az:0.45, pol:0.95, r:290 }, dock:{ az:Math.PI, pol:1.22, r:250 }, south:{ az:0, pol:1.22, r:250 }, plan:{ az:0, pol:0.03, r:330 } };
+var cam = { az:VIEWS.iso.az, pol:VIEWS.iso.pol, r:VIEWS.iso.r }, goal = null;
+var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function applyCam(){
+  var sp = Math.sin(cam.pol);
+  camera.position.set(target.x + cam.r * sp * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * sp * Math.cos(cam.az));
+  camera.lookAt(target);
+  /* compass: drawing north is -z */
+  $("#needle").setAttribute("transform", "rotate(" + (cam.az * 180 / Math.PI).toFixed(1) + " 30 34)");
+}
+function goTo(k){
+  ["iso","dock","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); });
+  target.set(centre()[0], 6, centre()[1]);
+  if (reduce){ Object.assign(cam, VIEWS[k]); needsDraw = true; return; }
+  goal = { from:{ az:cam.az, pol:cam.pol, r:cam.r }, to:VIEWS[k], t:0 };
+}
+["iso","dock","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ goTo(k); }); });
+
+var drag = null;
+canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, sx:e.clientX, sy:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
+canvas.addEventListener("pointermove", function(e){
+  if (!drag) return;
+  var dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+  if (drag.pan){
+    var f = cam.r * 0.0016, right = new THREE.Vector3().subVectors(camera.position, target).cross(camera.up).normalize();
+    target.addScaledVector(right, -dx * f); target.y += dy * f;
+  } else { cam.az -= dx * 0.006; cam.pol = Math.max(0.03, Math.min(1.5, cam.pol - dy * 0.005)); }
+  needsDraw = true;
+});
+canvas.addEventListener("pointerup", function(e){
+  var moved = drag && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > 4;
+  drag = null; canvas.classList.remove("drag");
+  if (moved) return;
+  var b = canvas.getBoundingClientRect(), ndc = new THREE.Vector2(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
+  var ray = new THREE.Raycaster(); ray.setFromCamera(ndc, camera);
+  var hit = ray.intersectObjects(G.floors.children, false);
+  for (var i = 0; i < hit.length; i++) if (hit[i].object.userData.room){ selectRoom(hit[i].object.userData.room); return; }
+});
+canvas.addEventListener("pointercancel", function(){ drag = null; canvas.classList.remove("drag"); });
+canvas.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+canvas.addEventListener("wheel", function(e){ e.preventDefault(); cam.r = Math.max(60, Math.min(620, cam.r * (1 + Math.sign(e.deltaY) * 0.09))); goal = null; needsDraw = true; }, { passive:false });
+
+/* ============ toggles ============ */
+var state = { roof:false, ghost:true, fit:true, tags:true };
+function applyState(){
+  G.roof.visible = state.roof;
+  M.wall.opacity = state.ghost ? 0.22 : 0.94; M.wall.depthWrite = !state.ghost;
+  M.part.opacity = state.ghost ? 0.35 : 0.94; M.part.depthWrite = !state.ghost;
+  G.fit.visible = state.fit;
+  tagHost.style.display = state.tags ? "" : "none";
+  needsDraw = true;
+}
+[["#t-roof","roof"],["#t-ghost","ghost"],["#t-fit","fit"],["#t-tags","tags"]].forEach(function(t){
+  $(t[0]).addEventListener("click", function(){ state[t[1]] = !state[t[1]]; $(t[0]).setAttribute("aria-pressed", String(state[t[1]])); applyState(); });
+});
+var cur = { b:"ph", s:"A" };
+function pick(b, sh){
+  cur.b = b || cur.b; cur.s = sh || cur.s;
+  var id = cur.b + (cur.s === "A" ? "80" : "");
+  ["ph","fert"].forEach(function(k){ $("#b-" + k).setAttribute("aria-selected", String(k === cur.b)); });
+  ["A","B"].forEach(function(k){ $("#s-" + k).setAttribute("aria-pressed", String(k === cur.s)); });
+  build(id);
+  $("#nav-site").href = "site-placement.html#" + cur.s;
+  try { history.replaceState(null, "", "#" + id); } catch(e){}
+}
+$("#b-ph").addEventListener("click", function(){ pick("ph"); });
+$("#b-fert").addEventListener("click", function(){ pick("fert"); });
+$("#s-B").addEventListener("click", function(){ pick(null, "B"); });
+$("#s-A").addEventListener("click", function(){ pick(null, "A"); });
+
+/* ============ loop ============ */
+var needsDraw = true, v3 = new THREE.Vector3();
+function resize(){ var w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); needsDraw = true; }
+addEventListener("resize", resize);
+function frame(){
+  requestAnimationFrame(frame);
+  if (goal){
+    goal.t = Math.min(1, goal.t + 0.05);
+    var t = goal.t, e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, f = goal.from, to = goal.to;
+    var da = ((to.az - f.az + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+    cam.az = f.az + da * e; cam.pol = f.pol + (to.pol - f.pol) * e; cam.r = f.r + (to.r - f.r) * e;
+    if (goal.t >= 1) goal = null;
+    needsDraw = true;
+  }
+  if (!needsDraw) return;
+  needsDraw = !!goal;
+  applyCam(); renderer.render(scene, camera);
+  var b = canvas.getBoundingClientRect();
+  TAGS.forEach(function(tg){
+    v3.copy(tg.p).applyMatrix4(root.matrixWorld).project(camera);
+    tg.el.style.opacity = v3.z > 1 ? 0 : 1;
+    tg.el.style.transform = "translate(-50%,-50%) translate(" + ((v3.x * 0.5 + 0.5) * b.width).toFixed(1) + "px," + ((-v3.y * 0.5 + 0.5) * b.height).toFixed(1) + "px)";
+  });
+}
+retheme(); resize();
+(function(){ var h = location.hash.slice(1); pick(h.indexOf("fert") === 0 ? "fert" : "ph", !h || /80$/.test(h) ? "A" : "B");   /* wide by default */ })();
+frame();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme);
+new MutationObserver(retheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+})();
+</script>

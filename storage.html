@@ -1,0 +1,191 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pallet Space at +50%</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F5F5F1; --vellum:#FFFFFF; --vellum-2:#EDEEE8;
+  --ink:#15181C; --ink-2:#565D64; --ink-3:#848C92;
+  --rule:#D3D6CE; --rule-2:#BFC3B9; --survey:#B23A2B; --ok:#3B7645; --warn:#A9702B;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+    --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+    --rule:#2C3138; --rule-2:#3A4148; --survey:#E4796A; --ok:#6FB37C; --warn:#D9A15E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+  --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+  --rule:#2C3138; --rule-2:#3A4148; --survey:#E4796A; --ok:#6FB37C; --warn:#D9A15E;
+}
+body{background:var(--paper);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-block:22px 70px;padding-left:20px;padding-right:20px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:22px;flex-wrap:wrap}
+.tabs a{font:700 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  text-decoration:none;padding:12px 16px 10px;border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs a:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+h1{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:700;font-size:clamp(26px,4vw,36px);line-height:1.05;margin:0 0 8px}
+.lede{color:var(--ink-2);max-width:74ch;margin:0 0 22px}
+h2{font:700 13px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;margin:36px 0 10px;padding-top:14px;border-top:1.5px solid var(--ink)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{text-align:left;padding:8px 14px 8px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 10.5px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);border-bottom:1px solid var(--rule-2)}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.big{font-size:17px;font-weight:600}
+tr.sub td{font-weight:600;background:var(--vellum-2)}
+tr.grp td{font:700 10.5px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-2);padding-top:16px;border-bottom:1px solid var(--rule-2)}
+th .sm,td .sm{display:block;text-transform:none;letter-spacing:0;font-size:12px;color:var(--ink-3);font-weight:400}
+.low{color:var(--survey)} .mid{color:var(--warn)} .good{color:var(--ok)}
+.toggle{display:inline-flex;border:1px solid var(--rule-2);margin:0 0 12px}
+.toggle button{font:600 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;background:var(--vellum);color:var(--ink-2);border:0;padding:8px 12px;cursor:pointer}
+.toggle button+button{border-left:1px solid var(--rule-2)}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.toggle button:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+ul.notes{list-style:none;padding:0;margin:0;max-width:84ch}
+ul.notes li{padding:8px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+ul.notes b{color:var(--ink)}
+footer{margin-top:36px;padding-top:12px;border-top:1px solid var(--rule-2);color:var(--ink-3);font-size:12px}
+</style>
+
+<div class="wrap">
+<nav class="tabs" aria-label="Packhouse pages">
+  <a href="site-placement.html">Site map</a><a href="packhouses-3d.html">3D models</a><a href="dock-detail.html">Dock detail</a><a href="spec.html">Spec</a><a href="storage.html" aria-current="page">Storage</a>
+</nav>
+
+<h1>Pallet space at +50% production</h1>
+<p class="lede">Pallet positions each room will have against what 50% more production needs. Supplies need today's
+stock plus half again; the cooler needs one full round of outbound shipments staged at once.</p>
+
+<div class="toggle" role="group" aria-label="Footprint">
+  <button type="button" id="fp-A" aria-pressed="true">Wide · 100 × 80</button>
+  <button type="button" id="fp-B" aria-pressed="false">Narrow · 160 × 50</button>
+</div>
+
+<div class="tbl"><table>
+  <thead><tr><th>Room</th><th>Holds</th><th class="n">Have<span class="sm">pallets</span></th><th class="n">Need at +50%<span class="sm">pallets</span></th><th class="n">Spare / short</th><th class="n">Burn at +50%<span class="sm">pallets/month</span></th><th class="n">Months of storage<span class="sm">at +50%, room full</span></th></tr></thead>
+  <tbody id="summary"></tbody>
+</table></div>
+
+<h2>Cold storage: outbound pallets</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Shipment</th><th class="n">Pallets today</th><th class="n">At +50%</th></tr></thead>
+  <tbody id="ship"></tbody>
+</table></div>
+
+<h2>Supplies by item</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Item</th><th>Farm</th><th class="n">Pallet</th><th class="n">Burn at +50%<span class="sm">pallets/month</span></th><th class="n">On hand<span class="sm">pallets</span></th><th class="n">Months on hand<span class="sm">at +50%</span></th><th class="n">Max storage<span class="sm">pallets</span></th><th class="n">Months at max<span class="sm">at +50%</span></th></tr></thead>
+  <tbody id="items"></tbody>
+</table></div>
+
+<h2>How these are worked out</h2>
+<ul class="notes">
+  <li><b>Cold storage need</b> is every regular shipment staged in the cooler at once: one 40 ft container of
+    cucumbers at 20 pallets (single-stacked 40 × 48 in pallets), a few pallets in the lettuce container (taken as 3),
+    8 pallets to Costco Kona and 5 in the box truck to Kawaihae. If it is two containers, need at +50% rises to 84.</li>
+  <li><b>Supplies need</b> is today's on-hand pallets × 1.5. Burn goes up by half, so holding half again as much stock
+    keeps the same weeks of cover you carry today.</li>
+  <li><b>Trays and film stay in the lettuce packhouse</b> and are not counted here.</li>
+  <li><b>Months on hand</b> is today's on-hand ÷ burn at +50%. <b>Max storage</b> shares the room's pallet positions
+    out in proportion to how much of each item is stocked today, and <b>months at max</b> is that ÷ burn at +50%.
+    Reslotting toward the fast movers (Keiki boxes, calcium nitrate) evens the months out.</li>
+  <li><b>Burn and on-hand</b> come from the inventory system (weekly burn per item, last counts dated 2026-08-23 to
+    2026-09-14). A month is 4.345 weeks. +50% is applied to every item alike.</li>
+  <li><b>Pallet sizes</b> are each item's own pallet or order unit in the system, e.g. 2,420 lb of calcium nitrate,
+    500 Keiki boxes, 64 cases of 1,000 bags.</li>
+  <li><b>Dry storage</b> is racked two high on the floor plus one shelf level: three pallets per position.
+    Wide: 8 rack lines × 6 bays × 2 pallets × 3 = 288. Narrow: 6 lines × 11 bays × 2 × 3 = 396.</li>
+  <li><b>Fert room</b> is block-stacked two high: 88 pallets wide, 90 narrow.</li>
+  <li><b>Cooler</b> is floor-stacked: 60 positions wide, 38 narrow.</li>
+  <li><b>Dry storage holds boxes and bags only.</b> Growing supplies stay where they are; coir slabs stay outdoors.</li>
+  <li><b>Left out as small</b>, under a pallet a month each: labels, chemicals, food-safety
+    kits, bagged micronutrients, clips and twine. They go on shelving.</li>
+</ul>
+
+<footer>Inventory figures queried from aloha-prod on 2026-09-14 · query in scripts/storage-inventory.sql</footer>
+</div>
+
+<script>
+const WEEKS = 4.345, UPLIFT = 1.5;
+/* [group, item, farm, burn per week (burn units), burn units per pallet, pallet label, on-hand pallets] */
+const ITEMS = [
+  ["Fertiliser", "Calcium Nitrate, 55 lb bags", "Cuke", 4200, 2420, "2,420 lb", 24.5],
+  ["Fertiliser", "Magnesium Sulfate, 50 lb bags", "Cuke", 1848, 2200, "2,200 lb", 19.6],
+  ["Fertiliser", "Potassium Nitrate, 55 lb bags", "Cuke", 1400, 2420, "2,420 lb", 8.0],
+  ["Fertiliser", "Mono Potassium Phosphate", "Cuke", 760, 2100, "2,100 lb", 5.0],
+  ["Fertiliser", "Potassium Sulfate, 50 lb bags", "Cuke", 700, 2200, "2,200 lb", 7.0],
+  ["Boxes", "Keiki Boxes, White", "Cuke", 3000, 500, "500", 39],
+  ["Boxes", "Japanese Boxes, White", "Cuke", 2000, 500, "500", 72],
+  ["Boxes", "Boxes 14 oz", "Lettuce", 720, 360, "360", 36],
+  ["Boxes", "Boxes 4 oz", "Lettuce", 600, 480, "480", 45],
+  ["Boxes", "Boxes Off Grade", "Cuke", 175, 700, "700", 6],
+  ["Boxes", "Boxes FS, 10 lb", "Lettuce", 80, 320, "320", 28],
+  ["Bags", "Bags Keiki, 1 lb", "Cuke", 16333, 64000, "64,000", 468 / 64],
+  ["Bags", "Bags Keiki, 2 lb", "Cuke", 15000, 64000, "64,000", 450 / 64],
+];
+const CAP = { A: { cold: 60, fert: 88, dry: 288 }, B: { cold: 38, fert: 90, dry: 396 } };
+/* one round of outbound shipments, staged in the cooler at once */
+const SHIP = [
+  ["40 ft container of cucumbers", 20],
+  ["Cucumber pallets in the lettuce container", 3],
+  ["Costco Kona", 8],
+  ["Box truck to Kawaihae", 5],
+];
+const per = r => r[3] / r[4] * WEEKS;
+const f1 = v => v.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const sum = (groups, fn) => ITEMS.filter(r => groups.includes(r[0])).reduce((t, r) => t + fn(r), 0);
+const cls = m => m < 2 ? "low" : m < 3 ? "mid" : "good";
+
+function render(k){
+  const c = CAP[k];
+  const gap = (have, need) => { const d = Math.round(have - need); return `<td class="n big ${d < 0 ? "low" : "good"}">${d < 0 ? "short " + (-d) : "spare " + d}</td>`; };
+  const shipNeed = SHIP.reduce((t, s) => t + s[1], 0) * UPLIFT;
+  const rows = [
+    ["Fert room", "Fertiliser", ["Fertiliser"], c.fert],
+    ["Dry storage", "Boxes and bags", ["Boxes", "Bags"], c.dry],
+  ];
+  document.getElementById("summary").innerHTML =
+    `<tr><td>Cold storage</td><td>Finished pallets, one round of shipments</td><td class="n">${c.cold}</td><td class="n">${Math.round(shipNeed)}</td>${gap(c.cold, shipNeed)}<td class="n">—</td><td class="n">—</td></tr>` +
+    rows.map(([room, holds, g, cap]) => {
+      const up = sum(g, per) * UPLIFT, m = cap / up, need = sum(g, r => r[6]) * UPLIFT;
+      return `<tr><td>${room}</td><td>${holds}</td><td class="n">${cap}</td><td class="n">${Math.round(need)}</td>${gap(cap, need)}` +
+             `<td class="n">${f1(up)}</td><td class="n big ${cls(m)}">${f1(m)}</td></tr>`;
+    }).join("");
+  items(k);
+  ["A", "B"].forEach(x => document.getElementById("fp-" + x).setAttribute("aria-pressed", x === k));
+  try { history.replaceState(null, "", "#" + k); } catch (e) {}
+}
+
+(function ship(){
+  const t = SHIP.reduce((a, s) => a + s[1], 0);
+  document.getElementById("ship").innerHTML = SHIP.map(s => `<tr><td>${s[0]}</td><td class="n">${s[1]}</td><td class="n">${f1(s[1] * UPLIFT)}</td></tr>`).join("") +
+    `<tr class="sub"><td>Staged at once</td><td class="n">${t}</td><td class="n">${f1(t * UPLIFT)}</td></tr>`;
+})();
+
+/* max storage per item: the room's positions shared out in proportion to how much of each item is stocked today */
+function items(k){
+  const room = g => g === "Fertiliser" ? CAP[k].fert : CAP[k].dry;
+  const dryOnHand = ITEMS.filter(r => r[0] !== "Fertiliser").reduce((t, r) => t + r[6], 0);
+  const fertOnHand = ITEMS.filter(r => r[0] === "Fertiliser").reduce((t, r) => t + r[6], 0);
+  const maxOf = r => room(r[0]) * r[6] / (r[0] === "Fertiliser" ? fertOnHand : dryOnHand);
+  const groups = [...new Set(ITEMS.map(r => r[0]))];
+  document.getElementById("items").innerHTML = groups.map(g => {
+    const rs = ITEMS.filter(r => r[0] === g);
+    const row = (name, farm, pal, up, oh, mx) => `<td class="n">${f1(up)}</td><td class="n">${f1(oh)}</td><td class="n ${cls(oh / up)}">${f1(oh / up)}</td><td class="n">${Math.round(mx)}</td><td class="n ${cls(mx / up)}">${f1(mx / up)}</td>`;
+    const body = rs.map(r => `<tr><td>${r[1]}</td><td>${r[2]}</td><td class="n">${r[5]}</td>${row(0, 0, 0, per(r) * UPLIFT, r[6], maxOf(r))}</tr>`).join("");
+    const up = rs.reduce((t, r) => t + per(r), 0) * UPLIFT, oh = rs.reduce((t, r) => t + r[6], 0), mx = rs.reduce((t, r) => t + maxOf(r), 0);
+    return `<tr class="grp"><td colspan="8">${g}</td></tr>${body}<tr class="sub"><td>${g} total</td><td></td><td></td>${row(0, 0, 0, up, oh, mx)}</tr>`;
+  }).join("");
+}
+
+document.getElementById("fp-A").onclick = () => render("A");
+document.getElementById("fp-B").onclick = () => render("B");
+render(location.hash === "#B" ? "B" : "A");
+</script>

@@ -1,0 +1,496 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Packhouse Siting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F5F5F1; --vellum:#FFFFFF; --vellum-2:#EDEEE8;
+  --ink:#15181C; --ink-2:#565D64; --ink-3:#848C92;
+  --rule:#D3D6CE; --rule-2:#BFC3B9;
+  --survey:#B23A2B; --flow-dry:#A9702B; --flow-crop:#3B7645; --flow-box:#43647F;
+  --ok-bg:#E3EFE4; --no-bg:#F6E1DD;
+  --shadow:0 1px 0 rgba(21,24,28,.06), 0 8px 24px -18px rgba(21,24,28,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+    --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+    --rule:#2C3138; --rule-2:#3A4148;
+    --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
+    --ok-bg:#1F3324; --no-bg:#3A2320;
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+  --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+  --rule:#2C3138; --rule-2:#3A4148;
+  --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
+  --ok-bg:#1F3324; --no-bg:#3A2320;
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
+}
+body{background:var(--paper);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding-block:22px 56px;padding-left:20px;padding-right:20px}
+header{border-bottom:1px solid var(--rule-2);padding-bottom:18px}
+.lbl{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;
+     font-size:11px;color:var(--ink-3);margin:0 0 6px;font-weight:600}
+h1{font-size:30px;line-height:1.1;margin:0 0 8px;letter-spacing:-.02em;font-weight:700;text-wrap:balance}
+h1 em{font-style:normal;color:var(--survey)}
+.sub{color:var(--ink-2);margin:0;max-width:72ch;font-size:14.5px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+.layout{display:grid;grid-template-columns:1fr;gap:20px;margin-top:20px}
+@media (min-width:1000px){ .layout{grid-template-columns:minmax(0,1fr) 340px;align-items:start} }
+
+.map{background:#fff;border:1px solid var(--rule-2);box-shadow:var(--shadow);position:relative}
+.map svg{display:block;width:100%;height:min(82vh,200vw);touch-action:none;user-select:none}
+.mapbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+        padding:8px 10px;border-bottom:1px solid var(--rule-2);background:var(--vellum)}
+.mapbar p{margin:0;font-size:12px;color:var(--ink-3)}
+
+.seg{display:inline-flex;border:1px solid var(--rule-2)}
+.seg button{font:600 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--vellum);color:var(--ink-2);border:0;padding:7px 10px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--rule-2)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.btn{font:600 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--vellum);color:var(--ink);border:1px solid var(--rule-2);padding:7px 10px;cursor:pointer}
+.btn:hover,.seg button:hover{border-color:var(--ink-3)}
+
+.panel{display:flex;flex-direction:column;gap:14px}
+.verdict{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--rule-2);background:var(--vellum)}
+.pill{font:700 11px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:5px 8px;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--flow-crop)}
+.pill.no{background:var(--no-bg);color:var(--survey)}
+.verdict span:last-child{font-size:13px;color:var(--ink-2)}
+
+.ph{background:var(--vellum);border:1px solid var(--rule-2);padding:12px 14px 10px;cursor:pointer}
+.ph.sel{border-color:var(--ink);box-shadow:var(--shadow)}
+.ph .top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.ph h3{margin:0;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.ph h3 i{width:11px;height:11px;display:inline-block}
+.ph .ctl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.rows{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;font-size:13px;align-items:baseline}
+.rows .k{color:var(--ink-2)}
+.rows .v{text-align:right;overflow-wrap:anywhere;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.rows .m{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;color:var(--ink-3)}
+.rows .v.no{color:var(--survey);font-weight:600}
+.pos{font-size:11.5px;color:var(--ink-3);margin:8px 0 0}
+.face{font-size:12.5px;color:var(--ink-2);align-self:center}
+.face b{color:var(--ink)}
+a.btn.link{text-align:center;text-decoration:none;display:block}
+.fpbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid var(--rule-2);background:var(--vellum)}
+.fpbar span{font:600 11px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--ink-2);margin-top:12px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend svg{width:22px;height:10px}
+.notes{margin:22px 0 0;padding:0;list-style:none;max-width:84ch;border-top:1px solid var(--rule-2)}
+.notes li{padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+.notes b{color:var(--ink)}
+footer{margin-top:30px;color:var(--ink-3);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 26px}
+
+/* map ink stays on the drawing's white sheet in both themes */
+svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.bld{cursor:grab}
+.bld.drag{cursor:grabbing}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:22px}
+.tabs a{font:700 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  text-decoration:none;padding:12px 16px 10px;border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs a:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+</style>
+
+<div class="wrap">
+<nav class="tabs" aria-label="Packhouse pages">
+  <a href="site-placement.html" id="nav-site" aria-current="page">Site map</a><a href="packhouses-3d.html#ph80" id="nav-3d">3D models</a><a href="dock-detail.html">Dock detail</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
+</nav>
+
+<div class="layout">
+  <div class="map">
+    <div class="mapbar">
+      <p>Dimensions in feet · drawing frame, not true north</p>
+    </div>
+    <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
+      <image href="site-plan-option5.jpg" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <g id="halos"></g>
+      <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
+      <path id="prop" fill="none" stroke="#B23A2B" stroke-width="1" opacity=".55" vector-effect="non-scaling-stroke"/>
+      <rect id="support" fill="none" stroke="#15181C" stroke-width="1" stroke-dasharray="2 3" opacity=".6" vector-effect="non-scaling-stroke"/>
+      <g id="aprons"></g>
+      <g id="dims"></g>
+      <g id="phs"></g>
+    </svg>
+  </div>
+
+  <div class="panel">
+    <div class="fpbar"><span>Both buildings</span>
+      <div class="seg" role="group" aria-label="Footprint for both buildings">
+        <button type="button" id="fp-B" aria-pressed="true">160 × 50</button>
+        <button type="button" id="fp-A" aria-pressed="false">100 × 80</button>
+      </div>
+    </div>
+    <div class="verdict" id="verdict" aria-live="polite"><span class="pill ok">Clear</span><span></span></div>
+    <div id="cards" class="panel"></div>
+    <button type="button" class="btn" id="reset">Reset to suggested placement</button>
+  </div>
+</div>
+
+<div class="legend">
+  <span><svg viewBox="0 0 22 10"><rect x="3" y="2" width="16" height="6" fill="#B23A2B"/></svg>Loading dock, 48 in with leveller</span>
+  <span><svg viewBox="0 0 22 10"><path d="M2 8 L20 8 L2 3 Z" fill="#848C92" stroke="#15181C" stroke-width=".8"/></svg>Angled dock seal wedge</span>
+  <span><svg viewBox="0 0 22 10"><rect x="3" y="2" width="16" height="6" fill="#fff" stroke="#B23A2B" stroke-width="1.5"/></svg>At-grade roll-up, 12 × 14 ft</span>
+  <span><svg viewBox="0 0 22 10"><rect x="7" y="2" width="8" height="6" fill="#15181C"/></svg>Personnel door</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#15181C" fill-opacity=".08" stroke="#15181C" stroke-width="1" stroke-dasharray="3 2"/></svg>115 ft truck apron (along the truck path) and 45 ft container rigs</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#43647F" fill-opacity=".22" stroke="#43647F" stroke-width="1.2" stroke-dasharray="3 2"/></svg>Covered bin wash (open awning)</span>
+  <span><svg viewBox="0 0 22 10"><line x1="0" y1="5" x2="22" y2="5" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="7 3"/></svg>20 ft setback from property line</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" rx="4" fill="none" stroke="#43647F" stroke-width="1.3" stroke-dasharray="3 2"/></svg>15 ft clearance around existing buildings</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="none" stroke="#15181C" stroke-width="1" stroke-dasharray="2 2"/></svg>Where the Option 5 SUPPORT block was, erased from the sheet</span>
+</div>
+
+<ul class="notes">
+  <li><b>160 × 50 default placement.</b> Both north–south with the docks facing south toward Grow 1–3. The fert
+    building sits 15.8 ft off the Lettuce Grow, the packhouse 29 ft east of it and 23 ft inside the property setback.
+    Their south walls are 80.4 and 82.4 ft from Grow 1–3, so the 115 ft aprons run into Grow 1–3 and both cards
+    show it: the docks need another 35 ft of room to the south, or to face north.</li>
+  <li><b>100 × 80 default placement.</b> The packhouse docks sit in insulated seal wedges angled about 22° toward the
+    south, so each container backs in along a slightly diagonal 115 ft strip. The wedge is the smallest shape that
+    turns the seal — its face runs from the far side of the door back to the wall, 10.5 ft along the wall and 4.3 ft
+    out at the deep side — which pulls each rig 5.7 ft closer to the building than a square dock house and is what
+    keeps its apron on the property at this angle. <b>The fert dock is square</b>: it sits far enough south that a
+    straight 115 ft apron fits, so it gets a flat dock seal and a straight forklift run into dry storage. The buildings
+    are 50 ft apart with the 30 ft deep covered bin wash in that gap. Box-truck roll-ups get a 50 ft apron.</li>
+  <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
+    depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
+  <li><b>Doors per the spec.</b> Packhouse: two docks and a box-truck roll-up off the cooler on the north face, the
+    harvest roll-up on the south face into receiving. Fert building: one dock and one box-truck roll-up on the north
+    face. Rooms and doors are the ones in the 3D models, both footprints (packhouse-layouts.js).</li>
+  <li><b>Roads are still not checked.</b> The aprons land on the Option 5 road loop north of the pad, and both
+    footprints push into the road strip on the east. The road needs redrawing around whichever shape wins.</li>
+  <li><b>Accuracy.</b> Property line and buildings are traced from the CEAd sheet at 1:1000. Scale is 4.104 px/ft,
+    confirmed against the drawn scale bar and the 169'-2" grow dimension; expect ±2 ft. The Pattison survey
+    (2026-01-05) governs before anything goes to bid.</li>
+  <li><b>The background is the CEAd sheet with the old SUPPORT block, its docks and trucks erased</b>
+    (scripts/site-plan-image.py). Nothing else on the sheet is changed.</li>
+  <li><b>The three existing sheds are assumed to stay</b> and get the 15 ft rule like everything else.</li>
+</ul>
+
+<footer>
+  <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
+  <span>Spec: packhouse-spec.md</span>
+  <span>Rooms and doors: packhouse-layouts.js · packhouses-3d.html</span>
+</footer>
+</div>
+
+<script src="packhouse-layouts.js"></script>
+<script>
+const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
+const PROP = [[69.6,55.7],[608.7,54.6],[609.2,400.6],[1025.3,1104.3],[237.7,1570.3],[71.9,1355.6]];
+const BLDG = [
+  {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
+  {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
+  {name:"Lettuce Grow",x:131.6,y:461.0,w:353.6,h:175.0},
+  {name:"North shed",x:531.9,y:151.3,w:49.5,h:47.0},
+  {name:"Middle shed",x:544.8,y:221.0,w:38.3,h:45.3},
+  {name:"South shed",x:541.7,y:309.2,w:30.9,h:60.9},
+  {name:"Grow 1–3",x:109.6,y:724.4,w:542.2,h:362.8},
+  {name:"Grow 4",x:115.0,y:1108.7,w:336.3,h:183.2},
+];
+const SUPPORT = {x:501.2,y:484.4,w:105.5,h:171.1};
+const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: property north edge down to the top of Grow 1–3 */
+const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
+const FACES = ["N","E","S","W"];
+/* suggested placement per footprint: B is 160 × 50, A is 100 × 80 */
+const DEFAULTS = {
+  B: [{id:"ph", rot:2, x:580.2, y:482}, {id:"fert", rot:2, x:501, y:484}],   /* docks south: fert 15.8 ft off the Lettuce Grow, gaps to Grow 3 of 80.4 and 82.4 ft */
+  A: [{id:"ph", rot:1, x:500.6, y:478}, {id:"fert", rot:1, x:500.6, y:608}],   /* 15 ft north of the middle of the 22° band; at 22° the packhouse apron needs about 27° to stay on the property here */
+};
+/* each building carries its own footprint; picking one jumps it to that footprint's default spot */
+const place = (id, k) => ({...DEFAULTS[k].find(d => d.id === id), shape:k});
+let phs = [place("ph","A"), place("fert","A")], sel = "ph";   /* wide by default */
+const $ = s => document.querySelector(s), NS = "http://www.w3.org/2000/svg";
+const el = (t,a={}) => { const e=document.createElementNS(NS,t); for(const k in a) e.setAttribute(k,a[k]); return e; };
+const lay = p => PH_LAYOUTS[p.id + (p.shape === "A" ? "80" : "")];
+
+/* local (x across 50, z down 160) to site, rotated clockwise in 90° steps */
+function toSite(p, x, z){
+  const {W, D} = lay(p);
+  const q = [[x, z], [D - z, x], [W - x, D - z], [z, W - x]][p.rot];
+  return [p.x + q[0], p.y + q[1]];
+}
+function rectLocal(p, x0, z0, x1, z1){
+  const a = toSite(p, x0, z0), b = toSite(p, x1, z1);
+  return {x:Math.min(a[0],b[0]), y:Math.min(a[1],b[1]), w:+Math.abs(a[0]-b[0]).toFixed(2), h:+Math.abs(a[1]-b[1]).toFixed(2)};
+}
+const rectOf = p => rectLocal(p, 0, 0, lay(p).W, lay(p).D);
+const corners = r => [[r.x,r.y],[r.x+r.w,r.y],[r.x+r.w,r.y+r.h],[r.x,r.y+r.h]];
+const faceName = (p, f) => ({N:"north",E:"east",S:"south",W:"west"})[FACES[(FACES.indexOf(f) + p.rot) % 4]];
+
+/* the apron runs APRON ft out from the dock face, 6 ft past the outermost dock or roll-up on that face */
+/* Truck geometry off the dock face (local N face). Square docks and roll-ups share one straight apron as before;
+   a dock with an angle gets a dock house bolted to the wall and its own apron strip along the angled truck path.
+   Angle is measured from straight out, turning toward local +x (south on the site map). Returns site polygons. */
+const BOX_APRON = 50;   /* box trucks at a roll-up: truck plus room to pull in */
+const LANE = 6, SEAL = 1.5;   /* half-width of a 12 ft dock bay; seal face past each side of the door */
+function dockGeom(p){
+  const L = lay(p), out = {aprons:[], houses:[], trucks:[]};
+  const S = pts => pts.map(q => toSite(p, q[0], q[1]));
+  const box4 = (x0, z0, x1, z1) => S([[x0,z0],[x1,z0],[x1,z1],[x0,z1]]);
+  const ops = L.openings.filter(o => o.face === "N" && (o.type === "dock" || o.type === "rollup"));
+  const square = ops.filter(o => !o.angle);
+  const sqDocks = square.filter(o => o.type === "dock"), rolls = square.filter(o => o.type === "rollup");
+  if (sqDocks.length){
+    const a = Math.max(-12, Math.min(...sqDocks.map(o => o.a)) - 6), b = Math.min(L.W + 12, Math.max(...sqDocks.map(o => o.b)) + 6);
+    out.aprons.push(box4(a, -APRON, b, 0));
+  }
+  for (const o of rolls) out.aprons.push(box4(o.a - 6, -BOX_APRON, o.b + 6, 0));
+  for (const o of square){
+    const cx = (o.a + o.b) / 2, len = o.type === "dock" ? RIG : 24;
+    out.trucks.push({ body: box4(cx - 4.1, -1 - len, cx + 4.1, -1), cab: box4(cx - 4, -len - 12, cx + 4, -len - 2) });
+  }
+  for (const o of ops.filter(o => o.angle)){
+    const th = o.angle * Math.PI / 180, cx = (o.a + o.b) / 2;
+    const d = [Math.sin(th), -Math.cos(th)], n = [Math.cos(th), Math.sin(th)];
+    const at = (s, t) => [cx + d[0] * s + n[0] * t, d[1] * s + n[1] * t];
+    /* The seal face spans the door plus SEAL either side, and is pushed in until its far end
+       meets the wall. What is left is a triangle, not a room: the shallow side is zero and the
+       deep side is only what the angle costs, so the truck sits as close to the door as it can. */
+    const seal = o.seal || SEAL, face = (o.b - o.a) * Math.cos(th) + 2 * seal;
+    const tip = face * Math.cos(th), depth = face * Math.sin(th);
+    const h = Math.sin(th) * (tip - (cx - o.a));            /* face distance along the truck axis */
+    out.houses.push(S([[o.a, 0], [o.a + tip, 0], [o.a, -depth]]));
+    out.aprons.push(S([at(h, LANE), at(h + APRON, LANE), at(h + APRON, -LANE), at(h, -LANE)]));
+    out.trucks.push({ body: S([at(h + 1, 4.1), at(h + 1 + RIG, 4.1), at(h + 1 + RIG, -4.1), at(h + 1, -4.1)]),
+                      cab: S([at(h + RIG + 2, 4), at(h + RIG + 12, 4), at(h + RIG + 12, -4), at(h + RIG + 2, -4)]) });
+  }
+  return out;
+}
+/* polygon helpers for the angled geometry */
+function segX(a, b, c, d){
+  const o = (p, q, r) => Math.sign((q[0]-p[0])*(r[1]-p[1]) - (q[1]-p[1])*(r[0]-p[0]));
+  return o(a,b,c) !== o(a,b,d) && o(c,d,a) !== o(c,d,b);
+}
+function polyHitsRect(poly, r){
+  const rc = corners(r), inR = q => q[0] > r.x+0.05 && q[0] < r.x+r.w-0.05 && q[1] > r.y+0.05 && q[1] < r.y+r.h-0.05;
+  if (poly.some(inR) || rc.some(c => inPoly(c, poly))) return true;
+  for (let i = 0; i < poly.length; i++) for (let k = 0; k < 4; k++)
+    if (segX(poly[i], poly[(i+1)%poly.length], rc[k], rc[(k+1)%4])) return true;
+  return false;
+}
+const polyPath = pts => "M" + pts.map(q => q[0].toFixed(1) + " " + q[1].toFixed(1)).join("L") + "Z";
+
+function ptSeg(p,a,b){ const dx=b[0]-a[0],dy=b[1]-a[1]; let t=((p[0]-a[0])*dx+(p[1]-a[1])*dy)/(dx*dx+dy*dy);
+  t=Math.max(0,Math.min(1,t)); return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy); }
+function inPoly(p,poly){ let c=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+  const [xi,yi]=poly[i],[xj,yj]=poly[j];
+  if((yi>p[1])!==(yj>p[1]) && p[0]<(xj-xi)*(p[1]-yi)/(yj-yi)+xi) c=!c; } return c; }
+function propDist(r){
+  const cs=corners(r); if(!cs.every(c=>inPoly(c,PROP))) return -1;
+  let d=Infinity;
+  for(let i=0;i<PROP.length;i++){ const a=PROP[i],b=PROP[(i+1)%PROP.length];
+    for(const c of cs) d=Math.min(d,ptSeg(c,a,b));
+    for(let k=0;k<4;k++) d=Math.min(d,ptSeg(a,cs[k],cs[(k+1)%4])); }
+  return d;
+}
+function rectGap(a,b){ const dx=Math.max(0,b.x-(a.x+a.w),a.x-(b.x+b.w)), dy=Math.max(0,b.y-(a.y+a.h),a.y-(b.y+b.h)); return Math.hypot(dx,dy); }
+const overlaps = (a,b) => a.x < b.x+b.w-0.05 && b.x < a.x+a.w-0.05 && a.y < b.y+b.h-0.05 && b.y < a.y+a.h-0.05;
+
+function offsetPoly(poly,d){
+  const n=poly.length, lines=[];
+  for(let i=0;i<n;i++){ const a=poly[i],b=poly[(i+1)%n]; const L=Math.hypot(b[0]-a[0],b[1]-a[1]);
+    const nx=-(b[1]-a[1])/L, ny=(b[0]-a[0])/L; lines.push([[a[0]+nx*d,a[1]+ny*d],[b[0]-a[0],b[1]-a[1]]]); }
+  return lines.map((l,i)=>{ const m=lines[(i+n-1)%n]; const [p,r]=m,[q,s]=l;
+    const den=r[0]*s[1]-r[1]*s[0]; const t=((q[0]-p[0])*s[1]-(q[1]-p[1])*s[0])/den; return [p[0]+t*r[0],p[1]+t*r[1]]; });
+}
+const pathOf = pts => "M"+pts.map(p=>p.map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
+
+function evaluate(p){
+  const r=rectOf(p), prop=propDist(r);
+  let near={name:"—",d:Infinity};
+  for(const b of BLDG){ const d=rectGap(r,b); if(d<near.d) near={name:b.name,d}; }
+  const other=phs.find(q=>q!==p), pair=rectGap(r,rectOf(other));
+  const g=dockGeom(p), polys=[...g.aprons, ...g.houses];
+  const hits=[...new Set(polys.flatMap(q=>[...BLDG, {name:lay(other).name, ...rectOf(other)}].filter(b=>polyHitsRect(q,b)).map(b=>b.name)))];
+  const apOff=!polys.every(q=>q.every(c=>inPoly(c,PROP)));
+  const apron = hits.length ? "hits " + hits.join(", ") : apOff ? "leaves the property" : "clear";
+  const apronOk = !hits.length && !apOff;
+  /* outdoor areas (bin wash awning): on the property and clear of every building */
+  const outs = (lay(p).outdoor || []).map(o => rectLocal(p, o.x0, o.z0, o.x1, o.z1));
+  const outHits = outs.flatMap(q => [...BLDG, {name:lay(other).name, ...rectOf(other)}].filter(b=>overlaps(q,b)).map(b=>b.name));
+  const outOff = outs.some(q => !corners(q).every(c=>inPoly(c,PROP)));
+  const outdoor = !outs.length ? null : outHits.length ? "hits " + outHits.join(", ") : outOff ? "leaves the property" : "clear";
+  const outdoorOk = !outs.length || (!outHits.length && !outOff);
+  const grow=rectGap(r, BLDG.find(b=>b.name==="Grow 1–3"));
+  return {prop, near, pair, grow, other:lay(other).name, apron, apronOk, outdoor, outdoorOk,
+    ok: prop>=SETBACK-0.05 && near.d>=GAP-0.05 && pair>=GAP-0.05 && apronOk && outdoorOk};
+}
+
+function draw(){
+  const g=$("#phs"), d=$("#dims"), ap=$("#aprons");
+  g.replaceChildren(); d.replaceChildren(); ap.replaceChildren();
+  const vw = $("#map").viewBox.baseVal.width, big = vw > 700, fs = big ? 12 : vw / 58;
+  for(const p of phs){
+    const L=lay(p), r=rectOf(p), ev=evaluate(p);
+    /* apron and trucks */
+    const dg=dockGeom(p);
+    for(const q of dg.aprons) ap.append(el("path",{d:polyPath(q),fill:ev.apronOk?"#15181C":"#B23A2B","fill-opacity":ev.apronOk?".07":".16",
+      stroke:ev.apronOk?"#15181C":"#B23A2B","stroke-width":1.2,"stroke-dasharray":"6 3","vector-effect":"non-scaling-stroke"}));
+    for(const q of dg.houses) ap.append(el("path",{d:polyPath(q),fill:"#848C92","fill-opacity":".85",stroke:"#15181C","stroke-width":.8,"vector-effect":"non-scaling-stroke"}));
+    for(const t of dg.trucks){
+      ap.append(el("path",{d:polyPath(t.body),fill:"#fff","fill-opacity":".62",stroke:"#15181C","stroke-width":.7,"vector-effect":"non-scaling-stroke"}));
+      ap.append(el("path",{d:polyPath(t.cab),fill:"#15181C","fill-opacity":".55"}));
+    }
+    for(const o of L.openings.filter(o=>(o.face==="E"||o.face==="W") && o.type==="rollup")){   /* box truck at a side roll-up */
+      const cx=(o.a+o.b)/2, len=24, out=o.face==="W"?-1:L.W+1, dir=o.face==="W"?-1:1;
+      const body=rectLocal(p, out, cx-4.1, out+dir*len, cx+4.1), cab=rectLocal(p, out+dir*(len+1), cx-4, out+dir*(len+10), cx+4);
+      ap.append(el("rect",{x:body.x,y:body.y,width:body.w,height:body.h,fill:"#fff","fill-opacity":".85",stroke:"#15181C","stroke-width":.8,"vector-effect":"non-scaling-stroke"}));
+      ap.append(el("rect",{x:cab.x,y:cab.y,width:cab.w,height:cab.h,fill:"#15181C","fill-opacity":".75"}));
+    }
+    for(const o of (L.outdoor||[])){
+      const q=rectLocal(p, o.x0, o.z0, o.x1, o.z1);
+      ap.append(el("rect",{x:q.x,y:q.y,width:q.w,height:q.h,fill:ev.outdoorOk?"#43647F":"#B23A2B","fill-opacity":".22",stroke:ev.outdoorOk?"#43647F":"#B23A2B","stroke-width":1.4,"stroke-dasharray":"4 2","vector-effect":"non-scaling-stroke"}));
+      const t=el("text",{x:q.x+q.w/2,y:q.y+q.h/2,"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.62,fill:"#15181C"}); t.textContent=o.name; ap.append(t);
+    }
+    if(!big && dg.aprons.length){ const q=dg.aprons[0], c=[q.reduce((t,v)=>t+v[0],0)/q.length, q.reduce((t,v)=>t+v[1],0)/q.length];
+      const t=el("text",{x:c[0],y:c[1],"text-anchor":"middle","font-size":fs*.75,fill:ev.apronOk?"#15181C":"#B23A2B"}); t.textContent=APRON+" ft apron"; ap.append(t); }
+
+    const grp=el("g",{class:"bld","data-id":p.id,tabindex:"0",role:"button","aria-label":`${L.name}, drag to move`});
+    grp.append(el("rect",{x:r.x,y:r.y,width:r.w,height:r.h,fill:"#fff","fill-opacity":".82"}));
+    for(const rm of L.rooms){
+      const q=rectLocal(p, rm.x0, rm.z0, rm.x1, rm.z1);
+      grp.append(el("rect",{x:q.x,y:q.y,width:q.w,height:q.h,fill:TONE[rm.tone],"fill-opacity":".32",stroke:TONE[rm.tone],"stroke-width":.6,"vector-effect":"non-scaling-stroke"}));
+      if(!big && Math.min(q.w,q.h) >= 20){
+        const vert=q.h>q.w*1.4, cx=q.x+q.w/2, cy=q.y+q.h/2;
+        const t=el("text",{x:cx,y:cy,"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.62,fill:"#15181C",transform:vert?`rotate(-90 ${cx} ${cy})`:""});
+        t.textContent=rm.short||rm.name; grp.append(t);
+      }
+    }
+    grp.append(el("rect",{x:r.x,y:r.y,width:r.w,height:r.h,fill:ev.ok?"none":"url(#hatch)",
+      stroke: ev.ok ? L.color : "#B23A2B", "stroke-width": sel===p.id ? 3 : 2, "vector-effect":"non-scaling-stroke"}));
+    /* doors on the walls */
+    for(const o of L.openings.filter(o=>o.face!=="I" && o.type!=="louvre")){
+      const t=o.type==="door"?1.6:2.4, off=o.type==="door"?0.8:1.2;
+      const q = o.face==="N" ? rectLocal(p,o.a,-off,o.b,t-off) : o.face==="S" ? rectLocal(p,o.a,L.D-t+off,o.b,L.D+off)
+              : o.face==="W" ? rectLocal(p,-off,o.a,t-off,o.b) : rectLocal(p,L.W-t+off,o.a,L.W+off,o.b);
+      const dock=o.type==="dock", roll=o.type==="rollup";
+      grp.append(el("rect",{x:q.x,y:q.y,width:q.w,height:q.h,fill:dock?"#B23A2B":roll?"#fff":"#15181C",stroke:roll?"#B23A2B":"none","stroke-width":.8,"vector-effect":"non-scaling-stroke"}));
+      if(!big && o.type!=="door"){
+        const c=o.face==="W"?toSite(p,-4.5,(o.a+o.b)/2):o.face==="E"?toSite(p,L.W+4.5,(o.a+o.b)/2):toSite(p,(o.a+o.b)/2, o.face==="N"?-4.5:L.D+5.5);
+        const lab=el("text",{x:c[0],y:c[1],"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.62,fill:"#B23A2B"}); lab.textContent=o.mark; grp.append(lab);
+      }
+    }
+    g.append(grp);
+  }
+  /* gap from each packhouse's south wall to Grow 1–3 */
+  const grow=BLDG.find(b=>b.name==="Grow 1–3");
+  for(const q of phs){
+    const rq=rectOf(q), gap=grow.y-(rq.y+rq.h);
+    if(gap<0 || gap>200 || rq.x+rq.w<grow.x || rq.x>grow.x+grow.w) continue;
+    const x=rq.x+rq.w*0.72, y0=rq.y+rq.h, y1=grow.y;
+    /* only the building facing Grow 1–3 directly gets the line; skip it if the other building sits in between */
+    const ro=rectOf(phs.find(o=>o!==q)); if(x>=ro.x && x<=ro.x+ro.w && ro.y>=y0 && ro.y<y1) continue;
+    d.append(el("line",{x1:x,y1:y0,x2:x,y2:y1,stroke:"#15181C","stroke-width":1.2,"vector-effect":"non-scaling-stroke"}));
+    for(const yy of [y0,y1]) d.append(el("line",{x1:x-3,y1:yy,x2:x+3,y2:yy,stroke:"#15181C","stroke-width":1.2,"vector-effect":"non-scaling-stroke"}));
+    const t=el("text",{x:x+3,y:(y0+y1)/2,"dominant-baseline":"middle","font-size":fs*.8,fill:"#15181C",stroke:"#fff","stroke-width":fs*.25,"paint-order":"stroke"});
+    t.textContent=gap.toFixed(1)+"' to Grow 3"; d.append(t);
+  }
+  /* clearance tick from the selected building to its nearest existing building */
+  const p=phs.find(q=>q.id===sel), r=rectOf(p), ev=evaluate(p);
+  const nb=BLDG.find(b=>b.name===ev.near.name);
+  if(nb && ev.near.d<60){
+    const cy=Math.max(r.y,Math.min(nb.y+nb.h,r.y+r.h/2));
+    const ax = r.x>=nb.x+nb.w ? [nb.x+nb.w, r.x] : r.x+r.w<=nb.x ? [r.x+r.w, nb.x] : null;
+    if(ax){ d.append(el("line",{x1:ax[0],y1:cy,x2:ax[1],y2:cy,stroke:"#15181C","stroke-width":1.2,"vector-effect":"non-scaling-stroke"}));
+      const t=el("text",{x:(ax[0]+ax[1])/2,y:cy-3,"text-anchor":"middle","font-size":fs*.8,fill:"#15181C"}); t.textContent=ev.near.d.toFixed(1)+"'"; d.append(t); }
+  }
+  cards();
+}
+
+function row(k,v,min,ok){ return `<span class="k">${k}</span><span class="v ${ok?"":"no"}">${v}</span><span class="m">${min}</span>`; }
+function cards(){
+  const box=$("#cards"); box.replaceChildren();
+  let allOk=true, worst="";
+  for(const p of phs){
+    const L=lay(p), ev=evaluate(p), r=rectOf(p); allOk = allOk && ev.ok;
+    if(!ev.ok && !worst) worst = L.name;
+    const docks=L.openings.filter(o=>o.type==="dock").length, rolls=L.openings.filter(o=>o.type==="rollup").length;
+    const c=document.createElement("div"); c.className="ph"+(sel===p.id?" sel":"");
+    c.innerHTML=`<div class="top"><h3><i style="background:${L.color}"></i>${L.name}</h3>
+        <span class="pill ${ev.ok?"ok":"no"}">${ev.ok?"Clear":"Fix"}</span></div>
+      <div class="ctl">
+        <div class="seg" role="group" aria-label="${L.name} footprint">
+          <button type="button" id="${p.id}-fpB" aria-pressed="${p.shape==="B"}">160 × 50</button>
+          <button type="button" id="${p.id}-fpA" aria-pressed="${p.shape==="A"}">100 × 80</button>
+        </div>
+        <button type="button" class="btn" id="${p.id}-rot">Rotate 90°</button>
+        <span class="face">Docks face <b>${faceName(p,"N")}</b> · ${docks} dock${docks>1?"s":""}, ${rolls} roll-up${rolls>1?"s":""}</span>
+      </div>
+      <div class="rows">
+        ${row("Property line", ev.prop<0?"outside":ev.prop.toFixed(1)+" ft", "min 20", ev.prop>=SETBACK-0.05)}
+        ${row(ev.near.name, ev.near.d.toFixed(1)+" ft", "min 15", ev.near.d>=GAP-0.05)}
+        ${row(ev.other, ev.pair.toFixed(1)+" ft", "min 15", ev.pair>=GAP-0.05)}
+        ${ev.near.name==="Grow 1–3" ? "" : row("Grow 1–3", ev.grow.toFixed(1)+" ft", "min 15", ev.grow>=GAP-0.05)}
+        ${row("Truck apron", ev.apron, APRON+" ft", ev.apronOk)}
+        ${ev.outdoor ? row("Bin wash", ev.outdoor, "66 × 30", ev.outdoorOk) : ""}
+      </div>
+      <p class="pos mono">${r.w} × ${r.h} ft · 8,000 ft² · at ${p.x.toFixed(0)}, ${p.y.toFixed(0)}</p>`;
+    c.addEventListener("click",e=>{ if(e.target.closest("button")) return; sel=p.id; draw(); });
+    box.append(c);
+    for(const k of ["A","B"]) $(`#${p.id}-fp${k}`).onclick=()=>{ Object.assign(p, place(p.id,k)); sel=p.id; syncGlobal(); draw(); };
+    $(`#${p.id}-rot`).onclick=()=>{
+      const {W,D}=lay(p), cx=p.x+rectOf(p).w/2, cy=p.y+rectOf(p).h/2;
+      p.rot=(p.rot+1)%4; const odd=p.rot%2; p.x=Math.round(cx-(odd?D:W)/2); p.y=Math.round(cy-(odd?W:D)/2);
+      sel=p.id; draw(); };
+  }
+  $("#verdict").innerHTML = allOk
+    ? `<span class="pill ok">Both clear</span><span>Setbacks, building gaps and both truck aprons met.</span>`
+    : `<span class="pill no">Not yet</span><span>${worst} breaks a rule. Move or rotate it until its card turns green.</span>`;
+}
+
+(function(){
+  const svg=$("#map"), defs=el("defs"), pat=el("pattern",{id:"hatch",width:6,height:6,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"});
+  pat.append(el("line",{x1:0,y1:0,x2:0,y2:6,stroke:"#B23A2B","stroke-width":1.2,"stroke-opacity":".6"})); defs.append(pat); svg.prepend(defs);
+  $("#prop").setAttribute("d",pathOf(PROP));
+  $("#setback").setAttribute("d",pathOf(offsetPoly(PROP,SETBACK)));
+  for(const k of ["x","y"]) $("#support").setAttribute(k,SUPPORT[k]);
+  $("#support").setAttribute("width",SUPPORT.w); $("#support").setAttribute("height",SUPPORT.h);
+  const h=$("#halos");
+  for(const b of BLDG) h.append(el("rect",{x:b.x-GAP,y:b.y-GAP,width:b.w+2*GAP,height:b.h+2*GAP,rx:GAP,
+    fill:"#43647F","fill-opacity":".06",stroke:"#43647F","stroke-width":1.2,"stroke-dasharray":"5 3","vector-effect":"non-scaling-stroke"}));
+})();
+
+let drag=null;
+const svgPt = e => { const s=$("#map"), pt=s.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; return pt.matrixTransform(s.getScreenCTM().inverse()); };
+$("#map").addEventListener("pointerdown",e=>{
+  const g=e.target.closest(".bld"); if(!g) return;
+  const p=phs.find(q=>q.id===g.dataset.id); sel=p.id;
+  const pt=svgPt(e); drag={p,dx:pt.x-p.x,dy:pt.y-p.y}; $("#map").setPointerCapture(e.pointerId); draw();
+});
+$("#map").addEventListener("pointermove",e=>{ if(!drag) return; const pt=svgPt(e);
+  drag.p.x=Math.round(pt.x-drag.dx); drag.p.y=Math.round(pt.y-drag.dy); draw(); });
+$("#map").addEventListener("pointerup",()=>{ drag=null; });
+document.addEventListener("keydown",e=>{
+  const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(!m) return;
+  if(e.target.closest && e.target.closest("button,a")) return;
+  e.preventDefault(); const p=phs.find(q=>q.id===sel), s=e.shiftKey?5:1; p.x+=m[0]*s; p.y+=m[1]*s; draw();
+});
+$("#reset").onclick=()=>{ phs=phs.map(p=>place(p.id,p.shape)); sel="ph"; draw(); };
+/* the top switch sets both buildings; it shows no choice when they differ */
+function syncGlobal(){
+  const same = phs[0].shape === phs[1].shape ? phs[0].shape : null;
+  $("#fp-B").setAttribute("aria-pressed", same==="B"); $("#fp-A").setAttribute("aria-pressed", same==="A");
+  const ph = phs.find(p=>p.id==="ph");
+  $("#nav-3d").href = "packhouses-3d.html#ph" + (ph.shape==="A" ? "80" : "");
+  try{ history.replaceState(null,"","#"+phs.map(p=>p.id+"-"+p.shape).join(",")); }catch(e){}
+}
+function setShape(k){ phs=[place("ph",k), place("fert",k)]; syncGlobal(); draw(); }
+$("#fp-B").onclick=()=>setShape("B"); $("#fp-A").onclick=()=>setShape("A");
+(function(){ const h=location.hash.slice(1);
+  if(h==="A"||h==="B"){ setShape(h); return; }
+  const m=Object.fromEntries(h.split(",").map(t=>t.split("-")).filter(t=>t.length===2));
+  phs=[place("ph",m.ph==="B"?"B":"A"), place("fert",m.fert==="B"?"B":"A")]; syncGlobal(); draw(); })();
+</script>

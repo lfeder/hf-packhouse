@@ -1,0 +1,206 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Angled Dock Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F5F5F1; --vellum:#FFFFFF;
+  --ink:#15181C; --ink-2:#565D64; --ink-3:#848C92;
+  --rule:#D3D6CE; --rule-2:#BFC3B9;
+  --survey:#B23A2B; --steel:#43647F; --crop:#3B7645;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131519; --vellum:#1A1D22;
+    --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+    --rule:#2C3138; --rule-2:#3A4148;
+    --survey:#E4796A; --steel:#7FA6C4; --crop:#6FB37C;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131519; --vellum:#1A1D22;
+  --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+  --rule:#2C3138; --rule-2:#3A4148;
+  --survey:#E4796A; --steel:#7FA6C4; --crop:#6FB37C;
+}
+body{background:var(--paper);color:var(--ink);margin:0;
+     font-family:"Archivo","Helvetica Neue",Arial,sans-serif;line-height:1.55;font-size:15px}
+.wrap{max-width:780px;margin:0 auto;padding-inline:20px;padding-block:26px 56px;
+      display:flex;flex-direction:column;gap:22px}
+.lbl{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;text-transform:uppercase;
+     letter-spacing:.14em;font-size:11px;color:var(--ink-3);font-weight:600;margin:0}
+h1{font-size:28px;line-height:1.12;margin:6px 0 6px;font-weight:600;letter-spacing:-.015em;text-wrap:balance}
+.sub{margin:0;color:var(--ink-2);font-size:14.5px;max-width:64ch}
+header{border-bottom:1px solid var(--rule-2);padding-bottom:16px}
+
+figure{margin:0;border:1px solid var(--rule-2);background:var(--vellum)}
+.plate{overflow-x:auto}
+svg.detail{display:block;width:100%;min-width:580px;height:auto}
+figcaption{border-top:1px solid var(--rule);padding:8px 12px;display:flex;flex-wrap:wrap;gap:4px 18px;
+           font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;text-transform:uppercase;
+           letter-spacing:.11em;font-size:10.5px;color:var(--ink-3);font-weight:600}
+
+svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:700;letter-spacing:.05em}
+.dimline{stroke:var(--survey);stroke-width:1.1px;fill:none;vector-effect:non-scaling-stroke}
+.extline{stroke:var(--survey);stroke-width:.7px;fill:none;opacity:.6;vector-effect:non-scaling-stroke}
+.dimtxt{fill:var(--survey);stroke:var(--vellum);stroke-width:.22;paint-order:stroke;
+        font-size:.5px;text-anchor:middle;dominant-baseline:middle}
+.parttxt{fill:var(--ink-2);stroke:var(--vellum);stroke-width:.2;paint-order:stroke;
+         font-size:.5px;text-transform:uppercase;letter-spacing:.11em}
+.smalltxt{fill:var(--ink-3);stroke:var(--vellum);stroke-width:.18;paint-order:stroke;font-size:.4px}
+.constr{stroke:var(--ink-3);stroke-width:.9px;fill:none;stroke-dasharray:6 3 1.5 3;
+        opacity:.85;vector-effect:non-scaling-stroke}
+.leader{stroke:var(--ink-3);stroke-width:.9px;fill:none;vector-effect:non-scaling-stroke}
+
+table{border-collapse:collapse;width:100%;font-size:14px}
+caption{text-align:left;font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;text-transform:uppercase;
+        letter-spacing:.14em;font-size:11px;color:var(--ink-3);font-weight:600;padding-bottom:8px}
+th,td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--rule);vertical-align:baseline}
+thead th{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;text-transform:uppercase;
+         letter-spacing:.1em;font-size:10.5px;color:var(--ink-3);font-weight:600;border-bottom-color:var(--rule-2)}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+          font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:18px}
+td.was{color:var(--ink-3)}
+td.now{color:var(--ink);font-weight:600}
+tbody tr:last-child td{border-bottom:0}
+
+ul.notes{margin:0;padding:0;list-style:none;border-top:1px solid var(--rule-2)}
+ul.notes li{padding:10px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+ul.notes b{color:var(--ink);font-weight:600}
+footer{color:var(--ink-3);font-size:11.5px;font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;
+       text-transform:uppercase;letter-spacing:.11em;display:flex;flex-wrap:wrap;gap:4px 20px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:0}
+.tabs a{font:700 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  text-decoration:none;padding:12px 16px 10px;border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs a:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+</style>
+
+<div class="wrap">
+<nav class="tabs" aria-label="Packhouse pages">
+  <a href="site-placement.html">Site map</a><a href="packhouses-3d.html#ph80">3D models</a><a href="dock-detail.html" aria-current="page">Dock detail</a><a href="spec.html">Spec</a><a href="storage.html">Storage</a>
+</nav>
+<header>
+  <p class="lbl">Packhouse &middot; 100 &times; 80 &middot; docks D1 and D2</p>
+  <h1>Angled Dock Detail</h1>
+  <p class="sub">Pulled in as far as the geometry allows. The seal face now runs from the far jamb
+     straight back to the wall, so the shallow side is zero and there is no vestibule to cross &mdash;
+     what is left is the wedge the 22.5&deg; turn costs, and nothing else.</p>
+</header>
+
+<figure>
+<div class="plate">
+<svg class="detail" viewBox="-6.5 -7.5 25.5 17" role="img"
+     aria-label="Plan of the pulled-in dock wedge: a 9 ft door in the cold storage wall, a seal face running 11.3 ft from 4.3 ft out at the north jamb down to meet the wall 10.5 ft along, with an edge-of-dock leveller on the face.">
+  <defs>
+    <pattern id="hatch" width="1.15" height="1.15" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="1.15" stroke="var(--ink-3)" stroke-width=".085" opacity=".55"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 1 L10 5 L0 9 z" fill="var(--ink-3)"/>
+    </marker>
+  </defs>
+
+  <rect x="-6.5" y="-7.5" width="25.5" height="6.5" fill="url(#hatch)"/>
+  <text class="parttxt" x="-6" y="-6.4">Cold storage</text>
+
+  <rect x="-6.5" y="-1" width="25.5" height="1" fill="var(--ink)" fill-opacity=".8"/>
+  <rect x="0" y="-1" width="9" height="1" fill="var(--survey)"/>
+
+  <!-- the wedge -->
+  <path d="M0 0 L10.45 0 L0 4.33 Z"
+        fill="var(--ink-3)" fill-opacity=".2" stroke="var(--ink)" stroke-width="1.6px"
+        vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+  <text class="parttxt" x="1.75" y="1.7" style="font-size:.45px"
+        transform="rotate(-22.5 1.75 1.7)">Seal wedge</text>
+
+  <!-- edge-of-dock leveller, on the face -->
+  <path d="M8.606 0.766 L8.989 1.69 L2.521 4.368 L2.138 3.445 Z"
+        fill="var(--steel)" fill-opacity=".55" stroke="var(--steel)" stroke-width="1.1px"
+        vector-effect="non-scaling-stroke"/>
+  <path class="leader" d="M-0.5 6.2 L2.6 4.0"/>
+  <text class="parttxt" x="-6.2" y="6.5">Leveller</text>
+  <text class="smalltxt" x="-6.2" y="7.35">7 ft across, 1 ft out</text>
+
+  <!-- truck axis and the turn -->
+  <path class="constr" d="M4.5 0 L4.5 2.4"/>
+  <path class="constr" d="M4.5 0 L7.56 7.39" marker-end="url(#arrow)"/>
+  <polyline class="dimline" points="4.5,1.5 4.647,1.493 4.793,1.471 4.935,1.435 5.074,1.386"/>
+  <text class="dimtxt" x="6.5" y="0.9" style="font-size:.45px">22.5&deg;</text>
+  <text class="parttxt" x="8.15" y="8.3">Truck axis</text>
+
+  <!-- 9 ft door -->
+  <path class="extline" d="M0 -1 L0 -3.3 M9 -1 L9 -3.3"/>
+  <path class="dimline" d="M0 -2.6 L9 -2.6 M-0.3 -2.3 L0.3 -2.9 M8.7 -2.3 L9.3 -2.9"/>
+  <text class="dimtxt" x="4.5" y="-2.6">9 ft door</text>
+
+  <!-- 10.5 ft of wall -->
+  <path class="extline" d="M0 -3.3 L0 -5.7 M10.45 -1 L10.45 -5.7"/>
+  <path class="dimline" d="M0 -5 L10.45 -5 M-0.3 -4.7 L0.3 -5.3 M10.15 -4.7 L10.75 -5.3"/>
+  <text class="dimtxt" x="5.2" y="-5">10.5 ft of wall</text>
+
+  <!-- 4.3 ft out -->
+  <path class="extline" d="M0 0 L-3.6 0 M0 4.33 L-3.6 4.33"/>
+  <path class="dimline" d="M-3 0 L-3 4.33 M-3.3 0.3 L-2.7 -0.3 M-3.3 4.63 L-2.7 4.03"/>
+  <text class="dimtxt" x="-3" y="2.17" transform="rotate(-90 -3 2.17)">4.3 ft out</text>
+
+  <!-- 11.3 ft face -->
+  <path class="extline" d="M0 4.33 L1.05 6.9 M10.45 0 L11.5 2.57"/>
+  <path class="dimline" d="M0.842 6.363 L11.292 2.033 M0.454 6.202 L1.23 6.524 M10.904 1.872 L11.68 2.194"/>
+  <text class="dimtxt" x="6.067" y="4.198" transform="rotate(-22.5 6.067 4.198)">11.3 ft face</text>
+
+  <!-- the zero end -->
+  <path class="leader" d="M10.55 0.25 L13.1 0.9"/>
+  <text class="dimtxt" x="13.35" y="0.55" style="text-anchor:start">0 ft here</text>
+  <text class="smalltxt" x="13.35" y="1.55" style="font-size:.38px">face meets the wall</text>
+</svg>
+</div>
+<figcaption>
+  <span>Plan &middot; the wall runs north&ndash;south, the door faces east</span>
+  <span>The turn is toward the south, to the right here</span>
+  <span>1 unit = 1 ft</span>
+</figcaption>
+</figure>
+
+<table>
+  <caption>What pulling it in changed</caption>
+  <thead>
+    <tr><th>Measured from the cold storage wall</th><th class="n">Was</th><th class="n">Now</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Face distance on the truck axis</td><td class="n was">8.0 ft</td><td class="n now">2.3 ft</td></tr>
+    <tr><td>Deep side, out from the wall</td><td class="n was">9.5 ft</td><td class="n now">4.3 ft</td></tr>
+    <tr><td>Shallow side, out from the wall</td><td class="n was">5.3 ft</td><td class="n now">0 ft</td></tr>
+    <tr><td>Wall length it takes</td><td class="n was">12.6 ft</td><td class="n now">10.5 ft</td></tr>
+    <tr><td>Face the container seals to</td><td class="n was">11.0 ft</td><td class="n now">11.3 ft</td></tr>
+    <tr><td>Enclosed floor</td><td class="n was">77 ft&sup2;</td><td class="n now">23 ft&sup2;</td></tr>
+    <tr><td>How much closer the rig sits</td><td class="n was">&mdash;</td><td class="n now">5.7 ft</td></tr>
+  </tbody>
+</table>
+
+<ul class="notes">
+  <li><b>Zero on the shallow side is real, not a rounding.</b> A container backed in on that axis already
+    reaches the building at the far jamb &mdash; its own corner is what closes the gap. So there is nothing
+    for a wall to do there, and holding it off by 5.3 ft was pushing the truck out for no gain.</li>
+  <li><b>It stops being a room.</b> At 23 ft&sup2; you have a seal frame, not a vestibule a forklift crosses.
+    That suits the edge-of-dock leveller you already run &mdash; 7 ft across, 1 ft out &mdash; which needs
+    no floor behind it, and it is less insulated envelope to build and hold.</li>
+  <li><b>It cleared the apron rule on the site map.</b> The packhouse card read <i>truck apron leaves the
+    property</i> at the 8 ft house. Pulling the face in 5.7 ft brings the whole 115 ft strip with it, and
+    both buildings now read clear at 22.5&deg; &mdash; no need for the 27&deg; the notes used to call for.</li>
+  <li><b>The one thing to settle with the vendor.</b> The wedge tapers to nothing, and you cannot build to a
+    knife edge &mdash; expect the last 18 in to be poured as a guide curb rather than framed as wall, which is
+    what you want anyway where the container's corner comes that close to the building.</li>
+  <li><b>48 in dock plus an edge-of-dock leveller is still the open question.</b> Those bridge roughly
+    &plusmn;5 in of bed height, and a container on a chassis sits high. If the vendor pushes you to a pit
+    leveller, the floor comes back and the wedge grows again.</li>
+</ul>
+
+<footer>
+  <span>Source: packhouse-layouts.js &middot; site-placement.html</span>
+  <span>Spec: packhouse-spec.md</span>
+</footer>
+</div>
