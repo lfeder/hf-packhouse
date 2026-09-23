@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pallet Space at +50%</title>
+<title>Storage After Expansion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -59,9 +59,9 @@ footer{margin-top:36px;padding-top:12px;border-top:1px solid var(--rule-2);color
   <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d">3D models</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html" aria-current="page">Storage</a>
 </nav>
 
-<h1>Pallet space at +50% production</h1>
-<p class="lede">Pallet positions each room will have against what 50% more production needs. Supplies need today's
-stock plus half again; the cooler needs one full round of outbound shipments staged at once.</p>
+<h1>Pallet space after the expansion</h1>
+<p class="lede">Pallet positions each room will have against what the farm needs once Lalamilo adds 5.5 acres. Supplies
+hold three months of burn; the cooler needs one full round of outbound shipments staged at once.</p>
 
 <div class="toggle" role="group" aria-label="Footprint">
   <button type="button" id="fp-A" aria-pressed="true">Wide · 100 × 80</button>
@@ -69,42 +69,43 @@ stock plus half again; the cooler needs one full round of outbound shipments sta
 </div>
 
 <div class="tbl"><table>
-  <thead><tr><th>Room</th><th>Holds</th><th class="n">Have<span class="sm">pallets</span></th><th class="n">Need at +50%<span class="sm">pallets</span></th><th class="n">Spare / short</th><th class="n">Burn at +50%<span class="sm">pallets/month</span></th><th class="n">Months of storage<span class="sm">at +50%, room full</span></th></tr></thead>
+  <thead><tr><th>Room</th><th>Holds</th><th class="n">Have<span class="sm">pallets</span></th><th class="n">Need<span class="sm">pallets</span></th><th class="n">Spare / short</th><th class="n">Burn<span class="sm">pallets/month</span></th><th class="n">Months of storage<span class="sm">room full</span></th></tr></thead>
   <tbody id="summary"></tbody>
 </table></div>
 
 <h2>Cold storage: outbound pallets</h2>
 <div class="tbl"><table>
-  <thead><tr><th>Shipment</th><th class="n">Pallets today</th><th class="n">At +50%</th></tr></thead>
+  <thead><tr><th>Shipment</th><th class="n">Pallets today</th><th class="n">After expansion</th></tr></thead>
   <tbody id="ship"></tbody>
 </table></div>
 
 <h2>Supplies by item</h2>
 <div class="tbl"><table>
-  <thead><tr><th>Item</th><th>Farm</th><th class="n">Pallet</th><th class="n">Burn at +50%<span class="sm">pallets/month</span></th><th class="n">On hand<span class="sm">pallets</span></th><th class="n">Months on hand<span class="sm">at +50%</span></th><th class="n">Max storage<span class="sm">pallets</span></th><th class="n">Months at max<span class="sm">at +50%</span></th></tr></thead>
+  <thead><tr><th>Item</th><th class="n">Pallet</th><th class="n">Burn<span class="sm">pallets/month</span></th><th class="n">On hand today<span class="sm">pallets</span></th><th class="n">Months on hand<span class="sm">at new burn</span></th><th class="n">Need<span class="sm">pallets, 3 months</span></th></tr></thead>
   <tbody id="items"></tbody>
 </table></div>
 
 <h2>How these are worked out</h2>
 <ul class="notes">
+  <li><b>The expansion</b> is 5.5 acres at Lalamilo on top of today's 12 (JTL 8, BIP 4). Cucumber burn and shipments
+    scale by 17.5 ÷ 12. Today's fertiliser burn already covers the nurseries (taken as 0.25 acre) and lettuce (taken
+    as 1 acre), 13.25 acres in all, so fertiliser scales by 18.75 ÷ 13.25.</li>
+  <li><b>Supplies need</b> is three months of burn after the expansion. Containers are unloaded a pallet at a time
+    straight into storage, so no room is set aside to stage a whole container.</li>
   <li><b>Cold storage need</b> is every regular shipment staged in the cooler at once: one 40 ft container of
     cucumbers at 20 pallets (single-stacked 40 × 48 in pallets), a few pallets in the lettuce container (taken as 3),
-    8 pallets to Costco Kona and 5 in the box truck to Kawaihae. If it is two containers, need at +50% rises to 84.</li>
-  <li><b>Supplies need</b> is today's on-hand pallets × 1.5. Burn goes up by half, so holding half again as much stock
-    keeps the same weeks of cover you carry today.</li>
-  <li><b>Trays and film stay in the lettuce packhouse</b> and are not counted here.</li>
-  <li><b>Months on hand</b> is today's on-hand ÷ burn at +50%. <b>Max storage</b> shares the room's pallet positions
-    out in proportion to how much of each item is stocked today, and <b>months at max</b> is that ÷ burn at +50%.
-    Reslotting toward the fast movers (Keiki boxes, calcium nitrate) evens the months out.</li>
+    8 pallets to Costco Kona and 5 in the box truck to Kawaihae. If it is two containers, need rises to 82.</li>
+  <li><b>Lettuce boxes, trays and film stay at the lettuce packhouse</b> and are not counted here.</li>
   <li><b>Burn and on-hand</b> come from the inventory system (weekly burn per item, last counts dated 2026-08-23 to
-    2026-09-14). A month is 4.345 weeks. +50% is applied to every item alike.</li>
+    2026-09-14). A month is 4.345 weeks. Calcium nitrate's burn runs about 65% above what was received over the last
+    12 months, so fert need may be high.</li>
   <li><b>Pallet sizes</b> are each item's own pallet or order unit in the system, e.g. 2,420 lb of calcium nitrate,
     500 Keiki boxes, 64 cases of 1,000 bags.</li>
   <li><b>Dry storage</b> is racked two high on the floor plus one shelf level: three pallets per position.
     Wide: 8 rack lines × 6 bays × 2 pallets × 3 = 288. Narrow: 6 lines × 11 bays × 2 × 3 = 396.</li>
   <li><b>Fert room</b> is block-stacked two high: 88 pallets wide, 90 narrow.</li>
   <li><b>Cooler</b> is floor-stacked: 60 positions wide, 38 narrow.</li>
-  <li><b>Dry storage holds boxes and bags only.</b> Growing supplies stay where they are; coir slabs stay outdoors.</li>
+  <li><b>Dry storage holds cucumber boxes and bags only.</b> Growing supplies stay where they are; coir slabs stay outdoors.</li>
   <li><b>Left out as small</b>, under a pallet a month each: labels, chemicals, food-safety
     kits, bagged micronutrients, clips and twine. They go on shelving.</li>
 </ul>
@@ -113,22 +114,20 @@ stock plus half again; the cooler needs one full round of outbound shipments sta
 </div>
 
 <script>
-const WEEKS = 4.345, UPLIFT = 1.5;
-/* [group, item, farm, burn per week (burn units), burn units per pallet, pallet label, on-hand pallets] */
+const WEEKS = 4.345, MONTHS = 3;
+const SCALE = { Fertiliser: 18.75 / 13.25, Boxes: 17.5 / 12, Bags: 17.5 / 12 }, SHIP_SCALE = 17.5 / 12;
+/* [group, item, burn per week today (burn units), burn units per pallet, pallet label, on-hand pallets] */
 const ITEMS = [
-  ["Fertiliser", "Calcium Nitrate, 55 lb bags", "Cuke", 4200, 2420, "2,420 lb", 24.5],
-  ["Fertiliser", "Magnesium Sulfate, 50 lb bags", "Cuke", 1848, 2200, "2,200 lb", 19.6],
-  ["Fertiliser", "Potassium Nitrate, 55 lb bags", "Cuke", 1400, 2420, "2,420 lb", 8.0],
-  ["Fertiliser", "Mono Potassium Phosphate", "Cuke", 760, 2100, "2,100 lb", 5.0],
-  ["Fertiliser", "Potassium Sulfate, 50 lb bags", "Cuke", 700, 2200, "2,200 lb", 7.0],
-  ["Boxes", "Keiki Boxes, White", "Cuke", 3000, 500, "500", 39],
-  ["Boxes", "Japanese Boxes, White", "Cuke", 2000, 500, "500", 72],
-  ["Boxes", "Boxes 14 oz", "Lettuce", 720, 360, "360", 36],
-  ["Boxes", "Boxes 4 oz", "Lettuce", 600, 480, "480", 45],
-  ["Boxes", "Boxes Off Grade", "Cuke", 175, 700, "700", 6],
-  ["Boxes", "Boxes FS, 10 lb", "Lettuce", 80, 320, "320", 28],
-  ["Bags", "Bags Keiki, 1 lb", "Cuke", 16333, 64000, "64,000", 468 / 64],
-  ["Bags", "Bags Keiki, 2 lb", "Cuke", 15000, 64000, "64,000", 450 / 64],
+  ["Fertiliser", "Calcium Nitrate, 55 lb bags", 4200, 2420, "2,420 lb", 24.5],
+  ["Fertiliser", "Magnesium Sulfate, 50 lb bags", 1848, 2200, "2,200 lb", 19.6],
+  ["Fertiliser", "Potassium Nitrate, 55 lb bags", 1400, 2420, "2,420 lb", 8.0],
+  ["Fertiliser", "Mono Potassium Phosphate", 760, 2100, "2,100 lb", 5.0],
+  ["Fertiliser", "Potassium Sulfate, 50 lb bags", 700, 2200, "2,200 lb", 7.0],
+  ["Boxes", "Keiki Boxes, White", 3000, 500, "500", 39],
+  ["Boxes", "Japanese Boxes, White", 2000, 500, "500", 72],
+  ["Boxes", "Boxes Off Grade", 175, 700, "700", 6],
+  ["Bags", "Bags Keiki, 1 lb", 16333, 64000, "64,000", 468 / 64],
+  ["Bags", "Bags Keiki, 2 lb", 15000, 64000, "64,000", 450 / 64],
 ];
 const CAP = { A: { cold: 60, fert: 88, dry: 288 }, B: { cold: 38, fert: 90, dry: 396 } };
 /* one round of outbound shipments, staged in the cooler at once */
@@ -138,7 +137,7 @@ const SHIP = [
   ["Costco Kona", 8],
   ["Box truck to Kawaihae", 5],
 ];
-const per = r => r[3] / r[4] * WEEKS;
+const per = r => r[2] / r[3] * WEEKS * SCALE[r[0]];          /* pallets/month after the expansion */
 const f1 = v => v.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const sum = (groups, fn) => ITEMS.filter(r => groups.includes(r[0])).reduce((t, r) => t + fn(r), 0);
 const cls = m => m < 2 ? "low" : m < 3 ? "mid" : "good";
@@ -146,44 +145,37 @@ const cls = m => m < 2 ? "low" : m < 3 ? "mid" : "good";
 function render(k){
   const c = CAP[k];
   const gap = (have, need) => { const d = Math.round(have - need); return `<td class="n big ${d < 0 ? "low" : "good"}">${d < 0 ? "short " + (-d) : "spare " + d}</td>`; };
-  const shipNeed = SHIP.reduce((t, s) => t + s[1], 0) * UPLIFT;
+  const shipNeed = SHIP.reduce((t, s) => t + s[1], 0) * SHIP_SCALE;
   const rows = [
     ["Fert room", "Fertiliser", ["Fertiliser"], c.fert],
-    ["Dry storage", "Boxes and bags", ["Boxes", "Bags"], c.dry],
+    ["Dry storage", "Cucumber boxes and bags", ["Boxes", "Bags"], c.dry],
   ];
   document.getElementById("summary").innerHTML =
     `<tr><td>Cold storage</td><td>Finished pallets, one round of shipments</td><td class="n">${c.cold}</td><td class="n">${Math.round(shipNeed)}</td>${gap(c.cold, shipNeed)}<td class="n">—</td><td class="n">—</td></tr>` +
     rows.map(([room, holds, g, cap]) => {
-      const up = sum(g, per) * UPLIFT, m = cap / up, need = sum(g, r => r[6]) * UPLIFT;
+      const burn = sum(g, per), m = cap / burn, need = burn * MONTHS;
       return `<tr><td>${room}</td><td>${holds}</td><td class="n">${cap}</td><td class="n">${Math.round(need)}</td>${gap(cap, need)}` +
-             `<td class="n">${f1(up)}</td><td class="n big ${cls(m)}">${f1(m)}</td></tr>`;
+             `<td class="n">${f1(burn)}</td><td class="n big ${cls(m)}">${f1(m)}</td></tr>`;
     }).join("");
-  items(k);
   ["A", "B"].forEach(x => document.getElementById("fp-" + x).setAttribute("aria-pressed", x === k));
   try { history.replaceState(null, "", "#" + k); } catch (e) {}
 }
 
 (function ship(){
   const t = SHIP.reduce((a, s) => a + s[1], 0);
-  document.getElementById("ship").innerHTML = SHIP.map(s => `<tr><td>${s[0]}</td><td class="n">${s[1]}</td><td class="n">${f1(s[1] * UPLIFT)}</td></tr>`).join("") +
-    `<tr class="sub"><td>Staged at once</td><td class="n">${t}</td><td class="n">${f1(t * UPLIFT)}</td></tr>`;
+  document.getElementById("ship").innerHTML = SHIP.map(s => `<tr><td>${s[0]}</td><td class="n">${s[1]}</td><td class="n">${f1(s[1] * SHIP_SCALE)}</td></tr>`).join("") +
+    `<tr class="sub"><td>Staged at once</td><td class="n">${t}</td><td class="n">${f1(t * SHIP_SCALE)}</td></tr>`;
 })();
 
-/* max storage per item: the room's positions shared out in proportion to how much of each item is stocked today */
-function items(k){
-  const room = g => g === "Fertiliser" ? CAP[k].fert : CAP[k].dry;
-  const dryOnHand = ITEMS.filter(r => r[0] !== "Fertiliser").reduce((t, r) => t + r[6], 0);
-  const fertOnHand = ITEMS.filter(r => r[0] === "Fertiliser").reduce((t, r) => t + r[6], 0);
-  const maxOf = r => room(r[0]) * r[6] / (r[0] === "Fertiliser" ? fertOnHand : dryOnHand);
+(function items(){
   const groups = [...new Set(ITEMS.map(r => r[0]))];
+  const row = (up, oh) => `<td class="n">${f1(up)}</td><td class="n">${f1(oh)}</td><td class="n ${cls(oh / up)}">${f1(oh / up)}</td><td class="n">${Math.round(up * MONTHS)}</td>`;
   document.getElementById("items").innerHTML = groups.map(g => {
     const rs = ITEMS.filter(r => r[0] === g);
-    const row = (name, farm, pal, up, oh, mx) => `<td class="n">${f1(up)}</td><td class="n">${f1(oh)}</td><td class="n ${cls(oh / up)}">${f1(oh / up)}</td><td class="n">${Math.round(mx)}</td><td class="n ${cls(mx / up)}">${f1(mx / up)}</td>`;
-    const body = rs.map(r => `<tr><td>${r[1]}</td><td>${r[2]}</td><td class="n">${r[5]}</td>${row(0, 0, 0, per(r) * UPLIFT, r[6], maxOf(r))}</tr>`).join("");
-    const up = rs.reduce((t, r) => t + per(r), 0) * UPLIFT, oh = rs.reduce((t, r) => t + r[6], 0), mx = rs.reduce((t, r) => t + maxOf(r), 0);
-    return `<tr class="grp"><td colspan="8">${g}</td></tr>${body}<tr class="sub"><td>${g} total</td><td></td><td></td>${row(0, 0, 0, up, oh, mx)}</tr>`;
+    const body = rs.map(r => `<tr><td>${r[1]}</td><td class="n">${r[4]}</td>${row(per(r), r[5])}</tr>`).join("");
+    return `<tr class="grp"><td colspan="6">${g}</td></tr>${body}<tr class="sub"><td>${g} total</td><td></td>${row(rs.reduce((t, r) => t + per(r), 0), rs.reduce((t, r) => t + r[5], 0))}</tr>`;
   }).join("");
-}
+})();
 
 document.getElementById("fp-A").onclick = () => render("A");
 document.getElementById("fp-B").onclick = () => render("B");

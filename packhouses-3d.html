@@ -11,7 +11,7 @@
   --rule:#D3D6CE; --rule-2:#BFC3B9;
   --survey:#B23A2B; --flow-dry:#A9702B; --flow-crop:#3B7645; --flow-box:#43647F;
   --ground:#E4E5DD; --hardstand:#DADCD2; --road:#C6C9BE;
-  --sel:rgba(178,58,43,.12);
+  --sel:rgba(178,58,43,.12); --empty:#7F9BB8;
   --shadow:0 1px 0 rgba(21,24,28,.06), 0 8px 24px -18px rgba(21,24,28,.5);
 }
 @media (prefers-color-scheme: dark){
@@ -21,7 +21,7 @@
     --rule:#2C3138; --rule-2:#3A4148;
     --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
     --ground:#191C21; --hardstand:#20242A; --road:#282D34;
-    --sel:rgba(228,121,106,.16);
+    --sel:rgba(228,121,106,.16); --empty:#8DA9C4;
     --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
   }
 }
@@ -31,7 +31,7 @@
   --rule:#2C3138; --rule-2:#3A4148;
   --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
   --ground:#191C21; --hardstand:#20242A; --road:#282D34;
-  --sel:rgba(228,121,106,.16);
+  --sel:rgba(228,121,106,.16); --empty:#8DA9C4;
   --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
 }
 *{box-sizing:border-box}
@@ -54,6 +54,9 @@ h1 em{font-style:normal;color:var(--survey)}
 .switch button i{width:10px;height:10px;display:inline-block}
 .switch button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
 .switch .fp{margin-left:auto;align-self:center;box-shadow:none}
+.vsel{align-self:center;margin-left:12px;display:flex;gap:8px;align-items:center;font:600 11px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.vsel select{font:500 13px/1.2 "Archivo",Arial,sans-serif;color:var(--ink);background:var(--vellum);border:1px solid var(--rule-2);padding:6px 8px;text-transform:none;letter-spacing:0;max-width:340px}
+.vsel select:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
 .switch button:focus-visible,.grp button:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
 
 .viewer{position:relative;margin-top:14px;border:1px solid var(--rule-2);background:var(--vellum-2);overflow:hidden}
@@ -75,6 +78,9 @@ h1 em{font-style:normal;color:var(--survey)}
 .grp button+button{border-left:0}
 .grp button:hover{color:var(--ink);background:var(--vellum-2)}
 .grp button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.tag.trips{font-family:"IBM Plex Mono",monospace;text-transform:none;letter-spacing:0;font-size:10.5px;border-left-width:3px}
+.caption{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);margin:0;max-width:min(680px,92%);background:var(--vellum);border:1px solid var(--rule-2);box-shadow:var(--shadow);padding:8px 14px;font-size:13.5px;color:var(--ink-2);pointer-events:none;text-align:center}
+.caption b{color:var(--ink)} .caption span{display:block;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3);margin-top:2px}
 .hint{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:var(--ink-3);pointer-events:none}
 .compass{position:absolute;right:14px;bottom:12px;width:50px;height:50px;color:var(--ink-2)}
 .compass text{font:700 11px "Archivo Narrow",Arial,sans-serif;letter-spacing:.1em}
@@ -100,6 +106,14 @@ tfoot td{font-weight:600;border-bottom:0;border-top:1.5px solid var(--ink)}
 .flag{color:var(--survey);font-weight:600}
 .note{border-left:3px solid var(--survey);padding:10px 0 10px 14px;margin-top:16px;font-size:13.5px;color:var(--ink-2);max-width:74ch}
 .note b{color:var(--ink)}
+th .sm{display:block;text-transform:none;letter-spacing:0;font-size:11px;font-weight:400}
+tr[data-flow]{cursor:pointer}
+tr[data-flow]:hover td{background:var(--vellum-2)}
+.fl{display:inline-block;width:14px;height:4px;margin-right:8px;vertical-align:middle}
+td.rt{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
+ul.notes{list-style:none;padding:0;margin:14px 0 0;max-width:84ch}
+ul.notes li{padding:7px 0;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-2)}
+ul.notes b{color:var(--ink)}
 footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color:var(--ink-3);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 26px}
 @media (max-width:640px){ .compass,.hint{display:none} }
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:22px}
@@ -125,6 +139,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
     <button type="button" id="s-B" aria-pressed="true">160 × 50</button>
     <button type="button" id="s-A" aria-pressed="false">100 × 80</button>
   </div>
+  <label class="vsel" id="vwrap" hidden>Layout <select id="variant"></select></label>
 </div>
 
 <div class="viewer">
@@ -132,18 +147,21 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
   <div class="overlay" id="tags"></div>
   <div class="bar">
     <div class="grp">
-      <button type="button" id="v-iso" aria-pressed="true">Iso</button>
+      <button type="button" id="v-iso" aria-pressed="false">Iso</button>
       <button type="button" id="v-dock" aria-pressed="false">North end</button>
       <button type="button" id="v-south" aria-pressed="false">South end</button>
-      <button type="button" id="v-plan" aria-pressed="false">Plan</button>
+      <button type="button" id="v-plan" aria-pressed="true">Plan</button>
     </div>
     <div class="grp">
       <button type="button" id="t-roof" aria-pressed="false">Roof</button>
       <button type="button" id="t-ghost" aria-pressed="true">Ghost walls</button>
       <button type="button" id="t-fit" aria-pressed="true">Fit-out</button>
       <button type="button" id="t-tags" aria-pressed="true">Labels</button>
+      <button type="button" id="t-flows" aria-pressed="true" hidden>Flows</button>
     </div>
+    <div class="grp"><button type="button" id="anim" aria-pressed="false" hidden>▶ Animate</button></div>
   </div>
+  <p class="caption" id="caption" hidden></p>
   <p class="hint">Drag to orbit · Shift-drag to pan · scroll to zoom</p>
   <svg class="compass" viewBox="0 0 60 60" aria-hidden="true">
     <circle cx="30" cy="34" r="16" fill="none" stroke="currentColor" stroke-opacity=".35"/>
@@ -161,6 +179,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
     <tbody id="sched"></tbody>
     <tfoot><tr><td>Gross</td><td class="n" id="gross"></td><td class="n" id="grossSize"></td><td id="grossNote"></td></tr></tfoot>
   </table></div>
+  <p class="lede" id="capacity" style="margin-top:12px"></p>
 </section>
 
 <section>
@@ -171,6 +190,20 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
     <tbody id="opens"></tbody>
   </table></div>
   <div class="note" id="note"></div>
+</section>
+
+<section id="flows" hidden>
+  <h2>Flows</h2>
+  <p class="lede">Every trip in and out of this building after the 5.5 acre expansion, routed door to door along the
+    aisles, around the racks and stacks: per day for the packhouse, per month for the fert building. The Layout menu
+    compares options, and Animate runs through each flow once.</p>
+  <p class="lede" id="flowScale"></p>
+  <div class="tbl"><table>
+    <thead id="flowHead"></thead>
+    <tbody id="flowRows"></tbody>
+    <tfoot id="flowFoot"></tfoot>
+  </table></div>
+  <ul class="notes" id="flowNotes"></ul>
 </section>
 
 <section id="addons">
@@ -222,21 +255,21 @@ var COPY = {
     stamp: [["Footprint","160 × 50 ft"],["Eave","17 ft"],["Docks","2 + 2 roll-ups"]]
   },
   fert: {
-    lede: "End-on, with the dock and roll-up on one 50 ft end. Dry storage takes the dock end, the fert room the far end behind a full-height partition with its own bund. On the site map the docks face south, so the fert room is the north end.",
+    lede: "End-on, with the dock and roll-up on one 50 ft end. Dry storage takes the dock end, the fert room the far end behind a full-height partition. On the site map the docks face south, so the fert room is the north end.",
     open: "One dock and one box-truck roll-up on the dock end, per the spec. Fertiliser pallets travel the length of the store to the fert room through I1.",
     note: "<b>This turns the fert building end-on.</b> In the earlier side-by-side study the docks were on a long wall straddling the partition. On this site the long walls face the packhouse at 15 ft and the property line at 37 ft, so no apron fits there. The trade is a 100 ft forklift run for fertiliser, and the rack aisles are reach-truck width.",
     stamp: [["Footprint","160 × 50 ft"],["Eave","17 ft"],["Docks","1 + 1 roll-up"]]
   },
   ph80: {
     lede: "Cooler across the whole 80 ft dock face, pack room through the middle, and a band along the far wall split between cucumber receiving, bathrooms and the break room. Every room is at most 40 ft from a door.",
-    open: "Grade falls north to south. The two 48 in docks sit on the low south part of the east wall; both at-grade box-truck roll-ups are on the north wall: R2 on the east side into the cooler's dock aisle, and R1 on the west side into cucumber receiving.",
+    open: "Grade falls north to south. The two 48 in docks sit on the low south part of the east wall; both at-grade box-truck roll-ups are on the north wall: R2 on the east side into the cooler's dock aisle, and R1 on the west side into cucumber receiving. R3, a 10 × 10 ft forklift roll-up on the south wall, takes boxes in from the fert building across the bin wash.",
     note: "<b>Shorter walks, a fuller cooler.</b> The line crosses the room with space on both sides for packing stations, and nobody works more than 50 ft from the break room. With R2 off the dock face, the cooler block-stacks 4 deep off the dock aisle up to the route to the pack-room door: 60 floor positions.",
     stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","2 + 2 roll-ups"]]
   },
   fert80: {
-    lede: "Dry storage takes the north 70 ft on standard counterbalance aisles, the fert room the south 30 ft behind a full-height partition with its own bund. The same 5,600 / 2,400 split as the original fert room model.",
+    lede: "Dry storage takes the north 70 ft on standard counterbalance aisles, the fert room the south 30 ft behind a full-height partition. The same 5,600 / 2,400 split as the original fert room model.",
     open: "Grade falls north to south, so on the east wall the dock sits on the low south part and the at-grade box-truck roll-up on the high north part. Fertiliser runs at most 70 ft from the dock to the fert room through I1. The fert room's exterior door and vents are on the east wall.",
-    note: "<b>This shape needs no reach truck.</b> Eight rack lines on 12 ft aisles carry 288 pallets two high on the floor plus a shelf, short of the 357 needed. The fert room holds 88 positions two-high against 77, with the tanks on the south wall.",
+    note: "<b>This shape needs no reach truck.</b> Eight rack lines on 12 ft aisles carry 288 pallets two high on the floor plus a shelf, against 204 needed for three months after the expansion. The fert room holds 88 positions two-high against 71, with the tanks on the south wall.",
     stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","1 + 1 roll-up"]]
   }
 };
@@ -274,7 +307,7 @@ mat("ground","--ground"); mat("hard","--hardstand"); mat("road","--road"); mat("
 mat("wall","--vellum",{opacity:0.22, side:THREE.DoubleSide, depthWrite:false});
 mat("part","--rule-2",{opacity:0.35, side:THREE.DoubleSide, depthWrite:false});
 mat("roof","--rule"); mat("steel","--ink-2"); mat("pallet","--flow-dry"); mat("crate","--rule-2");
-mat("bin","--flow-crop"); mat("truck","--vellum"); mat("truckd","--ink-3"); mat("tank","--ink-3");
+mat("bin","--flow-crop"); mat("empty","--empty");   /* colour code: green unpacked cucumbers, steel blue empty bins, brown packed cases */ mat("truck","--vellum"); mat("truckd","--ink-3"); mat("tank","--ink-3");
 mat("table","--rule-2"); mat("conv","--flow-box");
 mat("canopy","--rule-2",{opacity:0.45, side:THREE.DoubleSide, depthWrite:false});
 lmat("edge","--ink-2",0.55); lmat("soft","--ink-3",0.3); lmat("mark","--survey",0.95); lmat("dim","--ink-3",0.6);
@@ -299,7 +332,7 @@ function resetGroups(){
     var c = root.children.pop();
     c.traverse(function(o){ if (o.geometry) o.geometry.dispose(); });
   }
-  ["site","shell","roof","parts","floors","fit","marks","dims"].forEach(function(k){
+  ["site","shell","roof","parts","floors","fit","marks","dims","flows","anim"].forEach(function(k){
     G[k] = new THREE.Group(); root.add(G[k]);
   });
 }
@@ -388,9 +421,9 @@ var B, selected = null, TH = 0.5;
 var seed = 7; function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
 
 function build(id){
-  B = L[id]; resetGroups(); TAGS.length = 0; tagHost.replaceChildren(); seed = 7;
-  if (SITE_ROT[id] === 2){ root.position.set(B.W, 0, B.D); root.rotation.y = Math.PI; }
-  else if (SITE_ROT[id] === 1){ root.position.set(B.D, 0, 0); root.rotation.y = -Math.PI / 2; }
+  B = L[id]; var base = B.id; stopAnim(); resetGroups(); TAGS.length = 0; tagHost.replaceChildren(); seed = 7;
+  if (SITE_ROT[base] === 2){ root.position.set(B.W, 0, B.D); root.rotation.y = Math.PI; }
+  else if (SITE_ROT[base] === 1){ root.position.set(B.D, 0, 0); root.rotation.y = -Math.PI / 2; }
   else { root.position.set(0, 0, 0); root.rotation.y = 0; }
   root.updateMatrixWorld(true);
   var W = B.W, D = B.D, E = B.eave, R = E + W / 2 / 12;   /* 1:12 roof, ridge down the length */
@@ -439,7 +472,7 @@ function build(id){
     var lev = box(7, 0.3, 8, M.steel, cx, -0.3, -3.6); lev.rotation.x = Math.atan(0.5 / 8);
     truck("N", cx, B, RIG, 4, -4, G.site);
   });
-  B.openings.filter(function(o){ return o.type === "rollup"; }).forEach(function(o, i){
+  B.openings.filter(function(o){ return o.type === "rollup" && !o.forklift; }).forEach(function(o, i){
     var cx = (o.a + o.b) / 2;
     if (o.face === "N" || o.face === "E" || o.face === "W"){ truck(o.face, cx, B, 24, 3.4, 0, G.site); }
     else if (o.face === "S"){ truck("S", cx, B, 14, 2.8, 0, G.site); }
@@ -452,7 +485,7 @@ function build(id){
     [[r.x0, r.z0, r.x1, r.z0], [r.x0, r.z1, r.x1, r.z1], [r.x0, r.z0, r.x0, r.z1], [r.x1, r.z0, r.x1, r.z1]].forEach(function(e){
       box(Math.max(0.4, e[2] - e[0]), 0.8, Math.max(0.4, e[3] - e[1]), M["skirt" + r.tone], (e[0] + e[2]) / 2, 0.4, (e[1] + e[3]) / 2, G.floors, false);
     });
-    addTag(r.name, (r.x0 + r.x1) / 2, 3.5, (r.z0 + r.z1) / 2, "room", r.tone);
+    if (!r.noTag) addTag((r.x1 - r.x0) * (r.z1 - r.z0) < 500 && r.short ? r.short : r.name, (r.x0 + r.x1) / 2, 3.5, (r.z0 + r.z1) / 2, "room", r.tone);   /* short names on small rooms */
   });
 
   /* exterior walls with openings cut */
@@ -482,11 +515,11 @@ function build(id){
   B.openings.forEach(function(o){
     var cx = (o.a + o.b) / 2;
     if (o.face === "I"){
-      var part = B.partitions[0];
+      var part = B.partitions[0], P3 = function(u, v){ return part.axis === "x" ? [part.at, v, u] : [u, v, part.at]; };
       var pts = [[o.a, 0],[o.b, 0],[o.b, o.h],[o.a, o.h]], arr = [];
-      for (var i = 0; i < 4; i++){ var s = pts[i], e = pts[(i + 1) % 4]; arr.push([s[0], s[1], part.at], [e[0], e[1], part.at]); }
+      for (var i = 0; i < 4; i++){ var s = pts[i], e = pts[(i + 1) % 4]; arr.push(P3(s[0], s[1]), P3(e[0], e[1])); }
       line(arr, M.mark, G.marks);
-      addTag(o.mark + " — open item", cx, o.h + 1.5, part.at, "mark flagged");
+      var tp = P3(cx, o.h + 1.5); addTag(o.mark + " — open item", tp[0], tp[1], tp[2], "mark flagged");
       return;
     }
     markRect(o.face, o.a, o.b, o.sill || 0, o.h, B);
@@ -503,15 +536,17 @@ function build(id){
     edges(cover, M.edge, G.shell);
     box(8, 3.5, 3, M.steel, o.x0 + 10, 1.75, (o.z0 + o.z1) / 2);   /* bin washer */
     for (var bx = 0; bx < 3; bx++) for (var bz = 0; bz < 4; bz++) for (var bl = 0; bl < 3; bl++){
-      box(3.8, 2.3, 3.8, M.bin, o.x1 - 8 - bx * 4.3, 1.2 + bl * 2.4, o.z0 + 6 + bz * 4.3);
+      box(3.8, 2.3, 3.8, M.empty, o.x1 - 8 - bx * 4.3, 1.2 + bl * 2.4, o.z0 + 6 + bz * 4.3);
     }
     addTag(o.name, (o.x0 + o.x1) / 2, o.roof + 2, (o.z0 + o.z1) / 2, "room", "--flow-box");
   });
 
   /* fit-out */
-  FIT[id]();
-  target.set(centre()[0], 6, centre()[1]); Object.assign(cam, VIEWS.iso); goal = null;
-  ["iso","dock","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === "iso")); });
+  FIT[base]();
+  drawFlows(id);
+  /* opens in plan view; the square footprint sits closer */
+  target.set(centre()[0], 6, centre()[1]); Object.assign(cam, VIEWS.plan, B.shape === "A" ? { r:210 } : {}); goal = null;
+  ["iso","dock","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === "plan")); });
 
   /* dims */
   line([[-18, 0.1, 0], [-18, 0.1, D], [-20, 0.1, 0], [-16, 0.1, 0], [-20, 0.1, D], [-16, 0.1, D]]);
@@ -579,11 +614,6 @@ function racks(LINES, Z0, BAYS, BAY){
     });
   });
 }
-function bund(r){
-  var cx = (r.x0 + r.x1) / 2, cz = (r.z0 + r.z1) / 2, w = r.x1 - r.x0, d = r.z1 - r.z0;
-  [[cx, r.z0 + 0.8, w - 1, 0.6], [cx, r.z1 - 0.6, w - 1, 0.6], [r.x0 + 0.6, cz, 0.6, d - 1], [r.x1 - 0.6, cz, 0.6, d - 1]]
-    .forEach(function(c){ box(c[2], 0.5, c[3], M.steel, c[0], 0.3, c[1], G.fit, false); });
-}
 function tanks(xs, z){
   xs.forEach(function(x){
     var t = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 7, 20), M.tank); t.position.set(x, 3.6, z); t.castShadow = true; G.fit.add(t);
@@ -592,21 +622,31 @@ function tanks(xs, z){
 function fitFert(){
   racks([0.5, 13.3, 16.8, 29.7, 33.2, 46], 16, 11, 8.9);   /* six lines, reach-truck aisles */
   pallets(18, 3, 4, 1, 4.1, 4.1, 1, M.crate, G.fit, 0.8);   /* dock staging */
-  bund(B.rooms[1]);
   pallets(14, 119, 9, 3, 4.0, 4.0, 2, M.crate, G.fit, 0.92);   /* 3 deep lane */
   pallets(14, 142.5, 9, 2, 4.0, 4.0, 2, M.crate, G.fit, 0.92); /* 2 deep lane */
   tanks([17, 23, 29, 35, 41, 47], 155.5);
   box(10, 4.5, 7, M.steel, 7, 2.35, 155);
 }
-function fitFert80(){
-  racks([2, 17.5, 21, 36.5, 40, 55.5, 59, 74.5], 16, 6, 8.5);   /* eight lines, 12 ft aisles */
-  pallets(58, 3, 5, 1, 4.1, 4.1, 1, M.crate, G.fit, 0.8);   /* dock staging behind D1 */
-  bund(B.rooms[1]);
-  pallets(14, 70.5, 16, 2, 4.0, 4.0, 2, M.crate, G.fit, 0.92); /* 2 deep lane along the partition */
-  pallets(54, 90.5, 6, 2, 4.0, 4.0, 2, M.crate, G.fit, 0.92);  /* 2 deep lane, south-east */
-  tanks([7, 13, 19, 25, 31, 37], 95.5);
-  box(10, 4.5, 7, M.steel, 47, 2.35, 95.5);
+/* The wide fert building's fit-out as data, so a layout variant can move racks, stacks and tanks. The flow
+   routing reads the same spec, so what is drawn is what the forklift drives round. */
+function fitSpec(b){
+  return Object.assign({
+    lines: [2, 17.5, 21, 36.5, 40, 55.5, 59, 74.5], z0: 16, bays: 6,   /* eight rack lines on 12 ft aisles, 8.5 ft bays */
+    lanes: [{ x0:14, z0:70.5, nx:16, nz:2, face:"+z" },                 /* 2 deep along the partition, clear of I1 */
+            { x0:54, z0:90.5, nx:6, nz:2, face:"-z" }],                 /* 2 deep, south-east */
+    tanks: [[7, 95.5], [13, 95.5], [19, 95.5], [25, 95.5], [31, 95.5], [37, 95.5]],
+    skid: [47, 95.5, 10, 7]                                              /* centre x, z, size along x, z */
+  }, b.fit || {});
 }
+function fitFert80(){
+  var f = fitSpec(B);
+  racks(f.lines, f.z0, f.bays, 8.5);
+  f.lanes.forEach(function(l){ pallets(l.x0, l.z0, l.nx, l.nz, 4.0, 4.0, 2, M.crate, G.fit, 0.92); });
+  f.tanks.forEach(function(t){ tanks([t[0]], t[1]); });
+  box(f.skid[2], 4.5, f.skid[3], M.steel, f.skid[0], 2.35, f.skid[1]);
+}
+/* the five 6 × 3 ft Keiki tables as [centre x, centre z, size along x, size along z]: two columns, long side along the room */
+function keikiTables(b){ return b.tables || [[27, 49, 3, 6], [27, 59, 3, 6], [27, 69, 3, 6], [35, 54, 3, 6], [35, 64, 3, 6]]; }
 function fitPackhouse80(){
   /* cooler: 4-deep lanes off the dock aisle, clear route to the pack-room door */
   pallets(3, 13, 13, 4, 4.1, 4.0, 1, M.pallet, G.fit, 0.85);   /* up to the route to the pack-room door */
@@ -615,53 +655,650 @@ function fitPackhouse80(){
   /* Japanese / English packing machine, from the vendor's 36 x 36 ft cell drawing, in the north half of the pack room.
      Infeed on the receiving side (high z), output toward the palletizing area (low z). 4 ft aisle kept along the north wall. */
   (function(){
-    var X = 13, cell = [4, 39, 40, 75];
+    var sh = B.lineShift || 0, X = 13 + sh, cell = [4 + sh, 39, 40 + sh, 75];   /* a variant can slide the line south */
+    var Z = function(z){ return B.lineFlip ? 116 - z : z; };                          /* or turn it end for end: infeed at the cooler end */
     line([[cell[0], 0.12, cell[1]], [cell[2], 0.12, cell[1]], [cell[2], 0.12, cell[1]], [cell[2], 0.12, cell[3]],
           [cell[2], 0.12, cell[3]], [cell[0], 0.12, cell[3]], [cell[0], 0.12, cell[3]], [cell[0], 0.12, cell[1]]], M.dim, G.fit);
-    box(2.5, 2.8, 5.5, M.conv, X, 1.4, 70);            /* infeed conveyor */
-    box(3, 3, 2, M.table, X + 5.5, 1.5, 69);            /* infeed table */
-    box(4, 4.2, 3.3, M.pallet, X + 6, 2.1, 63.5);       /* infeed pallet */
-    box(4.5, 5, 12.7, M.steel, X, 2.5, 60.8);           /* packers */
-    box(3, 3.5, 4.2, M.steel, X, 1.75, 52.4);           /* discharge unit */
-    var t = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 3, 24), M.table); t.position.set(X, 1.5, 48.3); t.castShadow = true; G.fit.add(t);   /* rotary table */
-    box(2.5, 3, 3.5, M.table, X - 4.5, 1.5, 45);         /* packing tables */
-    box(2.5, 3, 3.5, M.table, X + 4.5, 1.5, 45.5);
-    addTag("Packing machine", X, 7, 60.8, "equip");
+    box(2.5, 2.8, 5.5, M.conv, X, 1.4, Z(70));            /* infeed conveyor */
+    box(3, 3, 2, M.table, X + 5.5, 1.5, Z(69));            /* infeed table */
+    if (!B.feedFromStaging) box(4, 4.2, 3.3, M.bin, X, 2.1, Z(75));   /* infeed pallet at the very end of the line, unless the line feeds straight from harvest staging */
+    box(4.5, 5, 12.7, M.steel, X, 2.5, Z(60.8));           /* packers */
+    box(3, 3.5, 4.2, M.steel, X, 1.75, Z(52.4));           /* discharge unit */
+    var t = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 3, 24), M.table); t.position.set(X, 1.5, Z(48.3)); t.castShadow = true; G.fit.add(t);   /* rotary table: the outfeed */
+    box(2.5, 3, 3.5, M.table, X + 4.5, 1.5, Z(45.5));       /* pack table at the outfeed: wrapped Js into boxes */
+    addTag("J/E wrapper", X, 7, Z(60.8), "equip");
   })();
-  /* five Keiki tables in the open side of the machine cell, 8 x 4 ft, long side along z */
-  [[27, 49], [27, 59], [27, 69], [35, 54], [35, 64]].forEach(function(p){ box(4, 3, 8, M.table, p[0], 1.5, p[1]); });
-  addTag("5 Keiki tables", 31, 5, 60, "equip");
-  /* box erector between the tables and the palletizing area */
-  box(10, 5, 6, M.steel, 31, 2.5, 43);
-  addTag("Box erector", 31, 7, 43, "equip");
+  /* five 6 x 3 ft Keiki tables in the open side of the machine cell, long side along z */
+  var sh = B.lineShift || 0, kt = keikiTables(B);
+  kt.forEach(function(t){ box(t[2], 3, t[3], M.table, t[0] + sh, 1.5, t[1]); });
+  addTag("5 Keiki tables", kt.reduce(function(a, t){ return a + t[0]; }, 0) / kt.length + sh, 5, kt.reduce(function(a, t){ return a + t[1]; }, 0) / kt.length, "equip");
+  /* box erector against the cooler wall, between the tables and the palletizing area */
+  var er = B.erector || [31 + sh, 33.5];
+  box(10, 5, 6, M.steel, er[0], 2.5, er[1]);   /* against the cooler wall, beside the box and bag staging, unless a variant moves it */
+  addTag("Box erector", er[0], 7, er[1], "equip");
+  /* box and bag staging: a day's supply, topped up daily from the fert building through R3, unless a layout stores them in a room of their own */
+  var bs = B.boxStage === null ? null : (B.boxStage || [40, 31]), ox = bs ? bs[0] - 40 : 0, oz = bs ? bs[1] - 31 : 0;
+  if (bs) [[42, 33, "Keiki boxes"], [46, 33, "Japanese boxes"], [42, 37, "Off-grade boxes"]].forEach(function(b){
+    box(3.8, 0.5, 3.8, M.pallet, b[0] + ox, 0.25, b[1] + oz);
+    box(3.6, b[2] === "Off-grade boxes" ? 1.2 : 3.4, 3.6, M.crate, b[0] + ox, b[2] === "Off-grade boxes" ? 1.1 : 2.2, b[1] + oz);
+  });
+  if (bs){
+    box(3.8, 5, 3.4, M.steel, 46 + ox, 2.5, 37 + oz);   /* bag shelf, ~7 cases of 1,000 */
+    line([[40, 31], [48, 31], [48, 31], [48, 39], [48, 39], [40, 39], [40, 39], [40, 31]].map(function(q){ return [q[0] + ox, 0.12, q[1] + oz]; }), M.mark, G.fit);
+    addTag("Box & bag staging, 1 day", 44 + ox, 6.5, 35 + oz, "equip");
+  }
+  /* pallet spaces where packed cases are stacked, and the empty-bin pallet, when a layout places them */
+  (B.kpal || []).forEach(function(q){ box(4, 0.5, 4, M.pallet, q[0], 0.25, q[1]); box(3.6, 2.4, 3.6, M.pallet, q[0], 1.7, q[1]); });
+  if (B.kpal) addTag("Keiki pallets", B.kpal[0][0], 4.5, (B.kpal[0][1] + B.kpal[B.kpal.length - 1][1]) / 2, "equip");
+  (B.jpal || []).forEach(function(q){ box(4, 0.5, 4, M.pallet, q[0], 0.25, q[1]); box(3.6, 2.4, 3.6, M.pallet, q[0], 1.7, q[1]); addTag("J/E pallet", q[0], 4.5, q[1], "equip"); });
+  if (B.kempty){ box(4, 0.5, 4, M.pallet, B.kempty[0], 0.25, B.kempty[1]); for (var eb = 0; eb < 3; eb++) box(3.6, 1.1, 3.6, M.empty, B.kempty[0], 1.1 + eb * 1.15, B.kempty[1]); addTag("Empty bins", B.kempty[0], 5, B.kempty[1], "equip"); }
   /* palletizing area kept clear in front of the cooler door: staging pallets and the wrapper */
   line([[52, 0.12, 30.5], [80, 0.12, 30.5], [80, 0.12, 30.5], [80, 0.12, 46], [80, 0.12, 46], [52, 0.12, 46], [52, 0.12, 46], [52, 0.12, 30.5]], M.mark, G.fit);
-  pallets(53, 40, 3, 1, 4.2, 4.2, 1, M.pallet, G.fit, 0.7);
-  box(7, 0.6, 7, M.steel, 75, 0.3, 37); box(0.8, 9, 0.8, M.steel, 78.7, 4.5, 37);
+  box(7, 0.6, 7, M.steel, 54.5, 0.3, 34); box(0.8, 9, 0.8, M.steel, 50.7, 4.5, 34);   /* wrapper against the cooler wall, just north of the cooler door */
   addTag("Palletizing", 64, 4, 38, "equip");
   /* three desks for the line lead, QA and shipping, on the north wall of the bathroom and storage block */
-  [80.5, 86.5, 97].forEach(function(z){ box(2.6, 2.5, 5, M.table, 46.6, 1.25, z); });   /* against the north wall of the bathroom/storage block, clear of the storage door */
-  addTag("3 desks", 46, 5, 86.5, "equip");
+  var dk = B.desks || [46.6, [80.5, 86.5, 97]];
+  dk[1].forEach(function(z){ box(2.6, 2.5, 5, M.table, dk[0], 1.25, z); });
+  addTag("3 desks", dk[0], 5, dk[1][1], "equip");
   /* hand-wash sinks at the pack room door, the receiving edge and the break room door */
   [[1.2, 46], [49.3, 73.8], [68.8, 73.8]].forEach(function(p){ box(2.2, 3, 1.4, M.steel, p[0], 1.5, p[1]); });
   addTag("Hand sinks", 46, 5, 73.8, "equip");
-  /* receiving bins */
-  for (var bx = 0; bx < 4; bx++) for (var bz = 0; bz < 4; bz++) for (var bl = 0; bl < 3; bl++){
-    if (bl === 2 && rnd() > 0.6) continue;
-    box(3.8, 2.3, 3.8, M.bin, 18 + bx * 4.3, 1.2 + bl * 2.4, 79 + bz * 4.3);   /* clear of the lane in from R1 */
-  }
+  /* receiving: one greenhouse is harvested at a time, so it is a floor scale and a pallet or two of bins staged by the line */
+  var sc = B.scale || [12, 90];
+  box(5, 0.3, 5, M.steel, sc[0], 0.15, sc[1]);
+  addTag("Scale", sc[0], 3, sc[1], "equip");
+  (B.stage || [[22, 81], [27, 81]]).forEach(function(pp){
+    box(4, 0.5, 4, M.pallet, pp[0], 0.25, pp[1]);
+    for (var bl = 0; bl < 3; bl++) for (var bx = 0; bx < 2; bx++) box(1.8, 1.1, 3.8, M.bin, pp[0] - 1 + bx * 2, 1.1 + bl * 1.15, pp[1]);
+  });
+  var st0 = B.stage || [[22, 81], [27, 81]];
+  addTag("Harvest staging", (st0[0][0] + st0[1][0]) / 2, 5, (st0[0][1] + st0[1][1]) / 2, "equip");
   /* bathrooms and break room */
-  [[50, 54], [58, 62]].forEach(function(b){ box(2.6, 1.5, 2, M.table, b[0], 0.75, 81); box(1.6, 3, 2.4, M.table, b[1], 1.5, 82); });   /* toilet and sink, 8 x 8 bathrooms */
-  box(14, 6, 1.6, M.table, 56, 3, 98.8);   /* lockers */
-  [[68, 83], [68, 93], [74.5, 83], [74.5, 93]].forEach(function(t){ box(3, 2.6, 6, M.table, t[0], 1.3, t[1]); });
-  box(1.8, 3, 16, M.table, 78.5, 1.5, 88);
+  if (B.roomsWest){
+    [[79, 3], [87, 3]].forEach(function(b){ box(2, 1.5, 2.6, M.table, b[1], 0.75, b[0]); box(2.4, 3, 1.6, M.table, b[1] + 2.5, 1.5, b[0] + 1); });   /* toilet and sink in each 8 x 8 bathroom */
+    box(1.6, 6, 14, M.table, 9.5, 3, 84);   /* lockers along the break room's west wall */
+    [[16, 82], [16, 93], [24, 82], [24, 93]].forEach(function(t){ box(6, 2.6, 3, M.table, t[0], 1.3, t[1]); });   /* break room tables */
+    box(16, 3, 1.8, M.table, 36, 1.5, 78.5);   /* counter */
+    box(3.5, 5, 6, M.steel, 5, 2.5, 95);       /* cleaning store shelving */
+    /* box and bag store: one lane against the far wall, 12 ft aisle in from the pack room */
+    pallets(50, 88, 7, 2, 4.2, 4.2, 2, M.crate, G.fit, 0.85);
+    box(2, 6, 12, M.steel, 78, 3, 82);         /* labels and small-supply shelving */
+  } else {
+    [[50, 54], [58, 62]].forEach(function(b){ box(2.6, 1.5, 2, M.table, b[0], 0.75, 81); box(1.6, 3, 2.4, M.table, b[1], 1.5, 82); });   /* toilet and sink, 8 x 8 bathrooms */
+    box(14, 6, 1.6, M.table, 56, 3, 98.8);   /* lockers */
+    [[68, 83], [68, 93], [74.5, 83], [74.5, 93]].forEach(function(t){ box(3, 2.6, 6, M.table, t[0], 1.3, t[1]); });
+    box(1.8, 3, 16, M.table, 78.5, 1.5, 88);
+  }
 }
 var FIT = { ph:fitPackhouse, fert:fitFert, ph80:fitPackhouse80, fert80:fitFert80 };
+
+/* ============ flows ============ */
+/* Where each building sits on the site map (copied from site-placement.html DEFAULTS), so a route can leave one
+   building and enter the other. Site units are feet, x east, y south. */
+var PLACE = { ph80:{ x:500.6, y:478, rot:1 }, fert80:{ x:500.6, y:608, rot:1 } };
+/* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
+   back empty at SPEED ft/min (a counterbalance truck averaged over turns and doorways). */
+var SPEED = 300, HANDLE = 1.5, BAG_MIN = 0.4, WRAP_MIN = 4;
+/* Paths keep CLEAR ft between the truck's centreline and any rack, stack, tank or wall: half a 4 ft pallet plus a margin. */
+var CLEAR = 2.5;
+/* Weekly volumes after the expansion, from storage.html and scripts/fert-room-flows.py:
+   fertiliser 12,606 lb/wk in (5.4 pallets at ~2,300 lb); of it 8,907 lb/wk goes out on the weekly truck to JTL,
+   BIP, the nurseries and lettuce as 7 mixed pallets (3 + 2 + 1 + 1), and 3,698 lb/wk feeds the Lalamilo fertigator
+   here. Cucumber boxes and bags run 15.7 pallets/wk in and the same out to the packhouse.
+   Route steps: a door mark, a spot, "@rack" or "@fert" (every pallet slot of that kind, averaged), a site point,
+   or "ph80:R1" for a door on the other building. */
+var FLOWS = {
+  fert80: {
+    period: "month",   /* deliveries are weekly or rarer, so a month reads best */
+    spots: {
+      pick:   { x:7,  z:88,   name:"Pick and build", assumed:true },
+      tanks:  { x:22, z:89.5, name:"Fertigator tanks" },
+      boxstage:{ bldg:"ph80", x:44, z:43.5, name:"Packhouse box staging" }
+    },
+    sets: { rack:"Rack bay", fert:"Fert stack" },
+    flows: [
+      { id:"fin",  name:"Fertiliser in", what:"Container at D1, each pallet driven straight to a fert stack", tone:"--flow-dry", plt:5.4,
+        route:["D1", "@fert"] },
+      { id:"bin",  name:"Boxes and bags in", what:"Container at D1, each pallet driven straight to a rack bay", tone:"--flow-box", plt:15.7,
+        route:["D1", "@rack"] },
+      { id:"bout", name:"Boxes to the packhouse", what:"Out R1, west along the lane, across the bin wash into the packhouse's R3", tone:"--flow-crop", plt:15.7,
+        route:["@rack", "R1", { site:[606, 620] }, { site:[606, 598] }, { site:[537.6, 598] }, "ph80:R3", "boxstage"] },
+      { id:"src",  name:"Salt pallets to the pick face", what:"Full pallets brought down to break into mixed pallets", tone:"--ink-2", plt:3.9,
+        route:["@fert", "pick"] },
+      { id:"tout", name:"Mixed pallets to the truck", what:"Weekly 8-pallet box truck at R1", tone:"--survey", plt:7,
+        route:["pick", "R1"] },
+      { id:"loc",  name:"Fert to the fertigator", what:"Bags for the Lalamilo stock tanks, in this room", tone:"--flow-dry", plt:1.6,
+        route:["@fert", "tanks"] }
+    ],
+    fixed: [
+      ["Pick bags onto mixed pallets", 8907 / 52 * BAG_MIN, "~171 bags a week at " + BAG_MIN + " min each"],
+      ["Wrap and label mixed pallets", 7 * WRAP_MIN, "7 pallets at " + WRAP_MIN + " min each"]
+    ],
+    notes: [
+      ["bout", "<b>Boxes to the packhouse</b> leave R1, run west along the 20 ft lane between the fert building and the bin wash, and turn in across the bin wash pad to the packhouse's R3, then to the box and bag staging beside the erector, which holds a day's supply. The pad is wet and has bins and people on it, so the crossing wants a marked lane."],
+      ["", "<b>The pick and build area is not drawn yet.</b> Its spot is marked in the model."],
+      ["", "<b>Left out:</b> micros on shelving, empty pallets, and the few minutes of backing the truck in. Small against the rest."]
+    ],
+    /* the animation, one step at a time: caption, flows chained into one trip */
+    play: [
+      ["Fertiliser in", "container at D1 to a fert stack", ["fin"]],
+      ["Fertiliser out", "salt pallet to the pick face, mixed pallet out R1 to the truck", ["src", "tout"]],
+      ["Boxes in", "container at D1 to a rack bay", ["bin"]],
+      ["Boxes out", "rack bay out R1, on to the packhouse", ["bout"]]
+    ]
+  },
+  /* Packhouse, after the expansion (× 17.5 / 12 on the last 12 months in aloha-prod): 65,727 lb of cucumbers a week
+     today (9,400 lb a day) at 28.2 lb a bin (grow_harvest_weight rows with totes) is 2,331 bins. A harvest pallet holds
+     500–1,000 lb, taken as 750 (about 27 bins), so 88 pallets a week today and 128 after, with 3,400 bins after. One greenhouse is harvested at a time: each pallet comes off the box truck at R1, over
+     the scale to staging, and staff carry the bins to the lines by hand. Keiki is 67% of the pounds
+     (grow_harvest_weekly_v) and goes to the tables, Japanese and English to the machine. Empty bins go out on pallets
+     to the bin wash and are stored outside there for the harvest trucks. 3,940 cases a week today (pack_session_cases) at 66 a pallet (30 for
+     food service, ~40 offgrade) is 63 pallets, so 92. Out: 64% in containers at the docks and 36% on box trucks at R2,
+     the split of one round of shipments on storage.html (20 + 3 container, 8 Costco + 5 Kawaihae). Boxes come in
+     through R3; that trip is counted with the fert building.
+     Cases after the expansion: Keiki 2,731 a week today (KW, KR, KF, OK) so 3,983, J/E 1,205 (JW, JR, EF, OJ) so 1,757;
+     62 Keiki and 30 J/E pallets a week. Boxes: 625 Keiki and 415 J/E a day, carried about 10 at a time. */
+  ph80: {
+    period: "day",     /* harvest and packing run daily */
+    spots: {
+      scale:  { x:12, z:90, name:"Scale" },
+      stage:  { x:24.5, z:76, name:"Harvest staging" },
+      kempty: { x:41, z:60, name:"Empty-bin pallet" },   /* beside the Keiki tables */
+      wrap:   { x:54.5, z:39.5, name:"Pallet wrapper" },   /* in front of the turntable, beside the cooler door */
+      jpack:  { x:13, z:41, name:"J/E pack table" },      /* at the wrapper's outfeed */
+      erector:{ x:31, z:38.5, name:"Box erector" },
+      kpalsp: { x:62, z:37, name:"Keiki pallets" },       /* as drawn, packed cases go to the palletizing area */
+      jpalsp: { x:62, z:37, name:"J/E pallet" },
+      infeed: { x:10, z:76, name:"J/E wrapper infeed" },   /* the conveyor end; the rotary table end is the outfeed */
+      pal:    { x:62, z:37, name:"Palletizing" }
+    },
+    sets: { cool:"Cooler lane", tables:"Keiki table", tablesOut:"Keiki table" },
+    flows: [
+      { id:"hin",  name:"Harvest pallets in", what:"~750 lb, about 27 bins a pallet, off the box truck at R1, over the scale to staging", tone:"--flow-crop", plt:128,
+        route:["R1", "scale", "stage"] },
+      { id:"hk",   name:"Keiki bins to the tables", what:"Carried by hand from staging to one of the five Keiki tables", tone:"--flow-dry", plt:2278, mode:"hand",
+        route:["stage", "@tables"] },
+      { id:"wk",   name:"Empty Keiki bins to their pallet", what:"Carried by hand from the table to the empty-bin pallet beside the tables", tone:"--ink-3", plt:2278, mode:"hand",
+        route:["@tablesOut", "kempty"] },
+      { id:"hj",   name:"J/E bins to the machine", what:"Carried by hand from staging to the J/E wrapper infeed, at its west end", tone:"--ink-2", plt:1122, mode:"hand",
+        route:["stage", "infeed"] },
+      { id:"ek",   name:"Keiki empties to the bin wash", what:"A full pallet of empty bins (~27), pallet jack out R3 to the bin wash", tone:"--flow-box", plt:84, mode:"jack",
+        route:["kempty", "R3", { site:[537.6, 570] }] },
+      { id:"ej",   name:"J/E empties to the bin wash", what:"Empties stacked on a pallet at the infeed, pallet jack out R3 to the bin wash", tone:"--flow-box", plt:42, mode:"jack",
+        route:["infeed", "R3", { site:[537.6, 570] }] },
+      { id:"kc",   name:"Keiki cases onto a pallet", what:"Packed cases carried from the tables to the Keiki pallets", tone:"--flow-crop", plt:3983, mode:"hand",
+        route:["@tablesOut", "kpalsp"] },
+      { id:"jc",   name:"J/E cases onto the pallet", what:"Boxed at the pack table at the wrapper's outfeed, carried to the J/E pallet", tone:"--flow-crop", plt:1757, mode:"hand",
+        route:["jpack", "jpalsp"] },
+      { id:"kb",   name:"Erected boxes to the Keiki tables", what:"From the box erector, about 10 boxes a carry", tone:"--ink-3", plt:437, mode:"hand",
+        route:["erector", "@tables"] },
+      { id:"jb",   name:"Erected boxes to the J/E pack table", what:"From the box erector, about 10 boxes a carry", tone:"--ink-3", plt:290, mode:"hand",
+        route:["erector", "jpack"] },
+      { id:"kpal", name:"Keiki pallets to the cooler", what:"Full pallet through the wrapper and the cooler door to a lane", tone:"--flow-box", plt:62,
+        route:["kpalsp", "wrap", "@cool"] },
+      { id:"jpal", name:"J/E pallets to the cooler", what:"Full pallet through the wrapper and the cooler door to a lane", tone:"--flow-box", plt:30,
+        route:["jpalsp", "wrap", "@cool"] },
+      { id:"dock", name:"Container loads out", what:"Cooler lane to a container at D1 or D2", tone:"--survey", plt:59,
+        route:["@cool", "D1"] },
+      { id:"r2",   name:"Box truck loads out", what:"Cooler lane to the box truck at R2 (Costco Kona, Kawaihae)", tone:"--flow-dry", plt:33,
+        route:["@cool", "R2"] }
+    ],
+    fixed: [],
+    notes: [
+      ["", "<b>Bins by hand.</b> Staff carry each bin from staging to the lines, walking at " + WALK + " ft/min with " + HAND_MIN + " min to pick up and set down: 3,400 bins a week, so where staging sits matters more than any forklift route here."],
+      ["", "<b>Each bin is carried by hand</b> from the staging pallet to a Keiki table or the machine infeed. Empties go onto a pallet right beside the tables (and stack at the infeed), and a full pallet of about 27 goes by pallet jack out R3 to the bin wash, at " + JACK + " ft/min with " + JACK_MIN + " min to pick up and drop. Clean bins stay outside for the harvest trucks."],
+      ["", "<b>Packing labour is left out.</b> This counts only moving bins and pallets, not packing them."]
+    ],
+    play: [
+      ["Harvest pallet in", "off the box truck at R1, over the scale to staging", ["hin"]],
+      ["A Keiki bin", "carried from staging to a table, then to the empty-bin pallet", ["hk", "wk"]],
+      ["A J/E bin", "carried from staging to the machine infeed", ["hj"]],
+      ["Empties to the bin wash", "a full pallet of empty bins by pallet jack out R3", ["ek"]],
+      ["A Keiki case", "carried from a table to the Keiki pallets", ["kc"]],
+      ["A J/E case", "boxed at the outfeed pack table, onto the J/E pallet", ["jc"]],
+      ["Boxes to the line", "a stack of erected boxes to a Keiki table", ["kb"]],
+      ["A Keiki pallet to the cooler", "through the wrapper and the cooler door", ["kpal"]],
+      ["Container load out", "cooler lane to the container at D1", ["dock"]],
+      ["Box truck load out", "cooler lane to the box truck at R2", ["r2"]]
+    ]
+  }
+};
+function cfgOf(id){ return FLOWS[L[id].id]; }
+/* a variant can re-route a flow without moving any door */
+function routeOf(id, f){ return (L[id].flowRoutes || {})[f.id] || f.route; }
+function whatOf(id, f){ return (L[id].flowWhat || {})[f.id] || f.what; }
+/* the base layout's spots with any the variant moves */
+function spotsOf(id){
+  var cfg = cfgOf(id), out = {}, ov = L[id].flowSpots || {};
+  Object.keys(cfg ? cfg.spots : {}).forEach(function(k){ out[k] = Object.assign({}, cfg.spots[k], ov[k] || {}); });
+  return out;
+}
+var PERIODS = { day:{ n:1 / 7, unit:"day" }, week:{ n:1, unit:"week" }, month:{ n:4.345, unit:"month" }, year:{ n:52, unit:"year" } }, period = "week";
+
+/* local (x across W, z down D) to site and back, turned clockwise in 90° steps as the site map does */
+function toSiteXY(id, x, z){
+  var b = L[id], p = PLACE[b.id], q = [[x, z], [b.D - z, x], [b.W - x, b.D - z], [z, b.W - x]][p.rot];
+  return [p.x + q[0], p.y + q[1]];
+}
+function fromSiteXY(id, sx, sy){
+  var b = L[id], p = PLACE[b.id], u = sx - p.x, v = sy - p.y;
+  return [[u, v], [v, b.D - u], [b.W - u, b.D - v], [b.W - v, u]][p.rot];
+}
+
+/* ---- what is on the floor: obstacles and pallet slots, matching what the fit-out functions draw ---- */
+/* Each building says what stands on its floor: rack lines (picked from the aisle side), block-stacked lanes (worked
+   from one open face, each lane feeding a named slot set) and plain blocks the truck drives round. */
+function floorOf(b){
+  if (b.id === "fert80"){
+    var f = fitSpec(b);
+    return {
+      racks: { lines:f.lines, z0:f.z0, bays:f.bays, room:b.rooms[0] },
+      lanes: f.lanes.map(function(l){ return Object.assign({ set:"fert", sx:4, sz:4, levels:2 }, l); }),
+      blocks: f.tanks.map(function(t){ return [t[0] - 2.3, t[1] - 2.3, t[0] + 2.3, t[1] + 2.3]; })
+        .concat([[f.skid[0] - f.skid[2] / 2, f.skid[1] - f.skid[3] / 2, f.skid[0] + f.skid[2] / 2, f.skid[1] + f.skid[3] / 2]])
+    };
+  }
+  if (b.id === "ph80"){
+    /* as fitPackhouse80 draws it */
+    var sh = b.lineShift || 0;
+    return {
+      lanes: [
+        { set:"cool", x0:3,    z0:13,   nx:13, nz:4, sx:4.1, sz:4.0, levels:1, face:"-z" },   /* cooler, 4 deep off the dock aisle */
+        { set:"cool", x0:71,   z0:13,   nx:2,  nz:4, sx:4.1, sz:4.0, levels:1, face:"-z" }
+      ],
+      blocks: [
+        [7 + sh, 43, 21 + sh, 73],    /* packing machine: packers, infeed, rotary table, packing tables */
+        tablesBox(b, sh),             /* five Keiki tables */
+        (function(){ var e = b.erector || [31 + sh, 33.5]; return [e[0] - 5, e[1] - 3, e[0] + 5, e[1] + 3]; })(),   /* box erector */
+        (function(){ var q = b.boxStage === null ? [0, 0, 0, 0] : (b.boxStage || [40, 31]); return q.length === 4 ? q : [q[0], q[1], q[0] + 8, q[1] + 8]; })()   /* box and bag staging, a day's supply */
+      ].concat((b.kpal || []).concat(b.jpal || [], b.kempty ? [b.kempty] : []).map(function(q){ return [q[0] - 2, q[1] - 2, q[0] + 2, q[1] + 2]; }), [
+        [50.3, 30.5, 58, 37.5],   /* pallet wrapper, beside the cooler door */
+        [45.3, 78, 47.9, 99.5]    /* desks */
+      ]),
+      /* where a bin is set down at each of the five Keiki tables: the side facing an open floor */
+      points: (b.tablePoints || [[24.5, 49], [24.5, 59], [24.5, 69], [38, 54], [38, 64]]).map(function(q){ return { set:"tables", x:q[0] + sh, z:q[1], n:1 }; })
+        /* where packers put down a packed case or an empty bin: the side facing the pallets */
+        .concat((b.tablePointsOut || b.tablePoints || [[24.5, 49], [24.5, 59], [24.5, 69], [38, 54], [38, 64]]).map(function(q){ return { set:"tablesOut", x:q[0] + sh, z:q[1], n:1 }; }))
+    };
+  }
+  return null;
+}
+function tablesBox(b, sh){
+  var kt = keikiTables(b);
+  return [Math.min.apply(null, kt.map(function(t){ return t[0] - t[2] / 2; })) + sh, Math.min.apply(null, kt.map(function(t){ return t[1] - t[3] / 2; })),
+          Math.max.apply(null, kt.map(function(t){ return t[0] + t[2] / 2; })) + sh, Math.max.apply(null, kt.map(function(t){ return t[1] + t[3] / 2; }))];
+}
+function storeOf(b){
+  var fl = floorOf(b); if (!fl) return null;
+  var rects = fl.blocks.slice(), slots = {};
+  var add = function(set, sl){ (slots[set] = slots[set] || []).push(sl); };
+  (fl.points || []).forEach(function(q){ add(q.set, { x:q.x, z:q.z, n:q.n }); });
+  if (fl.racks){
+    var RD = 3.5, BAY = 8.5, Z0 = fl.racks.z0, BAYS = fl.racks.bays, dry = fl.racks.room;
+    var racks = fl.racks.lines.map(function(x){ return [x, Z0, x + RD, Z0 + BAYS * BAY]; });
+    var inRack = function(x, z){ return racks.some(function(r){ return x > r[0] && x < r[2] && z > r[1] && z < r[3]; }); };
+    rects = rects.concat(racks);
+    racks.forEach(function(r){
+      /* a rack line is picked from whichever side has an aisle rather than the back of the next line, from inside its own room */
+      [[r[0] - 1, r[0] - 4.5], [r[2] + 1, r[2] + 4.5]].forEach(function(sd){
+        if (sd[1] < dry.x0 + CLEAR || sd[1] > dry.x1 - CLEAR || inRack(sd[0], Z0 + 1)) return;
+        for (var k = 0; k < BAYS; k++) add("rack", { x:sd[1], z:Z0 + BAY * (k + 0.5), n:6 });   /* 2 pallets × 3 levels a bay */
+      });
+    });
+  }
+  /* a block-stacked lane is worked from its open face: one slot per column, depth × levels behind it */
+  fl.lanes.forEach(function(l){
+    var x1 = l.x0 + l.nx * l.sx, z1 = l.z0 + l.nz * l.sz, alongX = l.face === "+z" || l.face === "-z";
+    rects.push([l.x0, l.z0, x1, z1]);
+    var cols = alongX ? l.nx : l.nz, deep = alongX ? l.nz : l.nx;
+    for (var i = 0; i < cols; i++){
+      if (alongX) add(l.set, { x:l.x0 + l.sx * (i + 0.5), z:l.face === "+z" ? z1 + 4.5 : l.z0 - 4.5, n:deep * l.levels });
+      else add(l.set, { x:l.face === "+x" ? x1 + 4.5 : l.x0 - 4.5, z:l.z0 + l.sz * (i + 0.5), n:deep * l.levels });
+    }
+  });
+  return { rects:rects, slots:slots };
+}
+
+/* ---- a 1 ft floor grid of where the truck can drive, and shortest paths across it ---- */
+/* people carrying a bin need far less room than a forklift with a pallet */
+var GRID = {}, CLEAR_WALK = 1;
+function gridOf(id, clear){
+  clear = clear || CLEAR;
+  var gk = id + "|" + clear; if (GRID[gk]) return GRID[gk];
+  var b = L[id], st = storeOf(b); if (!st) return null;
+  var nx = Math.ceil(b.W), nz = Math.ceil(b.D), free = new Uint8Array(nx * nz), walls = [];
+  b.partitions.forEach(function(p){
+    var s0 = p.from;
+    p.holes.map(function(h){ return [h[0], h[1]]; }).sort(function(a, c){ return a[0] - c[0]; }).concat([[p.to, p.to]]).forEach(function(c){
+      if (c[0] > s0) walls.push(p.axis === "z" ? [s0, p.at - 0.25, c[0], p.at + 0.25] : [p.at - 0.25, s0, p.at + 0.25, c[0]]);
+      s0 = Math.max(s0, c[1]);
+    });
+  });
+  var all = st.rects.concat(walls);
+  for (var i = 0; i < nx; i++) for (var k = 0; k < nz; k++){
+    var x = i + 0.5, z = k + 0.5, ok = x >= clear && x <= b.W - clear && z >= clear && z <= b.D - clear;
+    for (var r = 0; ok && r < all.length; r++){
+      var q = all[r], dx = Math.max(q[0] - x, 0, x - q[2]), dz = Math.max(q[1] - z, 0, z - q[3]);
+      if (dx * dx + dz * dz < clear * clear) ok = false;
+    }
+    free[k * nx + i] = ok ? 1 : 0;
+  }
+  return (GRID[gk] = { nx:nx, nz:nz, free:free, st:st, fields:{}, cache:{} });
+}
+function cellOf(g, p){
+  var i = Math.max(0, Math.min(g.nx - 1, Math.floor(p[0]))), k = Math.max(0, Math.min(g.nz - 1, Math.floor(p[1])));
+  if (g.free[k * g.nx + i]) return k * g.nx + i;
+  var best = -1, bd = 1e9;   /* nearest drivable cell */
+  for (var dk = -6; dk <= 6; dk++) for (var di = -6; di <= 6; di++){
+    var ii = i + di, kk = k + dk; if (ii < 0 || kk < 0 || ii >= g.nx || kk >= g.nz || !g.free[kk * g.nx + ii]) continue;
+    var d = di * di + dk * dk; if (d < bd){ bd = d; best = kk * g.nx + ii; }
+  }
+  return best;
+}
+/* Dijkstra from one cell over 8 neighbours, no cutting corners past an obstacle */
+function field(g, src){
+  if (g.fields[src]) return g.fields[src];
+  var n = g.nx * g.nz, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1), heap = [[0, src]];
+  dist[src] = 0;
+  var push = function(e){ heap.push(e); var c = heap.length - 1; while (c > 0){ var p = (c - 1) >> 1; if (heap[p][0] <= heap[c][0]) break; var t = heap[p]; heap[p] = heap[c]; heap[c] = t; c = p; } };
+  var pop = function(){ var top = heap[0], last = heap.pop(); if (heap.length){ heap[0] = last; var c = 0; for (;;){ var l = 2 * c + 1, r = l + 1, m = c; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === c) break; var t = heap[m]; heap[m] = heap[c]; heap[c] = t; c = m; } } return top; };
+  while (heap.length){
+    var e = pop(), d = e[0], c = e[1]; if (d > dist[c]) continue;
+    var ci = c % g.nx, ck = (c - ci) / g.nx;
+    for (var dk = -1; dk <= 1; dk++) for (var di = -1; di <= 1; di++){
+      if (!di && !dk) continue;
+      var ii = ci + di, kk = ck + dk; if (ii < 0 || kk < 0 || ii >= g.nx || kk >= g.nz) continue;
+      var nb = kk * g.nx + ii; if (!g.free[nb]) continue;
+      if (di && dk && (!g.free[ck * g.nx + ii] || !g.free[kk * g.nx + ci])) continue;
+      var nd = d + (di && dk ? Math.SQRT2 : 1);
+      if (nd < dist[nb]){ dist[nb] = nd; prev[nb] = c; push([nd, nb]); }
+    }
+  }
+  return (g.fields[src] = { dist:dist, prev:prev });
+}
+function clearLine(g, a, b){
+  var L0 = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.ceil(L0 / 0.25);
+  for (var s = 0; s <= n; s++){
+    var t = n ? s / n : 0, x = a[0] + (b[0] - a[0]) * t, z = a[1] + (b[1] - a[1]) * t;
+    if (!g.free[Math.floor(z) * g.nx + Math.floor(x)]) return false;
+  }
+  return true;
+}
+/* drivable path a → b in local feet, pulled tight so it reads like a forklift, not a staircase */
+function gridPath(id, a, b, clear){
+  var g = gridOf(id, clear), ca = cellOf(g, a), cb = cellOf(g, b), rev = false, f;
+  if (g.fields[ca]) f = g.fields[ca]; else { f = field(g, cb); rev = true; }
+  var from = rev ? ca : cb, to = rev ? cb : ca, cells = [];
+  if (!isFinite(f.dist[from])) return [a, b];   /* unreachable: shown as a straight line so it is obvious */
+  for (var c = from; c !== -1; c = f.prev[c]){ cells.push(c); if (c === to) break; }
+  if (rev) { /* cells run a → b already */ } else cells.reverse();
+  var pts = [a].concat(cells.map(function(c){ var i = c % g.nx; return [i + 0.5, (c - i) / g.nx + 0.5]; }), [b]);
+  var out = [pts[0]], i0 = 0;
+  while (i0 < pts.length - 1){
+    var j = pts.length - 1;
+    while (j > i0 + 1 && !clearLine(g, pts[i0], pts[j])) j--;
+    out.push(pts[j]); i0 = j;
+  }
+  return out;
+}
+
+/* ---- routes ---- */
+function doorAt(b, mark){
+  var o = b.openings.filter(function(x){ return x.mark === mark; })[0], c = (o.a + o.b) / 2, IN = CLEAR + 1;
+  if (o.face === "N") return { wall:[c, 0], inner:[c, IN], n:"z" };
+  if (o.face === "S") return { wall:[c, b.D], inner:[c, b.D - IN], n:"z" };
+  if (o.face === "W") return { wall:[0, c], inner:[IN, c], n:"x" };
+  return { wall:[b.W, c], inner:[b.W - IN, c], n:"x" };
+}
+/* a step as { k:"in", p } inside this building, { k:"door", ... }, or { k:"site", s, n } anywhere else */
+function stepOf(id, st, slot){
+  if (st.site) return { k:"site", s:st.site, n:null };
+  if (st.charAt(0) === "@") return { k:"in", p:[slot[st].x, slot[st].z] };
+  var bid = id, key = st;
+  if (st.indexOf(":") > 0){ bid = st.split(":")[0]; key = st.split(":")[1]; }
+  var sp = spotsOf(id)[key];
+  if (sp && (!sp.bldg || sp.bldg === L[id].id)) return { k:"in", p:[sp.x, sp.z] };
+  if (sp) return { k:"site", s:toSiteXY(sp.bldg, sp.x, sp.z), n:null };
+  var d = doorAt(L[bid], key), turn = PLACE[L[bid].id].rot % 2;
+  var n = turn ? (d.n === "x" ? "y" : "x") : (d.n === "x" ? "x" : "y");   /* the axis a truck crosses the wall on, in site terms */
+  if (bid === id) return { k:"door", wall:d.wall, inner:d.inner, s:toSiteXY(id, d.wall[0], d.wall[1]), n:n };
+  return { k:"site", s:toSiteXY(bid, d.wall[0], d.wall[1]), n:n };
+}
+/* outdoors and in the other building: square legs in site feet, across each wall straight on */
+function siteLeg(A, P, an, bn){
+  if (A[0] === P[0] || A[1] === P[1]) return [P];
+  var xFirst = an ? an === "x" : bn ? bn === "y" : true;
+  return [xFirst ? [P[0], A[1]] : [A[0], P[1]], P];
+}
+/* one trip along a route, with a slot chosen for each "@" step; returns local points and length in ft */
+function tripOf(id, route, slot, clear){
+  var pts = [], prev = null;
+  var loc = function(s){ return fromSiteXY(id, s[0], s[1]); };
+  route.forEach(function(r){
+    var s = stepOf(id, r, slot);
+    if (!prev){ pts.push(s.k === "in" ? s.p : s.k === "door" ? s.inner : loc(s.s)); prev = s; return; }
+    if (prev.k !== "site" && s.k !== "site"){
+      var a = prev.k === "door" ? prev.inner : prev.p, b = s.k === "door" ? s.inner : s.p;
+      if (prev.k === "door" && s.k === "door" && prev.wall === s.wall) return;
+      gridPath(id, a, b, clear).slice(1).forEach(function(q){ pts.push(q); });
+    } else {
+      var A = prev.k === "site" ? prev.s : prev.k === "door" ? prev.s : toSiteXY(id, prev.p[0], prev.p[1]);
+      if (prev.k === "door") pts.push(prev.wall);
+      var P = s.k === "door" ? s.s : s.s;
+      siteLeg(A, P, prev.n, s.n).forEach(function(q){ pts.push(loc(q)); });
+      if (s.k === "door") pts.push(s.inner);
+    }
+    prev = s;
+  });
+  var len = 0; for (var i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+  return { pts:pts, len:len };
+}
+/* every slot combination a flow can take, weighted by pallet positions: mean length and a typical trip */
+function flowStats(id, f){
+  var g = gridOf(id); if (!g) return null;
+  var clear = f.mode === "hand" ? CLEAR_WALK : CLEAR;
+  var key = f.id + "|" + clear + "|" + JSON.stringify(routeOf(id, f)); if (g.cache[key]) return g.cache[key];
+  var route = routeOf(id, f), sets = route.filter(function(r){ return typeof r === "string" && r.charAt(0) === "@"; });
+  var trips = [], w = 0, sum = 0;
+  var list = sets.length ? g.st.slots[sets[0].slice(1)] : [null];
+  list.forEach(function(sl){
+    var pick = {}; if (sl) pick[sets[0]] = sl;
+    var t = tripOf(id, route, pick, clear); t.n = sl ? sl.n : 1; t.slot = sl;
+    trips.push(t); w += t.n; sum += t.len * t.n;
+  });
+  var mean = sum / w, typical = trips.reduce(function(best, t){ return Math.abs(t.len - mean) < Math.abs(best.len - mean) ? t : best; });
+  return (g.cache[key] = { mean:mean, trips:trips, typical:typical, weight:w, slotSet:sets[0] || null });
+}
+/* people carrying bins walk at WALK ft/min and take HAND_MIN to pick a bin up and set it down;
+   a pallet jack runs at JACK ft/min with JACK_MIN to get under a pallet and drop it */
+var WALK = 250, HAND_MIN = 0.2, JACK = 200, JACK_MIN = 1;
+function flowMin(f, dist){
+  if (f.mode === "hand") return f.plt * (HAND_MIN + 2 * dist / WALK);
+  if (f.mode === "jack") return f.plt * (JACK_MIN + 2 * dist / JACK);
+  return f.plt * (HANDLE + 2 * dist / SPEED);
+}
+
+/* ---- drawing: one ribbon per flow along a typical trip, width by trips; a selected flow fans out to every slot ---- */
+var flowTags = [], flowSel = null;
+function ribbon(pts, w, m, y){
+  for (var k = 1; k < pts.length; k++){
+    var a = pts[k - 1], b = pts[k], dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz); if (len < 0.05) continue;
+    var o = new THREE.Mesh(new THREE.BoxGeometry(len + w, 0.1, w), m);
+    o.position.set((a[0] + b[0]) / 2, y, (a[1] + b[1]) / 2); o.rotation.y = -Math.atan2(dz, dx); G.flows.add(o);
+  }
+}
+function drawFlows(id){
+  flowTags = [];
+  var cfg = cfgOf(id); $("#t-flows").hidden = $("#anim").hidden = !cfg || !gridOf(id); if (!cfg || !gridOf(id)) return;
+  period = cfg.period || "week"; var P = PERIODS[period];
+  cfg.flows.forEach(function(f, i){
+    var stt = flowStats(id, f), m = M["flow-" + f.id] || mat("flow-" + f.id, f.tone, { opacity:0.9 });
+    var on = !flowSel || flowSel === f.id; m.opacity = on ? 0.9 : 0.08;
+    var w = Math.min(3.2, 0.5 + 0.16 * f.plt), y = 0.25 + i * 0.03;
+    if (flowSel === f.id && stt.slotSet){
+      var mf = M["fan-" + f.id] || mat("fan-" + f.id, f.tone, { opacity:0.3 });
+      stt.trips.forEach(function(t){ ribbon(t.pts, 0.25, mf, y - 0.02); });
+    }
+    ribbon(stt.typical.pts, w, m, y);   /* trip counts are in the table, not on the model */
+  });
+  var sp = spotsOf(id);
+  Object.keys(sp).forEach(function(k){
+    var s0 = sp[k]; if (!s0.assumed && !s0.bldg) return;   /* the rooms already say where racks, stacks and tanks are */
+    var q = s0.bldg && s0.bldg !== L[id].id ? fromSiteXY(id, toSiteXY(s0.bldg, s0.x, s0.z)[0], toSiteXY(s0.bldg, s0.x, s0.z)[1]) : [s0.x, s0.z];
+    var el = addTag(s0.name + (s0.assumed ? " (not drawn)" : ""), q[0], 2.5, q[1], "equip" + (s0.assumed ? " flagged" : ""));
+    el.hidden = !state.flows; flowTags.push(el);
+  });
+}
+/* forklift minutes a week for one layout, for the dropdown */
+function flowTotal(id){
+  var cfg = cfgOf(id); if (!cfg || !gridOf(id)) return null;
+  return cfg.flows.reduce(function(t, f){ return t + flowMin(f, flowStats(id, f).mean); }, 0) + cfg.fixed.reduce(function(t, x){ return t + x[1]; }, 0);
+}
+function renderFlows(id){
+  var cfg = cfgOf(id); $("#flows").hidden = !cfg || !gridOf(id); if ($("#flows").hidden) return;
+  period = cfg.period || "week"; var P = PERIODS[period], hrs = P.n > 1, tot = { pft:0, min:0 }, sp = spotsOf(id), g = gridOf(id);
+  var tm = function(mn){ return hrs ? (mn / 60).toFixed(1) : String(Math.round(mn)); };
+  $("#flowHead").innerHTML = '<tr><th>Flow</th><th>Route</th><th class="n">Trips<span class="sm">per ' + P.unit + '</span></th><th class="n">Distance<span class="sm">avg ft, one way</span></th>' +
+    '<th class="n">Pallet-ft<span class="sm">per ' + P.unit + '</span></th><th class="n">Time<span class="sm">' + (hrs ? "hrs" : "min") + " per " + P.unit + "</span></th></tr>";
+  var setName = function(k){ return k === "rack" ? "rack face" : (cfg.sets[k] || k).toLowerCase() + " face"; };
+  $("#flowScale").textContent = "Each route is drawn along a typical trip, thicker for more trips. Click a flow to fan it out to every slot it serves: " +
+    Object.keys(g.st.slots).map(function(k){ var l = g.st.slots[k]; return l.length + " " + setName(k) + "s (" + fmt(l.reduce(function(t, s){ return t + s.n; }, 0)) + " positions)"; }).join(" and ") + ".";
+  $("#flowRows").innerHTML = cfg.flows.map(function(f){
+    var stt = flowStats(id, f), d = stt.mean, mn = flowMin(f, d) * P.n;
+    tot.pft += f.plt * d * P.n; tot.min += mn;
+    var rt = routeOf(id, f).filter(function(r){ return !r.site; }).map(function(r){
+      if (r.charAt(0) === "@") return "any " + (cfg.sets[r.slice(1)] || r.slice(1)).toLowerCase();
+      var k = r.indexOf(":") > 0 ? r.split(":") : [null, r], s0 = sp[k[1]];
+      return s0 ? s0.name.replace("Packhouse ", "PH ") : (k[0] ? "PH " : "") + k[1];
+    }).join(" → ");
+    return '<tr data-flow="' + f.id + '"' + (flowSel === f.id ? ' class="on"' : "") + '><td><i class="fl" style="background:var(' + f.tone + ')"></i>' + f.name +
+      '<span class="sm" style="display:block;color:var(--ink-3);font-size:12px">' + whatOf(id, f) + '</span></td><td class="rt">' + rt + '</td><td class="n">' + fmt(Math.round(f.plt * P.n)) +
+      '</td><td class="n">' + Math.round(d) + '</td><td class="n">' + fmt(Math.round(f.plt * d * P.n)) + '</td><td class="n">' + tm(mn) + "</td></tr>";
+  }).join("") + cfg.fixed.map(function(x){
+    var mn = x[1] * P.n; tot.min += mn;
+    return '<tr><td>' + x[0] + '<span class="sm" style="display:block;color:var(--ink-3);font-size:12px">' + x[2] + ' a week</span></td><td class="rt">' + (x[3] || "at the pick face") + '</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">' + tm(mn) + "</td></tr>";
+  }).join("");
+  $("#flowFoot").innerHTML = '<tr><td>Total</td><td></td><td></td><td></td><td class="n">' + fmt(Math.round(tot.pft)) + '</td><td class="n">' + (tot.min / 60).toFixed(1) +
+    '<span class="sm" style="display:block;font-weight:400;color:var(--ink-3)">hrs per ' + P.unit + '</span></td></tr>';
+  $("#flowNotes").innerHTML = [
+    "<b>Routes follow the aisles.</b> Racks, stacks, equipment and walls are obstacles, the truck keeps " + CLEAR + " ft off them on its centreline, and it goes through doors, never walls. Each path is the shortest drivable one on a 1 ft floor grid.",
+    "<b>Distance is an average over every slot</b>, each pallet position equally likely, so the far bays count as much as the near ones. Slotting the fast movers near the door would bring it down.",
+    "<b>Pallet-ft</b> is trips × one-way distance, the classic layout score: halve it and travel halves.",
+    "<b>Forklift time</b> is " + HANDLE + " min to pick up and set down each pallet, plus the trip loaded and back empty at " + SPEED + " ft/min. These are standard planning figures, not timed at the farm. A month is 4.345 weeks.",
+  ].concat((cfg.notes || []).map(function(n){ return n[0] === "bout" && L[id].flowNote ? L[id].flowNote : n[1]; })).map(function(t){ return "<li>" + t + "</li>"; }).join("");
+  document.querySelectorAll("tr[data-flow]").forEach(function(tr){
+    tr.addEventListener("click", function(){ flowSel = flowSel === tr.dataset.flow ? null : tr.dataset.flow; redrawFlows(id); });
+  });
+}
+function redrawFlows(id){
+  while (G.flows.children.length){ var c = G.flows.children.pop(); if (c.geometry) c.geometry.dispose(); }
+  flowTags.forEach(function(el){ el.remove(); var i = TAGS.findIndex(function(t){ return t.el === el; }); if (i >= 0) TAGS.splice(i, 1); });
+  drawFlows(id);
+  document.querySelectorAll("tr[data-flow]").forEach(function(tr){ tr.classList.toggle("on", tr.dataset.flow === flowSel); });
+  needsDraw = true;
+}
+
+/* ---- animation: a forklift runs each flow in turn, one round trip each, to the slot of a typical trip ---- */
+var anim = null, fork = null;
+function makeFork(){
+  var g = new THREE.Group();
+  var body = new THREE.Mesh(new THREE.BoxGeometry(6.5, 4.2, 4), M.truckd); body.position.set(-1.2, 2.4, 0); body.castShadow = true; g.add(body);
+  var cab = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3.6), M.steel); cab.position.set(-1.8, 5.8, 0); g.add(cab);
+  var mast = new THREE.Mesh(new THREE.BoxGeometry(0.4, 7.5, 3.4), M.steel); mast.position.set(2.2, 3.75, 0); g.add(mast);
+  var load = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), M.pallet); load.position.set(4.4, 2.2, 0); load.castShadow = true; g.add(load);
+  g.userData.load = load;
+  return g;
+}
+function makeWalker(){
+  var g = new THREE.Group();
+  var body = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 5.2, 12), M.truckd); body.position.set(0, 2.6, 0); body.castShadow = true; g.add(body);
+  var head = new THREE.Mesh(new THREE.SphereGeometry(0.7, 12, 8), M.steel); head.position.set(0, 5.9, 0); g.add(head);
+  var load = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.1, 2.2), M.bin); load.position.set(1.4, 3.2, 0); g.add(load);
+  g.userData.load = load; g.userData.hand = true;
+  return g;
+}
+function pickSlot(list){
+  var w = list.reduce(function(t, s){ return t + s.n; }, 0), r = Math.random() * w;
+  for (var i = 0; i < list.length; i++){ r -= list[i].n; if (r <= 0) return list[i]; }
+  return list[list.length - 1];
+}
+/* cut a route shortly after it leaves the building, so the forklift doesn't drive off into the distance */
+function clipOutside(pts, margin){
+  var out = [pts[0]], left = false;
+  for (var i = 1; i < pts.length; i++){
+    var p = pts[i], outside = p[0] < -margin || p[0] > B.W + margin || p[1] < -margin || p[1] > B.D + margin;
+    if (outside){
+      var a = pts[i - 1], t = 0, lo = 0, hi = 1;
+      for (var s = 0; s < 20; s++){ t = (lo + hi) / 2; var x = a[0] + (p[0] - a[0]) * t, z = a[1] + (p[1] - a[1]) * t; if (x < -margin || x > B.W + margin || z < -margin || z > B.D + margin) hi = t; else lo = t; }
+      out.push([a[0] + (p[0] - a[0]) * lo, a[1] + (p[1] - a[1]) * lo]); left = true; break;
+    }
+    out.push(p);
+  }
+  return { pts:out, clipped:left };
+}
+function nextTrip(){
+  var cfg = cfgOf(anim.id), step = cfg.play[anim.step], g = gridOf(anim.id), legs = [], extra = 0, weekly = 0, avg = 0;
+  var slot = {};   /* shared across the chain, so a bin leaves from the table it was taken to */
+  step[2].forEach(function(fid){
+    var f = cfg.flows.filter(function(x){ return x.id === fid; })[0], route = routeOf(anim.id, f);
+    var typ = flowStats(anim.id, f).typical.slot;   /* the slot whose trip is closest to the flow's average */
+    route.forEach(function(r){ if (typeof r === "string" && r.charAt(0) === "@" && !slot[r]) slot[r] = typ || pickSlot(g.st.slots[r.slice(1)]); });
+    var t = tripOf(anim.id, route, slot, f.mode === "hand" ? CLEAR_WALK : CLEAR), c = clipOutside(t.pts, 30);
+    if (c.clipped){ var cl = 0; for (var i = 1; i < c.pts.length; i++) cl += Math.hypot(c.pts[i][0] - c.pts[i - 1][0], c.pts[i][1] - c.pts[i - 1][1]); extra = t.len - cl; }
+    legs.push({ pts:c.pts, tone:f.tone });
+    weekly = Math.max(weekly, f.plt); avg += flowStats(anim.id, f).mean;
+  });
+  /* loaded along each leg, then back empty the whole way */
+  var path = [];
+  legs.forEach(function(l){ path.push({ pts:l.pts, loaded:true, tone:l.tone }); });
+  var back = []; legs.slice().reverse().forEach(function(l){ back = back.concat(l.pts.slice().reverse()); });
+  path.push({ pts:back, loaded:false });
+  anim.path = path; anim.leg = 0; anim.d = 0; anim.pause = 0.5;
+  /* a person for bins carried by hand, a forklift for everything else */
+  var hand = step[2].some(function(fid){ return cfg.flows.filter(function(x){ return x.id === fid; })[0].mode === "hand"; });
+  if (!fork || !!fork.userData.hand !== hand){ if (fork && fork.parent) fork.parent.remove(fork); fork = hand ? makeWalker() : makeFork(); G.anim.add(fork); }
+  anim.speed = hand ? 14 : VIS;
+  $("#caption").innerHTML = "<b>" + (anim.step + 1) + "/" + cfg.play.length + " · " + step[0] + "</b> — " + step[1] +
+    "<span>" + fmt(Math.round(weekly)) + (hand ? " bins" : " pallets") + " a week · about " + Math.round(avg) + " ft each way" + (extra > 1 ? " · the last " + Math.round(extra) + " ft to the packhouse not shown" : "") + "</span>";
+}
+function startAnim(id){
+  stopAnim();
+  anim = { id:id, step:0 };
+  $("#caption").hidden = false; $("#anim").setAttribute("aria-pressed", "true");
+  nextTrip();
+}
+function stopAnim(){
+  if (fork && fork.parent) fork.parent.remove(fork);
+  anim = null; fork = null;
+  $("#caption").hidden = true; $("#anim").setAttribute("aria-pressed", "false");
+}
+var VIS = 45;   /* ft a second on screen: about 9 times a real forklift */
+function animStep(dt){
+  if (!anim) return;
+  if (anim.pause > 0){ anim.pause -= dt; return; }
+  var leg = anim.path[anim.leg], pts = leg.pts;
+  anim.d += (anim.speed || VIS) * dt;
+  var d = anim.d, i = 1, seg = 0;
+  for (; i < pts.length; i++){ seg = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); if (d <= seg) break; d -= seg; }
+  if (i >= pts.length){
+    anim.leg++; anim.d = 0; anim.pause = 0.35;
+    if (anim.leg >= anim.path.length){
+      anim.step = (anim.step + 1) % cfgOf(anim.id).play.length; anim.pause = 1.2;
+      nextTrip();
+    }
+    return;
+  }
+  var a = pts[i - 1], b = pts[i], t = seg ? d / seg : 0;
+  fork.position.set(a[0] + (b[0] - a[0]) * t, 0, a[1] + (b[1] - a[1]) * t);
+  fork.rotation.y = -Math.atan2(b[1] - a[1], b[0] - a[0]) + (leg.loaded || fork.userData.hand ? 0 : Math.PI);   /* forks lead when loaded, back out empty */
+  fork.userData.load.visible = leg.loaded;
+  if (leg.loaded && !fork.userData.hand) fork.userData.load.material = M["flow-" + (leg.tone === "--flow-box" ? "bin" : leg.tone === "--flow-crop" ? "bout" : leg.tone === "--survey" ? "tout" : leg.tone === "--ink-2" ? "src" : "fin")] || M.pallet;
+}
 
 /* ============ tables ============ */
 function fmt(n){ return n.toLocaleString("en-US"); }
 function renderTables(id){
-  var c = COPY[id], h = "", gross = 0;
+  var c = COPY[B.id], h = "", gross = 0;
   B.rooms.forEach(function(r){
     var a = (r.x1 - r.x0) * (r.z1 - r.z0); gross += a;
     h += '<tr data-room="' + r.id + '"><td><i class="sw" style="background:var(' + r.tone + ')"></i>' + r.name + '</td><td class="n">' + fmt(a) +
@@ -675,11 +1312,25 @@ function renderTables(id){
     return "<tr><td class='mk'" + (fl ? " style='color:var(--survey)'" : "") + ">" + o.mark + "</td><td" + (fl ? " class='flag'" : "") + ">" + TYPE[o.type] +
       "</td><td class='n'>" + o.size + "</td><td>" + ({ 0:FACE, 1:FACE_R1, 2:FACE_R2 })[SITE_ROT[B.id]][o.face] + "</td><td>" + o.room + "</td><td>" + o.detail + "</td></tr>";
   }).join("");
+  /* pallet positions this layout holds, against what three months after the expansion needs (storage.html) */
+  var NEED = { rack:{ n:204, name:"Dry storage" }, fert:{ n:71, name:"Fert room" }, cool:{ n:53, name:"Cooler" } };
+  var st = (gridOf(id) || {}).st;
+  $("#capacity").innerHTML = !st ? "" : "Pallet positions: " + Object.keys(NEED).filter(function(k){ return st.slots[k]; }).map(function(k){
+    var have = st.slots[k].reduce(function(t, s){ return t + s.n; }, 0), d = have - NEED[k].n;
+    return "<b>" + NEED[k].name + "</b> " + have + " of " + NEED[k].n + " needed (" + (d < 0 ? "short " + -d : "spare " + d) + ")";
+  }).join(" · ") + ".";
   $("#addons").hidden = B.building !== "ph";
-  $("#roomLede").textContent = c.lede; $("#openLede").textContent = c.open; $("#note").innerHTML = c.note;
-  $("#stamp").innerHTML = c.stamp.map(function(s){ return "<div><p class='lbl'>" + s[0] + "</p><b>" + s[1] + "</b></div>"; }).join("");
-  $("#legend").innerHTML = B.rooms.map(function(r){ return '<span><i style="background:var(' + r.tone + ')"></i>' + r.name + "</span>"; }).join("") +
-    '<span><i style="background:var(--survey)"></i>Opening marks</span>';
+  renderFlows(id);
+  $("#roomLede").textContent = B.variantLede || c.lede; $("#openLede").textContent = c.open;
+  $("#note").innerHTML = (B.variantNote ? "<b>" + B.variantLabel + ".</b> " + B.variantNote + "<br><br>" : "") + c.note;
+  /* the pallet counts ride in the header stamp so they are visible with the model */
+  var caps = !st ? [] : Object.keys(NEED).filter(function(k){ return st.slots[k]; }).map(function(k){
+    var have = st.slots[k].reduce(function(t, x){ return t + x.n; }, 0);
+    return [NEED[k].name + " pallets", have + " of " + NEED[k].n + (have < NEED[k].n ? " · short " + (NEED[k].n - have) : "")];
+  });
+  $("#stamp").innerHTML = c.stamp.concat(caps).map(function(s){ return "<div><p class='lbl'>" + s[0] + "</p><b>" + s[1] + "</b></div>"; }).join("");
+  /* the legend is only the colour code for what is on the pallets */
+  $("#legend").innerHTML = B.building === "ph" ? '<span><i style="background:var(--flow-crop)"></i>Unpacked cucumbers</span><span><i style="background:var(--empty)"></i>Empty bins</span><span><i style="background:var(--flow-dry)"></i>Packed cases</span>' : "";
   document.querySelectorAll("tr[data-room]").forEach(function(tr){ tr.addEventListener("click", function(){ selectRoom(tr.dataset.room); }); });
 }
 function selectRoom(rid){
@@ -707,8 +1358,9 @@ function applyCam(){
 function goTo(k){
   ["iso","dock","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); });
   target.set(centre()[0], 6, centre()[1]);
-  if (reduce){ Object.assign(cam, VIEWS[k]); needsDraw = true; return; }
-  goal = { from:{ az:cam.az, pol:cam.pol, r:cam.r }, to:VIEWS[k], t:0 };
+  var to = k === "plan" && B.shape === "A" ? Object.assign({}, VIEWS.plan, { r:210 }) : VIEWS[k];   /* the square footprint fits closer */
+  if (reduce){ Object.assign(cam, to); needsDraw = true; return; }
+  goal = { from:{ az:cam.az, pol:cam.pol, r:cam.r }, to:to, t:0 };
 }
 ["iso","dock","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ goTo(k); }); });
 
@@ -737,25 +1389,38 @@ canvas.addEventListener("contextmenu", function(e){ e.preventDefault(); });
 canvas.addEventListener("wheel", function(e){ e.preventDefault(); cam.r = Math.max(60, Math.min(620, cam.r * (1 + Math.sign(e.deltaY) * 0.09))); goal = null; needsDraw = true; }, { passive:false });
 
 /* ============ toggles ============ */
-var state = { roof:false, ghost:true, fit:true, tags:true };
+var state = { roof:false, ghost:true, fit:true, tags:true, flows:true };
 function applyState(){
   G.roof.visible = state.roof;
   M.wall.opacity = state.ghost ? 0.22 : 0.94; M.wall.depthWrite = !state.ghost;
   M.part.opacity = state.ghost ? 0.35 : 0.94; M.part.depthWrite = !state.ghost;
   G.fit.visible = state.fit;
   tagHost.style.display = state.tags ? "" : "none";
+  G.flows.visible = state.flows; flowTags.forEach(function(el){ el.hidden = !state.flows; });
   needsDraw = true;
 }
-[["#t-roof","roof"],["#t-ghost","ghost"],["#t-fit","fit"],["#t-tags","tags"]].forEach(function(t){
+[["#t-roof","roof"],["#t-ghost","ghost"],["#t-fit","fit"],["#t-tags","tags"],["#t-flows","flows"]].forEach(function(t){
   $(t[0]).addEventListener("click", function(){ state[t[1]] = !state[t[1]]; $(t[0]).setAttribute("aria-pressed", String(state[t[1]])); applyState(); });
 });
-var cur = { b:"ph", s:"A" };
-function pick(b, sh){
-  cur.b = b || cur.b; cur.s = sh || cur.s;
-  var id = cur.b + (cur.s === "A" ? "80" : "");
+var cur = { b:"ph", s:"A", v:"" };
+/* the layouts for one building and footprint: the base plus any "<base>~<variant>" keys */
+function variantsOf(base){ return Object.keys(L).filter(function(k){ return k === base || k.indexOf(base + "~") === 0; }); }
+function fillVariants(base, key){
+  var ks = variantsOf(base), sel = $("#variant");
+  $("#vwrap").hidden = ks.length < 2;
+  sel.innerHTML = ks.map(function(k){
+    var t = flowTotal(k); t = t === null ? NaN : t * PERIODS[period].n;
+    return '<option value="' + k + '"' + (k === key ? " selected" : "") + ">" + (L[k].variantLabel || "As drawn") + (isNaN(t) ? "" : " · " + (PERIODS[period].n <= 1 ? Math.round(t) + " min/" + PERIODS[period].unit : (t / 60).toFixed(1) + " hrs/" + PERIODS[period].unit)) + "</option>";
+  }).join("");
+}
+function pick(b, sh, v){
+  if (b && b !== cur.b || sh && sh !== cur.s) cur.v = "";
+  cur.b = b || cur.b; cur.s = sh || cur.s; if (v !== undefined) cur.v = v;
+  var base = cur.b + (cur.s === "A" ? "80" : ""), id = cur.v && L[base + "~" + cur.v] ? base + "~" + cur.v : base;
   ["ph","fert"].forEach(function(k){ $("#b-" + k).setAttribute("aria-selected", String(k === cur.b)); });
   ["A","B"].forEach(function(k){ $("#s-" + k).setAttribute("aria-pressed", String(k === cur.s)); });
-  build(id);
+  flowSel = null;
+  build(id); fillVariants(base, id);
   $("#nav-site").href = "site-placement.html#" + cur.s;
   try { history.replaceState(null, "", "#" + id); } catch(e){}
 }
@@ -763,13 +1428,48 @@ $("#b-ph").addEventListener("click", function(){ pick("ph"); });
 $("#b-fert").addEventListener("click", function(){ pick("fert"); });
 $("#s-B").addEventListener("click", function(){ pick(null, "B"); });
 $("#s-A").addEventListener("click", function(){ pick(null, "A"); });
+$("#variant").addEventListener("change", function(e){ var k = e.target.value; pick(null, null, k.indexOf("~") > 0 ? k.split("~")[1] : ""); });
+$("#anim").addEventListener("click", function(){
+  if (anim) { stopAnim(); needsDraw = true; return; }
+  var id = cur.b + (cur.s === "A" ? "80" : "") + (cur.v ? "~" + cur.v : "");
+  if (!state.fit){ state.fit = true; $("#t-fit").setAttribute("aria-pressed", "true"); applyState(); }
+  goTo("plan"); startAnim(id);
+});
 
 /* ============ loop ============ */
 var needsDraw = true, v3 = new THREE.Vector3();
 function resize(){ var w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); needsDraw = true; }
 addEventListener("resize", resize);
-function frame(){
+/* Labels never sit on top of each other: they are placed in priority order (door marks, rooms, equipment,
+   dimensions), a label that would overlap one already placed tries just above or below, and if neither is clear it
+   hides until the view changes and there is room. */
+function tagPri(el){ var c = el.className; return /mark/.test(c) ? 0 : /room/.test(c) ? 1 : /dim/.test(c) ? 3 : 2; }
+function placeTags(){
+  var b = canvas.getBoundingClientRect(), items = [], kept = [];
+  TAGS.forEach(function(tg){
+    v3.copy(tg.p).applyMatrix4(root.matrixWorld).project(camera);
+    if (!tg.w){ tg.w = tg.el.offsetWidth; tg.h = tg.el.offsetHeight; }   /* 0 while hidden; measured once it shows */
+    items.push({ tg:tg, pri:tagPri(tg.el), x:(v3.x * 0.5 + 0.5) * b.width, y:(-v3.y * 0.5 + 0.5) * b.height, behind:v3.z > 1 });
+  });
+  items.sort(function(a, c){ return a.pri - c.pri; });
+  items.forEach(function(it){
+    var tg = it.tg, ok = false, dy = 0;
+    if (!it.behind && tg.w && !tg.el.hidden){
+      [0, -(tg.h + 3), tg.h + 3].some(function(off){
+        var r = { l:it.x - tg.w / 2 - 3, r:it.x + tg.w / 2 + 3, t:it.y + off - tg.h / 2 - 1, b:it.y + off + tg.h / 2 + 1 };
+        if (kept.some(function(k){ return r.l < k.r && r.r > k.l && r.t < k.b && r.b > k.t; })) return false;
+        kept.push(r); ok = true; dy = off; return true;
+      });
+    }
+    tg.el.style.opacity = ok ? 1 : 0;
+    tg.el.style.transform = "translate(-50%,-50%) translate(" + it.x.toFixed(1) + "px," + (it.y + dy).toFixed(1) + "px)";
+  });
+}
+var lastT = 0;
+function frame(t){
   requestAnimationFrame(frame);
+  var dt = Math.min(0.05, ((t || 0) - lastT) / 1000); lastT = t || 0;
+  if (anim){ animStep(dt); needsDraw = true; }
   if (goal){
     goal.t = Math.min(1, goal.t + 0.05);
     var t = goal.t, e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, f = goal.from, to = goal.to;
@@ -779,17 +1479,12 @@ function frame(){
     needsDraw = true;
   }
   if (!needsDraw) return;
-  needsDraw = !!goal;
+  needsDraw = !!goal || !!anim;
   applyCam(); renderer.render(scene, camera);
-  var b = canvas.getBoundingClientRect();
-  TAGS.forEach(function(tg){
-    v3.copy(tg.p).applyMatrix4(root.matrixWorld).project(camera);
-    tg.el.style.opacity = v3.z > 1 ? 0 : 1;
-    tg.el.style.transform = "translate(-50%,-50%) translate(" + ((v3.x * 0.5 + 0.5) * b.width).toFixed(1) + "px," + ((-v3.y * 0.5 + 0.5) * b.height).toFixed(1) + "px)";
-  });
+  placeTags();
 }
 retheme(); resize();
-(function(){ var h = location.hash.slice(1); pick(h.indexOf("fert") === 0 ? "fert" : "ph", !h || /80$/.test(h) ? "A" : "B");   /* wide by default */ })();
+(function(){ var h = location.hash.slice(1), k = h.split("~"); pick(h.indexOf("fert") === 0 ? "fert" : "ph", !h || /80$/.test(k[0]) ? "A" : "B", k[1] || "");   /* wide by default */ })();
 frame();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme);
 new MutationObserver(retheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
