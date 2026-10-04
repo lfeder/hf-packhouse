@@ -82,8 +82,7 @@ button:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
 .face{font-size:12.5px;color:var(--ink-2);align-self:center}
 .face b{color:var(--ink)}
 a.btn.link{text-align:center;text-decoration:none;display:block}
-.fpbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid var(--rule-2);background:var(--vellum)}
-.fpbar span{font:600 11px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.ph h4{margin:12px 0 6px;font:600 11px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
 
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--ink-2);margin-top:12px}
 .legend span{display:flex;align-items:center;gap:7px}
@@ -95,8 +94,9 @@ footer{margin-top:30px;color:var(--ink-3);font-size:12px;display:flex;flex-wrap:
 
 /* map ink stays on the drawing's white sheet in both themes */
 svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.bld{cursor:grab}
-.bld.drag{cursor:grabbing}
+.bld{cursor:pointer}
+.item{cursor:grab}
+.item.drag{cursor:grabbing}
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:22px}
 .tabs a{font:700 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
   text-decoration:none;padding:12px 16px 10px;border-bottom:3px solid transparent}
@@ -117,30 +117,25 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
         <button type="button" id="v-pad" aria-pressed="true">Support area</button>
         <button type="button" id="v-site" aria-pressed="false">Whole site</button>
       </div>
-      <p>Dimensions in feet · drawing frame, not true north</p>
+      <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=b699360" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=513a7de" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="halos"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
       <path id="prop" fill="none" stroke="#B23A2B" stroke-width="1" opacity=".55" vector-effect="non-scaling-stroke"/>
       <rect id="support" fill="none" stroke="#15181C" stroke-width="1" stroke-dasharray="2 3" opacity=".6" vector-effect="non-scaling-stroke"/>
       <g id="aprons"></g>
+      <g id="items"></g>
       <g id="dims"></g>
       <g id="phs"></g>
     </svg>
   </div>
 
   <div class="panel">
-    <div class="fpbar"><span>Both buildings</span>
-      <div class="seg" role="group" aria-label="Footprint for both buildings">
-        <button type="button" id="fp-B" aria-pressed="true">160 × 50</button>
-        <button type="button" id="fp-A" aria-pressed="false">100 × 80</button>
-      </div>
-    </div>
     <div class="verdict" id="verdict" aria-live="polite"><span class="pill ok">Clear</span><span></span></div>
     <div id="cards" class="panel"></div>
-    <button type="button" class="btn" id="reset">Reset to suggested placement</button>
+    <button type="button" class="btn" id="reset">Reset everything to the set positions</button>
   </div>
 </div>
 
@@ -154,43 +149,51 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
   <span><svg viewBox="0 0 22 10"><line x1="0" y1="5" x2="22" y2="5" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="7 3"/></svg>20 ft setback from property line</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" rx="4" fill="none" stroke="#43647F" stroke-width="1.3" stroke-dasharray="3 2"/></svg>15 ft clearance around existing buildings</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="none" stroke="#15181C" stroke-width="1" stroke-dasharray="2 2"/></svg>Where the Option 5 SUPPORT block was, erased from the sheet</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#848C92" fill-opacity=".3" stroke="#15181C" stroke-width="1"/><path d="M6 1V9M11 1V9M16 1V9" stroke="#15181C" stroke-width=".8"/></svg>Parking, 9 × 18 ft stalls (drag it)</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#A9702B" fill-opacity=".28" stroke="#A9702B" stroke-width="1.4"/></svg>Septic, 100 × 15 ft (drag it)</span>
 </div>
 
 <ul class="notes">
-  <li><b>160 × 50 default placement.</b> Both north–south with the docks facing south toward Grow 1–3. The fert
-    building sits 15.8 ft off the Lettuce Grow, the packhouse 29 ft east of it and 23 ft inside the property setback.
-    Their south walls are 80.4 and 82.4 ft from Grow 1–3, so the 115 ft aprons run into Grow 1–3 and both cards
-    show it: the docks need another 35 ft of room to the south, or to face north.</li>
-  <li><b>100 × 80 default placement.</b> The packhouse docks sit in insulated seal wedges angled about 22° toward the
-    south, so each container backs in along a slightly diagonal 115 ft strip. The wedge is the smallest shape that
-    turns the seal — its face runs from the far side of the door back to the wall, 10.5 ft along the wall and 4.3 ft
-    out at the deep side — which pulls each rig 5.7 ft closer to the building than a square dock house and is what
-    keeps its apron on the property at this angle. <b>The fert dock is square</b>: it sits far enough south that a
-    straight 115 ft apron fits, so it gets a flat dock seal and a straight forklift run into dry storage. The buildings
-    are 50 ft apart with the 30 ft deep covered bin wash in that gap. Box-truck roll-ups get a 50 ft apron.</li>
+  <li><b>Both buildings are 100 × 80 and their positions are set.</b> The packhouse sits 15.4 ft off the Lettuce
+    Grow, the fert building 130 ft south of it with the bin wash in the 50 ft gap. Select either one and use the arrow
+    keys (shift for 5 ft) to bump it; its card shows how far it has moved from the set position.</li>
+  <li><b>The packhouse docks sit in insulated seal wedges angled about 22° toward the south</b>, so each container
+    backs in along a slightly diagonal 115 ft strip. The wedge is the smallest shape that turns the seal, which pulls
+    each rig 5.7 ft closer to the building than a square dock house and is what keeps its apron on the property at
+    this angle. <b>The fert dock is square</b>: it sits far enough south that a straight 115 ft apron fits. Box-truck
+    roll-ups get a 50 ft apron.</li>
+  <li><b>Parking.</b> A 20-stall block, two rows of ten 9 × 18 ft stalls on a 24 ft aisle (90 × 60 ft), with three
+    suggested spots to jump between, and 5 stalls along the packhouse's north wall at its west end, behind a 6 ft walk
+    to the staff door P4. Both can be dragged anywhere and rotated. A block turns red if it leaves the property or
+    lands on a building, a truck apron, the bin wash, the septic or the other block. One of the 20 should be a
+    van-accessible stall with its 8 ft aisle, which this does not draw.</li>
+  <li><b>Septic, 100 × 15 ft</b>, drawn between the packhouse and the Lettuce Grow. It is held 5 ft off every
+    building, which is a placeholder: confirm the real separation with whoever designs the system before relying on
+    it. The gap there is 15.4 ft today, so the field does not fit without moving the packhouse east.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec.</b> Packhouse: two docks and a box-truck roll-up off the cooler on the north face, the
-    harvest roll-up on the south face into receiving. Fert building: one dock and one box-truck roll-up on the north
-    face. Rooms and doors are the ones in the 3D models, both footprints (packhouse-layouts.js?v=b699360).</li>
-  <li><b>Roads are still not checked.</b> The aprons land on the Option 5 road loop north of the pad, and both
-    footprints push into the road strip on the east. The road needs redrawing around whichever shape wins.</li>
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=513a7de). Packhouse: two docks on the east
+    wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
+    forklift roll-up R3 onto the bin wash. Fert building: one dock and one box-truck roll-up on the east wall.</li>
+  <li><b>Roads are still not checked.</b> The aprons land on the Option 5 road loop, and the road needs redrawing
+    around the buildings and parking.</li>
   <li><b>Accuracy.</b> Property line and buildings are traced from the CEAd sheet at 1:1000. Scale is 4.104 px/ft,
     confirmed against the drawn scale bar and the 169'-2" grow dimension; expect ±2 ft. The Pattison survey
     (2026-01-05) governs before anything goes to bid.</li>
   <li><b>The background is the CEAd sheet with the old SUPPORT block, its docks and trucks erased</b>
-    (scripts/site-plan-image.py). Nothing else on the sheet is changed.</li>
+    (scripts/site-plan-image.py). Nothing else on the sheet is changed. The white box sticking out east of Grow 3 is
+    a label on that sheet (average flattened area, elevation 2,586.08'), not a structure.</li>
   <li><b>The three existing sheds are assumed to stay</b> and get the 15 ft rule like everything else.</li>
 </ul>
 
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=b699360 · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=513a7de · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=b699360"></script>
+<script src="packhouse-layouts.js?v=513a7de"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
 const PROP = [[69.6,55.7],[608.7,54.6],[609.2,400.6],[1025.3,1104.3],[237.7,1570.3],[71.9,1355.6]];
@@ -208,21 +211,28 @@ const SUPPORT = {x:501.2,y:484.4,w:105.5,h:171.1};
 const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: property north edge down to the top of Grow 1–3 */
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
-/* suggested placement per footprint: B is 160 × 50, A is 100 × 80 */
-const DEFAULTS = {
-  B: [{id:"ph", rot:2, x:580.2, y:482}, {id:"fert", rot:2, x:501, y:484}],   /* docks south: fert 15.8 ft off the Lettuce Grow, gaps to Grow 3 of 80.4 and 82.4 ft */
-  A: [{id:"ph", rot:1, x:500.6, y:478}, {id:"fert", rot:1, x:500.6, y:608}],   /* 15 ft north of the middle of the 22° band; at 22° the packhouse apron needs about 27° to stay on the property here */
-};
-/* each building carries its own footprint; picking one jumps it to that footprint's default spot */
-const place = (id, k) => ({...DEFAULTS[k].find(d => d.id === id), shape:k});
-let phs = [place("ph","A"), place("fert","A")], sel = "ph";   /* wide by default */
+/* the set position of each building; the arrow keys bump it from here */
+const HOME = [{id:"ph", rot:1, x:500.6, y:478}, {id:"fert", rot:1, x:500.6, y:608}];   /* 15 ft north of the middle of the 22° band; at 22° the packhouse apron needs about 27° to stay on the property here */
+let phs = HOME.map(h => ({...h})), sel = "ph";
+/* Things that are not buildings, dragged freely: parking blocks and the septic. A parking block is rows of 9 × 18 ft
+   stalls, two rows on a 24 ft aisle or one row backing onto a road; rot 0 runs the stalls along x. */
+const STALL = 9, STALL_D = 18, AISLE = 24, SEPTIC_GAP = 5;   /* septic to any building: a placeholder, confirm with the designer */
+const PARK_SPOTS = [
+  {k:"North", x:505, y:75, rot:0},                     /* top of the property, south of the north line, east of the headhouse */
+  {k:"East of Grow 3", x:668, y:790, rot:1},           /* between Grow 1–3 and the east property line */
+  {k:"South of Lettuce Grow", x:388, y:650, rot:0},    /* in the 88 ft gap between the Lettuce Grow and Grow 1–3 */
+];
+const ITEM_HOME = [
+  {id:"park", kind:"park", name:"Staff parking", stalls:20, rows:2, x:505, y:75, rot:0},
+  {id:"parkN", kind:"park", name:"Parking, packhouse north wall", stalls:5, rows:1, x:501, y:454, rot:0},   /* west half of the north wall, 6 ft walk to P4 */
+  {id:"septic", kind:"septic", name:"Septic", len:100, wid:15, x:485.2, y:470, rot:1},   /* between the packhouse and the Lettuce Grow */
+];
+let items = ITEM_HOME.map(i => ({...i}));
 const $ = s => document.querySelector(s), NS = "http://www.w3.org/2000/svg";
 const el = (t,a={}) => { const e=document.createElementNS(NS,t); for(const k in a) e.setAttribute(k,a[k]); return e; };
-/* which layout option each building is drawn as here; the 3D page's Layout menu has the rest */
-const VARIANT = { ph80: "onerowswap" };
-const lay = p => { const k = p.id + (p.shape === "A" ? "80" : ""); return PH_LAYOUTS[VARIANT[k] ? k + "~" + VARIANT[k] : k] || PH_LAYOUTS[k]; };
+const lay = p => PH_LAYOUTS[p.id + "80"];
 
-/* local (x across 50, z down 160) to site, rotated clockwise in 90° steps */
+/* local (x across 80, z down 100) to site, rotated clockwise in 90° steps */
 function toSite(p, x, z){
   const {W, D} = lay(p);
   const q = [[x, z], [D - z, x], [W - x, D - z], [z, W - x]][p.rot];
@@ -335,6 +345,63 @@ function evaluate(p){
     ok: prop>=SETBACK-0.05 && near.d>=GAP-0.05 && pair>=GAP-0.05 && apronOk && outdoorOk};
 }
 
+/* a box truck at a side roll-up needs BOX_APRON ft straight out, 6 ft past the door each side */
+function sideAprons(p){
+  const L = lay(p);
+  return L.openings.filter(o => (o.face === "E" || o.face === "W") && o.type === "rollup" && !o.forklift).map(o => {
+    const out = o.face === "W" ? -BOX_APRON : L.W + BOX_APRON;
+    return {name: lay(p).name + " " + o.mark + " truck", ...rectLocal(p, o.face === "W" ? out : L.W, o.a - 6, o.face === "W" ? 0 : out, o.b + 6)};
+  });
+}
+function itemRect(it){
+  if (it.kind === "park"){
+    const len = it.stalls / it.rows * STALL, dep = it.rows === 2 ? 2 * STALL_D + AISLE : STALL_D;
+    return {x:it.x, y:it.y, w:it.rot ? dep : len, h:it.rot ? len : dep};
+  }
+  return {x:it.x, y:it.y, w:it.rot ? it.wid : it.len, h:it.rot ? it.len : it.wid};
+}
+/* what an item must stay clear of: buildings, truck aprons, the bin wash and the other items */
+function evalItem(it){
+  const r = itemRect(it), on = corners(r).every(c => inPoly(c, PROP)), prop = on ? propDist(r) : -1;
+  const solid = [...BLDG, ...phs.map(p => ({name:lay(p).name, ...rectOf(p)}))];
+  const hits = new Set();
+  for (const b of solid) if (overlaps(r, b)) hits.add(b.name);
+  for (const p of phs){
+    const g = dockGeom(p);
+    if ([...g.aprons, ...g.houses].some(q => polyHitsRect(q, r))) hits.add(lay(p).name + " dock apron");
+    for (const a of sideAprons(p)) if (overlaps(r, a)) hits.add(a.name);
+    for (const o of lay(p).outdoor || []) if (overlaps(r, rectLocal(p, o.x0, o.z0, o.x1, o.z1))) hits.add(o.name);
+  }
+  for (const o of items) if (o !== it && overlaps(r, itemRect(o))) hits.add(o.name);
+  let near = {name:"—", d:Infinity};
+  for (const b of solid){ const d = rectGap(r, b); if (d < near.d) near = {name:b.name, d}; }
+  const gapOk = it.kind !== "septic" || near.d >= SEPTIC_GAP - 0.05;
+  return {r, on, prop, hits:[...hits], near, gapOk, ok: on && !hits.size && gapOk};
+}
+function drawItems(fs){
+  const g = $("#items"); g.replaceChildren();
+  for (const it of items){
+    const ev = evalItem(it), r = ev.r, bad = !ev.ok, on = sel === it.id;
+    const grp = el("g", {class:"item", "data-id":it.id, tabindex:"0", role:"button", "aria-label":`${it.name}, drag to move`});
+    const ink = bad ? "#B23A2B" : it.kind === "septic" ? "#A9702B" : "#15181C";
+    grp.append(el("rect", {x:r.x, y:r.y, width:r.w, height:r.h, fill:bad ? "#B23A2B" : it.kind === "septic" ? "#A9702B" : "#848C92",
+      "fill-opacity":".3", stroke:ink, "stroke-width":on ? 2.4 : 1.2, "vector-effect":"non-scaling-stroke"}));
+    if (it.kind === "park"){
+      const n = it.stalls / it.rows, bands = it.rows === 2 ? [[0, STALL_D], [STALL_D + AISLE, 2 * STALL_D + AISLE]] : [[0, STALL_D]];
+      for (const [b0, b1] of bands) for (let i = 1; i < n; i++){
+        const t = i * STALL;
+        grp.append(it.rot ? el("line", {x1:r.x + b0, y1:r.y + t, x2:r.x + b1, y2:r.y + t, stroke:ink, "stroke-width":.7, "vector-effect":"non-scaling-stroke"})
+                          : el("line", {x1:r.x + t, y1:r.y + b0, x2:r.x + t, y2:r.y + b1, stroke:ink, "stroke-width":.7, "vector-effect":"non-scaling-stroke"}));
+      }
+    }
+    const cx = r.x + r.w / 2, cy = r.y + r.h / 2, vert = r.h > r.w * 1.4;
+    const t = el("text", {x:cx, y:cy, "text-anchor":"middle", "dominant-baseline":"middle", "font-size":fs * (r.w < 20 || r.h < 20 ? .55 : .7), fill:ink,
+      stroke:"#fff", "stroke-width":fs * .2, "paint-order":"stroke", transform:vert ? `rotate(-90 ${cx} ${cy})` : ""});
+    t.textContent = it.kind === "park" ? it.stalls + " stalls" : "Septic 100 × 15";
+    grp.append(t);
+    g.append(grp);
+  }
+}
 function draw(){
   const g=$("#phs"), d=$("#dims"), ap=$("#aprons");
   g.replaceChildren(); d.replaceChildren(); ap.replaceChildren();
@@ -364,7 +431,7 @@ function draw(){
     if(!big && dg.aprons.length){ const q=dg.aprons[0], c=[q.reduce((t,v)=>t+v[0],0)/q.length, q.reduce((t,v)=>t+v[1],0)/q.length];
       const t=el("text",{x:c[0],y:c[1],"text-anchor":"middle","font-size":fs*.75,fill:ev.apronOk?"#15181C":"#B23A2B"}); t.textContent=APRON+" ft apron"; ap.append(t); }
 
-    const grp=el("g",{class:"bld","data-id":p.id,tabindex:"0",role:"button","aria-label":`${L.name}, drag to move`});
+    const grp=el("g",{class:"bld","data-id":p.id,tabindex:"0",role:"button","aria-label":`${L.name}, select to nudge with the arrow keys`});
     grp.append(el("rect",{x:r.x,y:r.y,width:r.w,height:r.h,fill:"#fff","fill-opacity":".82"}));
     for(const rm of L.rooms){
       const q=rectLocal(p, rm.x0, rm.z0, rm.x1, rm.z1);
@@ -391,6 +458,7 @@ function draw(){
     }
     g.append(grp);
   }
+  drawItems(fs);
   /* gap from each packhouse's south wall to Grow 1–3 */
   const grow=BLDG.find(b=>b.name==="Grow 1–3");
   for(const q of phs){
@@ -405,8 +473,8 @@ function draw(){
     t.textContent=gap.toFixed(1)+"' to Grow 3"; d.append(t);
   }
   /* clearance tick from the selected building to its nearest existing building */
-  const p=phs.find(q=>q.id===sel), r=rectOf(p), ev=evaluate(p);
-  const nb=BLDG.find(b=>b.name===ev.near.name);
+  const p=phs.find(q=>q.id===sel), r=p&&rectOf(p), ev=p&&evaluate(p);
+  const nb=p&&BLDG.find(b=>b.name===ev.near.name);
   if(nb && ev.near.d<60){
     const cy=Math.max(r.y,Math.min(nb.y+nb.h,r.y+r.h/2));
     const ax = r.x>=nb.x+nb.w ? [nb.x+nb.w, r.x] : r.x+r.w<=nb.x ? [r.x+r.w, nb.x] : null;
@@ -417,22 +485,21 @@ function draw(){
 }
 
 function row(k,v,min,ok){ return `<span class="k">${k}</span><span class="v ${ok?"":"no"}">${v}</span><span class="m">${min}</span>`; }
+const nudge = p => { const h = HOME.find(q => q.id === p.id), dx = p.x - h.x, dy = p.y - h.y;
+  if (!dx && !dy) return "at the set position";
+  const f = v => (Math.round(Math.abs(v) * 10) / 10) + " ft";
+  return "nudged " + [dx ? f(dx) + (dx > 0 ? " east" : " west") : "", dy ? f(dy) + (dy > 0 ? " south" : " north") : ""].filter(Boolean).join(", "); };
 function cards(){
   const box=$("#cards"); box.replaceChildren();
-  let allOk=true, worst="";
+  const bad=[];
   for(const p of phs){
-    const L=lay(p), ev=evaluate(p), r=rectOf(p); allOk = allOk && ev.ok;
-    if(!ev.ok && !worst) worst = L.name;
+    const L=lay(p), ev=evaluate(p), r=rectOf(p);
+    if(!ev.ok) bad.push(L.name);
     const docks=L.openings.filter(o=>o.type==="dock").length, rolls=L.openings.filter(o=>o.type==="rollup").length;
     const c=document.createElement("div"); c.className="ph"+(sel===p.id?" sel":"");
     c.innerHTML=`<div class="top"><h3><i style="background:${L.color}"></i>${L.name}</h3>
         <span class="pill ${ev.ok?"ok":"no"}">${ev.ok?"Clear":"Fix"}</span></div>
       <div class="ctl">
-        <div class="seg" role="group" aria-label="${L.name} footprint">
-          <button type="button" id="${p.id}-fpB" aria-pressed="${p.shape==="B"}">160 × 50</button>
-          <button type="button" id="${p.id}-fpA" aria-pressed="${p.shape==="A"}">100 × 80</button>
-        </div>
-        <button type="button" class="btn" id="${p.id}-rot">Rotate 90°</button>
         <span class="face">Docks face <b>${faceName(p,"N")}</b> · ${docks} dock${docks>1?"s":""}, ${rolls} roll-up${rolls>1?"s":""}</span>
       </div>
       <div class="rows">
@@ -443,20 +510,35 @@ function cards(){
         ${row("Truck apron", ev.apron, APRON+" ft", ev.apronOk)}
         ${ev.outdoor ? row("Bin wash", ev.outdoor, "66 × 30", ev.outdoorOk) : ""}
       </div>
-      <p class="pos mono">${r.w} × ${r.h} ft · 8,000 ft² · at ${p.x.toFixed(0)}, ${p.y.toFixed(0)}</p>`;
-    c.addEventListener("click",e=>{ if(e.target.closest("button")) return; sel=p.id; draw(); });
+      <p class="pos mono">${r.w} × ${r.h} ft · ${nudge(p)}</p>`;
+    c.addEventListener("click",()=>{ sel=p.id; draw(); });
     box.append(c);
-    for(const k of ["A","B"]) $(`#${p.id}-fp${k}`).onclick=()=>{ Object.assign(p, place(p.id,k)); sel=p.id; syncGlobal(); draw(); };
-    $(`#${p.id}-rot`).onclick=()=>{
-      const {W,D}=lay(p), cx=p.x+rectOf(p).w/2, cy=p.y+rectOf(p).h/2;
-      p.rot=(p.rot+1)%4; const odd=p.rot%2; p.x=Math.round(cx-(odd?D:W)/2); p.y=Math.round(cy-(odd?W:D)/2);
-      sel=p.id; draw(); };
   }
-  $("#verdict").innerHTML = allOk
-    ? `<span class="pill ok">Both clear</span><span>Setbacks, building gaps and both truck aprons met.</span>`
-    : `<span class="pill no">Not yet</span><span>${worst} breaks a rule. Move or rotate it until its card turns green.</span>`;
+  for(const it of items){
+    const ev=evalItem(it), r=ev.r;
+    if(!ev.ok) bad.push(it.name);
+    const c=document.createElement("div"); c.className="ph"+(sel===it.id?" sel":"");
+    const spots = it.id==="park" ? `<div class="seg" role="group" aria-label="Suggested spots">${PARK_SPOTS.map((q,i)=>`<button type="button" data-spot="${i}" aria-pressed="${it.x===q.x&&it.y===q.y&&it.rot===q.rot}">${q.k}</button>`).join("")}</div>` : "";
+    c.innerHTML=`<div class="top"><h3><i style="background:${it.kind==="septic"?"#A9702B":"#848C92"}"></i>${it.name}</h3>
+        <span class="pill ${ev.ok?"ok":"no"}">${ev.ok?"Clear":"Fix"}</span></div>
+      <div class="ctl">${spots}<button type="button" class="btn" data-rot>Rotate 90°</button></div>
+      <div class="rows">
+        ${row("Property line", ev.on?ev.prop.toFixed(1)+" ft":"outside", "", ev.on)}
+        ${row(ev.near.name, ev.near.d.toFixed(1)+" ft", it.kind==="septic"?"min "+SEPTIC_GAP+"*":"", ev.gapOk)}
+        ${row("Overlaps", ev.hits.length?ev.hits.join(", "):"nothing", "", !ev.hits.length)}
+      </div>
+      <p class="pos mono">${r.w} × ${r.h} ft${it.kind==="park"?" · "+it.stalls+" stalls":""}${it.kind==="septic"?" · *placeholder, confirm":""} · at ${it.x.toFixed(0)}, ${it.y.toFixed(0)}</p>`;
+    c.addEventListener("click",e=>{ if(e.target.closest("button")) return; sel=it.id; draw(); });
+    c.querySelectorAll("[data-spot]").forEach(b=>b.onclick=()=>{ Object.assign(it, PARK_SPOTS[+b.dataset.spot]); delete it.k; sel=it.id; changed(); });
+    c.querySelector("[data-rot]").onclick=()=>{
+      const r0=itemRect(it), cx=r0.x+r0.w/2, cy=r0.y+r0.h/2; it.rot=1-it.rot;
+      const r1=itemRect(it); it.x=Math.round(cx-r1.w/2); it.y=Math.round(cy-r1.h/2); sel=it.id; changed(); };
+    box.append(c);
+  }
+  $("#verdict").innerHTML = !bad.length
+    ? `<span class="pill ok">All clear</span><span>Setbacks, building gaps, truck aprons, parking and septic all met.</span>`
+    : `<span class="pill no">Not yet</span><span>${bad.join(", ")} ${bad.length>1?"break":"breaks"} a rule. Its card says which.</span>`;
 }
-
 (function(){
   const svg=$("#map"), defs=el("defs"), pat=el("pattern",{id:"hatch",width:6,height:6,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"});
   pat.append(el("line",{x1:0,y1:0,x2:0,y2:6,stroke:"#B23A2B","stroke-width":1.2,"stroke-opacity":".6"})); defs.append(pat); svg.prepend(defs);
@@ -469,37 +551,45 @@ function cards(){
     fill:"#43647F","fill-opacity":".06",stroke:"#43647F","stroke-width":1.2,"stroke-dasharray":"5 3","vector-effect":"non-scaling-stroke"}));
 })();
 
+/* Buildings are selected, not dragged: their positions are set and the arrow keys bump them. Parking and the
+   septic drag anywhere. Positions ride in the URL hash, so a layout can be shared as a link. */
 let drag=null;
 const svgPt = e => { const s=$("#map"), pt=s.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; return pt.matrixTransform(s.getScreenCTM().inverse()); };
+const thing = id => phs.find(q=>q.id===id) || items.find(q=>q.id===id);
 $("#map").addEventListener("pointerdown",e=>{
-  const g=e.target.closest(".bld"); if(!g) return;
-  const p=phs.find(q=>q.id===g.dataset.id); sel=p.id;
-  const pt=svgPt(e); drag={p,dx:pt.x-p.x,dy:pt.y-p.y}; $("#map").setPointerCapture(e.pointerId); draw();
+  const g=e.target.closest(".item,.bld"); if(!g) return;
+  sel=g.dataset.id;
+  if(g.classList.contains("item")){
+    const it=thing(sel), pt=svgPt(e); drag={it,dx:pt.x-it.x,dy:pt.y-it.y}; $("#map").setPointerCapture(e.pointerId); g.classList.add("drag");
+  }
+  draw();
 });
 $("#map").addEventListener("pointermove",e=>{ if(!drag) return; const pt=svgPt(e);
-  drag.p.x=Math.round(pt.x-drag.dx); drag.p.y=Math.round(pt.y-drag.dy); draw(); });
-$("#map").addEventListener("pointerup",()=>{ drag=null; });
+  drag.it.x=Math.round(pt.x-drag.dx); drag.it.y=Math.round(pt.y-drag.dy); draw(); });
+$("#map").addEventListener("pointerup",()=>{ if(drag){ drag=null; changed(); } });
 document.addEventListener("keydown",e=>{
   const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(!m) return;
   if(e.target.closest && e.target.closest("button,a")) return;
-  e.preventDefault(); const p=phs.find(q=>q.id===sel), s=e.shiftKey?5:1; p.x+=m[0]*s; p.y+=m[1]*s; draw();
+  e.preventDefault(); const p=thing(sel), s=e.shiftKey?5:1; p.x=Math.round((p.x+m[0]*s)*10)/10; p.y=Math.round((p.y+m[1]*s)*10)/10; changed();
 });
 function view(k){ $("#map").setAttribute("viewBox",VIEWS[k].join(" "));
   $("#v-pad").setAttribute("aria-pressed",k==="pad"); $("#v-site").setAttribute("aria-pressed",k==="site"); draw(); }
 $("#v-pad").onclick=()=>view("pad"); $("#v-site").onclick=()=>view("site");
-$("#reset").onclick=()=>{ phs=phs.map(p=>place(p.id,p.shape)); sel="ph"; draw(); };
-/* the top switch sets both buildings; it shows no choice when they differ */
-function syncGlobal(){
-  const same = phs[0].shape === phs[1].shape ? phs[0].shape : null;
-  $("#fp-B").setAttribute("aria-pressed", same==="B"); $("#fp-A").setAttribute("aria-pressed", same==="A");
-  const ph = phs.find(p=>p.id==="ph");
-  $("#nav-3d").href = "packhouses-3d.html#ph" + (ph.shape==="A" ? "80" : "");
-  try{ history.replaceState(null,"","#"+phs.map(p=>p.id+"-"+p.shape).join(",")); }catch(e){}
+$("#reset").onclick=()=>{ phs=HOME.map(h=>({...h})); items=ITEM_HOME.map(i=>({...i})); sel="ph"; changed(); };
+/* hash: ph=dx,dy for a nudged building, park=x,y,rot for an item away from home */
+function changed(){
+  const parts=[];
+  for(const p of phs){ const h=HOME.find(q=>q.id===p.id); if(p.x!==h.x||p.y!==h.y) parts.push(`${p.id}=${+(p.x-h.x).toFixed(1)},${+(p.y-h.y).toFixed(1)}`); }
+  for(const it of items){ const h=ITEM_HOME.find(q=>q.id===it.id); if(it.x!==h.x||it.y!==h.y||it.rot!==h.rot) parts.push(`${it.id}=${it.x},${it.y},${it.rot}`); }
+  try{ history.replaceState(null,"",parts.length?"#"+parts.join(";"):location.pathname+location.search); }catch(e){}
+  draw();
 }
-function setShape(k){ phs=[place("ph",k), place("fert",k)]; syncGlobal(); draw(); }
-$("#fp-B").onclick=()=>setShape("B"); $("#fp-A").onclick=()=>setShape("A");
-(function(){ const h=location.hash.slice(1);
-  if(h==="A"||h==="B"){ setShape(h); return; }
-  const m=Object.fromEntries(h.split(",").map(t=>t.split("-")).filter(t=>t.length===2));
-  phs=[place("ph",m.ph==="B"?"B":"A"), place("fert",m.fert==="B"?"B":"A")]; syncGlobal(); draw(); })();
+(function(){
+  for(const t of location.hash.slice(1).split(";")){
+    const [k,v]=t.split("="); if(!v) continue; const n=v.split(",").map(Number); if(n.some(isNaN)) continue;
+    const p=phs.find(q=>q.id===k); if(p){ p.x+=n[0]; p.y+=n[1]; continue; }
+    const it=items.find(q=>q.id===k); if(it){ it.x=n[0]; it.y=n[1]; if(n.length>2) it.rot=n[2]?1:0; }
+  }
+  draw();
+})();
 </script>
