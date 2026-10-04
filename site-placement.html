@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=513a7de" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=4e8ca20" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="halos"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
       <path id="prop" fill="none" stroke="#B23A2B" stroke-width="1" opacity=".55" vector-effect="non-scaling-stroke"/>
@@ -162,38 +162,40 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     each rig 5.7 ft closer to the building than a square dock house and is what keeps its apron on the property at
     this angle. <b>The fert dock is square</b>: it sits far enough south that a straight 115 ft apron fits. Box-truck
     roll-ups get a 50 ft apron.</li>
-  <li><b>Parking.</b> A 20-stall block, two rows of ten 9 × 18 ft stalls on a 24 ft aisle (90 × 60 ft), with three
-    suggested spots to jump between, and 5 stalls along the packhouse's north wall at its west end, behind a 6 ft walk
-    to the staff door P4. Both can be dragged anywhere and rotated. A block turns red if it leaves the property or
-    lands on a building, a truck apron, the bin wash, the septic or the other block. One of the 20 should be a
-    van-accessible stall with its 8 ft aisle, which this does not draw.</li>
+  <li><b>Parking.</b> 20 staff stalls, 9 × 18 ft on a 24 ft aisle, with three suggested spots to jump between:
+    one row of 20 backed onto the east property line (180 × 42 ft), or two rows of ten (90 × 60 ft) square to the grid
+    east of Grow 3 or south of the Lettuce Grow. The north end of the property is out because a big transformer stands there. Five more stalls
+    sit flush on the packhouse's north wall between the staff door P4 at its west end and R1's truck apron. Both
+    blocks drag anywhere and rotate. A block turns red if it leaves the property or lands on a building, a truck
+    apron, the bin wash, the septic or the other block. One of the 20 should be a van-accessible stall with its 8 ft
+    aisle, which this does not draw.</li>
   <li><b>Septic, 100 × 15 ft</b>, drawn between the packhouse and the Lettuce Grow. It is held 5 ft off every
     building, which is a placeholder: confirm the real separation with whoever designs the system before relying on
     it. The gap there is 15.4 ft today, so the field does not fit without moving the packhouse east.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=513a7de). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=4e8ca20). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
-    forklift roll-up R3 onto the bin wash. Fert building: one dock and one box-truck roll-up on the east wall.</li>
+    forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: one dock and one box-truck roll-up on the east wall.</li>
   <li><b>Roads are still not checked.</b> The aprons land on the Option 5 road loop, and the road needs redrawing
     around the buildings and parking.</li>
   <li><b>Accuracy.</b> Property line and buildings are traced from the CEAd sheet at 1:1000. Scale is 4.104 px/ft,
     confirmed against the drawn scale bar and the 169'-2" grow dimension; expect ±2 ft. The Pattison survey
     (2026-01-05) governs before anything goes to bid.</li>
   <li><b>The background is the CEAd sheet with the old SUPPORT block, its docks and trucks erased</b>
-    (scripts/site-plan-image.py). Nothing else on the sheet is changed. The white box sticking out east of Grow 3 is
-    a label on that sheet (average flattened area, elevation 2,586.08'), not a structure.</li>
+    (scripts/site-plan-image.py). The "average flattened area" elevation label east of Grow 3 is erased too, with the road
+    carried through where it crossed. Nothing else on the sheet is changed.</li>
   <li><b>The three existing sheds are assumed to stay</b> and get the 15 ft rule like everything else.</li>
 </ul>
 
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=513a7de · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=4e8ca20 · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=513a7de"></script>
+<script src="packhouse-layouts.js?v=4e8ca20"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
 const PROP = [[69.6,55.7],[608.7,54.6],[609.2,400.6],[1025.3,1104.3],[237.7,1570.3],[71.9,1355.6]];
@@ -214,20 +216,25 @@ const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
 const HOME = [{id:"ph", rot:1, x:500.6, y:478}, {id:"fert", rot:1, x:500.6, y:608}];   /* 15 ft north of the middle of the 22° band; at 22° the packhouse apron needs about 27° to stay on the property here */
 let phs = HOME.map(h => ({...h})), sel = "ph";
-/* Things that are not buildings, dragged freely: parking blocks and the septic. A parking block is rows of 9 × 18 ft
-   stalls, two rows on a 24 ft aisle or one row backing onto a road; rot 0 runs the stalls along x. */
+/* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
+   centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
+   rows on a 24 ft aisle or one row backing onto a road or wall. */
 const STALL = 9, STALL_D = 18, AISLE = 24, SEPTIC_GAP = 5;   /* septic to any building: a placeholder, confirm with the designer */
+/* the east property line runs from (609.2, 400.6) to (1025.3, 1104.3), 59.4° clockwise from x; there the block is
+   one row of 20 backed 1 ft inside the line, its aisle on the Grow 3 side. The north end of the property is out: a big
+   transformer stands there. */
 const PARK_SPOTS = [
-  {k:"North", x:505, y:75, rot:0},                     /* top of the property, south of the north line, east of the headhouse */
-  {k:"East of Grow 3", x:668, y:790, rot:1},           /* between Grow 1–3 and the east property line */
-  {k:"South of Lettuce Grow", x:388, y:650, rot:0},    /* in the 88 ft gap between the Lettuce Grow and Grow 1–3 */
+  {k:"East property line", x:872.3, y:888.7, ang:59.4, rows:1},
+  {k:"East of Grow 3", x:698, y:835, ang:90, rows:2},          /* square to the grid, between Grow 1–3 and the property line */
+  {k:"South of Lettuce Grow", x:433, y:680, ang:0, rows:2},    /* in the 88 ft gap between the Lettuce Grow and Grow 1–3 */
 ];
 const ITEM_HOME = [
-  {id:"park", kind:"park", name:"Staff parking", stalls:20, rows:2, x:505, y:75, rot:0},
-  {id:"parkN", kind:"park", name:"Parking, packhouse north wall", stalls:5, rows:1, x:501, y:454, rot:0},   /* west half of the north wall, 6 ft walk to P4 */
-  {id:"septic", kind:"septic", name:"Septic", len:100, wid:15, x:485.2, y:470, rot:1},   /* between the packhouse and the Lettuce Grow */
+  {id:"park", kind:"park", name:"Staff parking", stalls:20, aisle:true, ...PARK_SPOTS[0]},
+  {id:"parkN", kind:"park", name:"Parking, packhouse north wall", stalls:5, rows:1, x:528.5, y:469, ang:0},   /* flush on the north wall, P4 at its west end, R1's truck apron at its east */
+  {id:"septic", kind:"septic", name:"Septic", len:100, wid:15, x:492.7, y:520, ang:90},   /* between the packhouse and the Lettuce Grow */
 ];
-let items = ITEM_HOME.map(i => ({...i}));
+ITEM_HOME.forEach(i => delete i.k);
+let items = ITEM_HOME.map(i => ({...i})), viewK = "pad";
 const $ = s => document.querySelector(s), NS = "http://www.w3.org/2000/svg";
 const el = (t,a={}) => { const e=document.createElementNS(NS,t); for(const k in a) e.setAttribute(k,a[k]); return e; };
 const lay = p => PH_LAYOUTS[p.id + "80"];
@@ -353,50 +360,63 @@ function sideAprons(p){
     return {name: lay(p).name + " " + o.mark + " truck", ...rectLocal(p, o.face === "W" ? out : L.W, o.a - 6, o.face === "W" ? 0 : out, o.b + 6)};
   });
 }
-function itemRect(it){
-  if (it.kind === "park"){
-    const len = it.stalls / it.rows * STALL, dep = it.rows === 2 ? 2 * STALL_D + AISLE : STALL_D;
-    return {x:it.x, y:it.y, w:it.rot ? dep : len, h:it.rot ? len : dep};
-  }
-  return {x:it.x, y:it.y, w:it.rot ? it.wid : it.len, h:it.rot ? it.len : it.wid};
+function itemDims(it){
+  if (it.kind === "park") return [it.stalls / it.rows * STALL, it.rows === 2 ? 2 * STALL_D + AISLE : STALL_D + (it.aisle ? AISLE : 0)];
+  return [it.len, it.wid];
 }
-/* what an item must stay clear of: buildings, truck aprons, the bin wash and the other items */
+/* a point s along the item's length and t across it, from its centre */
+function itemAt(it, s, t){ const a = it.ang * Math.PI / 180; return [it.x + Math.cos(a) * s - Math.sin(a) * t, it.y + Math.sin(a) * s + Math.cos(a) * t]; }
+function itemPoly(it, inset = 0){ const [L, D] = itemDims(it), l = L / 2 - inset, d = D / 2 - inset; return [[-l, -d], [l, -d], [l, d], [-l, d]].map(q => itemAt(it, q[0], q[1])); }
+function polyHitsPoly(A, B){
+  if (A.some(q => inPoly(q, B)) || B.some(q => inPoly(q, A))) return true;
+  for (let i = 0; i < A.length; i++) for (let k = 0; k < B.length; k++)
+    if (segX(A[i], A[(i+1)%A.length], B[k], B[(k+1)%B.length])) return true;
+  return false;
+}
+/* closest approach between two outlines that do not overlap */
+function polyGap(A, B){
+  let d = Infinity;
+  for (const q of A) for (let k = 0; k < B.length; k++) d = Math.min(d, ptSeg(q, B[k], B[(k+1)%B.length]));
+  for (const q of B) for (let k = 0; k < A.length; k++) d = Math.min(d, ptSeg(q, A[k], A[(k+1)%A.length]));
+  return d;
+}
+/* what an item must stay clear of: buildings, truck aprons, the bin wash and the other items. Edges that only touch
+   (a stall row flush on a wall) do not count, so the test runs on the outline pulled in 0.1 ft. */
 function evalItem(it){
-  const r = itemRect(it), on = corners(r).every(c => inPoly(c, PROP)), prop = on ? propDist(r) : -1;
+  const P = itemPoly(it), Pi = itemPoly(it, 0.1), on = P.every(c => inPoly(c, PROP)), prop = on ? polyGap(P, PROP) : -1;
   const solid = [...BLDG, ...phs.map(p => ({name:lay(p).name, ...rectOf(p)}))];
   const hits = new Set();
-  for (const b of solid) if (overlaps(r, b)) hits.add(b.name);
+  for (const b of solid) if (polyHitsRect(Pi, b)) hits.add(b.name);
   for (const p of phs){
     const g = dockGeom(p);
-    if ([...g.aprons, ...g.houses].some(q => polyHitsRect(q, r))) hits.add(lay(p).name + " dock apron");
-    for (const a of sideAprons(p)) if (overlaps(r, a)) hits.add(a.name);
-    for (const o of lay(p).outdoor || []) if (overlaps(r, rectLocal(p, o.x0, o.z0, o.x1, o.z1))) hits.add(o.name);
+    if ([...g.aprons, ...g.houses].some(q => polyHitsPoly(q, Pi))) hits.add(lay(p).name + " dock apron");
+    for (const a of sideAprons(p)) if (polyHitsRect(Pi, a)) hits.add(a.name);
+    for (const o of lay(p).outdoor || []) if (polyHitsRect(Pi, rectLocal(p, o.x0, o.z0, o.x1, o.z1))) hits.add(o.name);
   }
-  for (const o of items) if (o !== it && overlaps(r, itemRect(o))) hits.add(o.name);
+  for (const o of items) if (o !== it && polyHitsPoly(Pi, itemPoly(o))) hits.add(o.name);
   let near = {name:"—", d:Infinity};
-  for (const b of solid){ const d = rectGap(r, b); if (d < near.d) near = {name:b.name, d}; }
+  for (const b of solid){ const d = polyHitsRect(Pi, b) ? 0 : polyGap(P, corners(b)); if (d < near.d) near = {name:b.name, d}; }
   const gapOk = it.kind !== "septic" || near.d >= SEPTIC_GAP - 0.05;
-  return {r, on, prop, hits:[...hits], near, gapOk, ok: on && !hits.size && gapOk};
+  return {P, on, prop, hits:[...hits], near, gapOk, ok: on && !hits.size && gapOk};
 }
 function drawItems(fs){
   const g = $("#items"); g.replaceChildren();
   for (const it of items){
-    const ev = evalItem(it), r = ev.r, bad = !ev.ok, on = sel === it.id;
+    const ev = evalItem(it), bad = !ev.ok, on = sel === it.id, [L, D] = itemDims(it);
     const grp = el("g", {class:"item", "data-id":it.id, tabindex:"0", role:"button", "aria-label":`${it.name}, drag to move`});
-    const ink = bad ? "#B23A2B" : it.kind === "septic" ? "#A9702B" : "#15181C";
-    grp.append(el("rect", {x:r.x, y:r.y, width:r.w, height:r.h, fill:bad ? "#B23A2B" : it.kind === "septic" ? "#A9702B" : "#848C92",
-      "fill-opacity":".3", stroke:ink, "stroke-width":on ? 2.4 : 1.2, "vector-effect":"non-scaling-stroke"}));
+    const ink = bad ? "#B23A2B" : it.kind === "septic" ? "#7A4E1C" : "#15181C";
+    grp.append(el("path", {d:polyPath(ev.P), fill:bad ? "#B23A2B" : it.kind === "septic" ? "#A9702B" : "#5B6168",
+      "fill-opacity":".38", stroke:ink, "stroke-width":on ? 2.4 : 1.4, "vector-effect":"non-scaling-stroke"}));
     if (it.kind === "park"){
-      const n = it.stalls / it.rows, bands = it.rows === 2 ? [[0, STALL_D], [STALL_D + AISLE, 2 * STALL_D + AISLE]] : [[0, STALL_D]];
-      for (const [b0, b1] of bands) for (let i = 1; i < n; i++){
-        const t = i * STALL;
-        grp.append(it.rot ? el("line", {x1:r.x + b0, y1:r.y + t, x2:r.x + b1, y2:r.y + t, stroke:ink, "stroke-width":.7, "vector-effect":"non-scaling-stroke"})
-                          : el("line", {x1:r.x + t, y1:r.y + b0, x2:r.x + t, y2:r.y + b1, stroke:ink, "stroke-width":.7, "vector-effect":"non-scaling-stroke"}));
+      const n = it.stalls / it.rows, bands = it.rows === 2 ? [[-D / 2, -D / 2 + STALL_D], [D / 2 - STALL_D, D / 2]] : [[-D / 2, -D / 2 + STALL_D]];
+      for (const [t0, t1] of bands) for (let i = 1; i < n; i++){
+        const a = itemAt(it, -L / 2 + i * STALL, t0), b = itemAt(it, -L / 2 + i * STALL, t1);
+        grp.append(el("line", {x1:a[0], y1:a[1], x2:b[0], y2:b[1], stroke:ink, "stroke-width":.7, "vector-effect":"non-scaling-stroke"}));
       }
     }
-    const cx = r.x + r.w / 2, cy = r.y + r.h / 2, vert = r.h > r.w * 1.4;
-    const t = el("text", {x:cx, y:cy, "text-anchor":"middle", "dominant-baseline":"middle", "font-size":fs * (r.w < 20 || r.h < 20 ? .55 : .7), fill:ink,
-      stroke:"#fff", "stroke-width":fs * .2, "paint-order":"stroke", transform:vert ? `rotate(-90 ${cx} ${cy})` : ""});
+    const ta = ((it.ang + 90) % 180 + 180) % 180 - 90;   /* keep the label reading left to right */
+    const t = el("text", {x:it.x, y:it.y, "text-anchor":"middle", "dominant-baseline":"middle", "font-size":fs * (D < 20 ? .55 : .8), fill:ink,
+      stroke:"#fff", "stroke-width":fs * .2, "paint-order":"stroke", transform:`rotate(${ta} ${it.x} ${it.y})`});
     t.textContent = it.kind === "park" ? it.stalls + " stalls" : "Septic 100 × 15";
     grp.append(t);
     g.append(grp);
@@ -434,8 +454,8 @@ function draw(){
     const grp=el("g",{class:"bld","data-id":p.id,tabindex:"0",role:"button","aria-label":`${L.name}, select to nudge with the arrow keys`});
     grp.append(el("rect",{x:r.x,y:r.y,width:r.w,height:r.h,fill:"#fff","fill-opacity":".82"}));
     for(const rm of L.rooms){
-      const q=rectLocal(p, rm.x0, rm.z0, rm.x1, rm.z1);
-      grp.append(el("rect",{x:q.x,y:q.y,width:q.w,height:q.h,fill:TONE[rm.tone],"fill-opacity":".32",stroke:TONE[rm.tone],"stroke-width":.6,"vector-effect":"non-scaling-stroke"}));
+      const qs=(rm.parts||[[rm.x0,rm.z0,rm.x1,rm.z1]]).map(k=>rectLocal(p, ...k)), q=qs[0];   /* an L-shaped room comes in parts; the label goes on the first */
+      for(const k of qs) grp.append(el("rect",{x:k.x,y:k.y,width:k.w,height:k.h,fill:TONE[rm.tone],"fill-opacity":".32",stroke:TONE[rm.tone],"stroke-width":.6,"vector-effect":"non-scaling-stroke"}));
       if(!big && Math.min(q.w,q.h) >= 20){
         const vert=q.h>q.w*1.4, cx=q.x+q.w/2, cy=q.y+q.h/2;
         const t=el("text",{x:cx,y:cy,"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.62,fill:"#15181C",transform:vert?`rotate(-90 ${cx} ${cy})`:""});
@@ -515,10 +535,10 @@ function cards(){
     box.append(c);
   }
   for(const it of items){
-    const ev=evalItem(it), r=ev.r;
+    const ev=evalItem(it), [L,D]=itemDims(it);
     if(!ev.ok) bad.push(it.name);
     const c=document.createElement("div"); c.className="ph"+(sel===it.id?" sel":"");
-    const spots = it.id==="park" ? `<div class="seg" role="group" aria-label="Suggested spots">${PARK_SPOTS.map((q,i)=>`<button type="button" data-spot="${i}" aria-pressed="${it.x===q.x&&it.y===q.y&&it.rot===q.rot}">${q.k}</button>`).join("")}</div>` : "";
+    const spots = it.id==="park" ? `<div class="seg" role="group" aria-label="Suggested spots">${PARK_SPOTS.map((q,i)=>`<button type="button" data-spot="${i}" aria-pressed="${it.x===q.x&&it.y===q.y&&it.ang===q.ang&&it.rows===q.rows}">${q.k}</button>`).join("")}</div>` : "";
     c.innerHTML=`<div class="top"><h3><i style="background:${it.kind==="septic"?"#A9702B":"#848C92"}"></i>${it.name}</h3>
         <span class="pill ${ev.ok?"ok":"no"}">${ev.ok?"Clear":"Fix"}</span></div>
       <div class="ctl">${spots}<button type="button" class="btn" data-rot>Rotate 90°</button></div>
@@ -527,12 +547,10 @@ function cards(){
         ${row(ev.near.name, ev.near.d.toFixed(1)+" ft", it.kind==="septic"?"min "+SEPTIC_GAP+"*":"", ev.gapOk)}
         ${row("Overlaps", ev.hits.length?ev.hits.join(", "):"nothing", "", !ev.hits.length)}
       </div>
-      <p class="pos mono">${r.w} × ${r.h} ft${it.kind==="park"?" · "+it.stalls+" stalls":""}${it.kind==="septic"?" · *placeholder, confirm":""} · at ${it.x.toFixed(0)}, ${it.y.toFixed(0)}</p>`;
+      <p class="pos mono">${L} × ${D} ft${it.kind==="park"?" · "+it.stalls+" stalls":""}${it.kind==="septic"?" · *placeholder, confirm":""} · turned ${+it.ang.toFixed(1)}°</p>`;
     c.addEventListener("click",e=>{ if(e.target.closest("button")) return; sel=it.id; draw(); });
-    c.querySelectorAll("[data-spot]").forEach(b=>b.onclick=()=>{ Object.assign(it, PARK_SPOTS[+b.dataset.spot]); delete it.k; sel=it.id; changed(); });
-    c.querySelector("[data-rot]").onclick=()=>{
-      const r0=itemRect(it), cx=r0.x+r0.w/2, cy=r0.y+r0.h/2; it.rot=1-it.rot;
-      const r1=itemRect(it); it.x=Math.round(cx-r1.w/2); it.y=Math.round(cy-r1.h/2); sel=it.id; changed(); };
+    c.querySelectorAll("[data-spot]").forEach(b=>b.onclick=()=>{ const q=PARK_SPOTS[+b.dataset.spot]; Object.assign(it, {x:q.x, y:q.y, ang:q.ang, rows:q.rows}); sel=it.id; changed(); });
+    c.querySelector("[data-rot]").onclick=()=>{ it.ang=(it.ang+90)%360; sel=it.id; changed(); };
     box.append(c);
   }
   $("#verdict").innerHTML = !bad.length
@@ -572,23 +590,25 @@ document.addEventListener("keydown",e=>{
   if(e.target.closest && e.target.closest("button,a")) return;
   e.preventDefault(); const p=thing(sel), s=e.shiftKey?5:1; p.x=Math.round((p.x+m[0]*s)*10)/10; p.y=Math.round((p.y+m[1]*s)*10)/10; changed();
 });
-function view(k){ $("#map").setAttribute("viewBox",VIEWS[k].join(" "));
-  $("#v-pad").setAttribute("aria-pressed",k==="pad"); $("#v-site").setAttribute("aria-pressed",k==="site"); draw(); }
+function view(k){ viewK=k; $("#map").setAttribute("viewBox",VIEWS[k].join(" "));
+  $("#v-pad").setAttribute("aria-pressed",k==="pad"); $("#v-site").setAttribute("aria-pressed",k==="site"); changed(); }
 $("#v-pad").onclick=()=>view("pad"); $("#v-site").onclick=()=>view("site");
 $("#reset").onclick=()=>{ phs=HOME.map(h=>({...h})); items=ITEM_HOME.map(i=>({...i})); sel="ph"; changed(); };
-/* hash: ph=dx,dy for a nudged building, park=x,y,rot for an item away from home */
+/* hash: view=site, ph=dx,dy for a nudged building, park=x,y,ang for an item away from home */
 function changed(){
-  const parts=[];
+  const parts=viewK==="site"?["view=site"]:[];
   for(const p of phs){ const h=HOME.find(q=>q.id===p.id); if(p.x!==h.x||p.y!==h.y) parts.push(`${p.id}=${+(p.x-h.x).toFixed(1)},${+(p.y-h.y).toFixed(1)}`); }
-  for(const it of items){ const h=ITEM_HOME.find(q=>q.id===it.id); if(it.x!==h.x||it.y!==h.y||it.rot!==h.rot) parts.push(`${it.id}=${it.x},${it.y},${it.rot}`); }
+  for(const it of items){ const h=ITEM_HOME.find(q=>q.id===it.id); if(it.x!==h.x||it.y!==h.y||it.ang!==h.ang||it.rows!==h.rows) parts.push(`${it.id}=${+it.x.toFixed(1)},${+it.y.toFixed(1)},${+it.ang.toFixed(1)}${it.rows?","+it.rows:""}`); }
   try{ history.replaceState(null,"",parts.length?"#"+parts.join(";"):location.pathname+location.search); }catch(e){}
   draw();
 }
 (function(){
   for(const t of location.hash.slice(1).split(";")){
-    const [k,v]=t.split("="); if(!v) continue; const n=v.split(",").map(Number); if(n.some(isNaN)) continue;
+    const [k,v]=t.split("="); if(!v) continue;
+    if(k==="view"){ if(v==="site"){ viewK="site"; $("#map").setAttribute("viewBox",VIEWS.site.join(" ")); $("#v-pad").setAttribute("aria-pressed",false); $("#v-site").setAttribute("aria-pressed",true); } continue; }
+    const n=v.split(",").map(Number); if(n.some(isNaN)) continue;
     const p=phs.find(q=>q.id===k); if(p){ p.x+=n[0]; p.y+=n[1]; continue; }
-    const it=items.find(q=>q.id===k); if(it){ it.x=n[0]; it.y=n[1]; if(n.length>2) it.rot=n[2]?1:0; }
+    const it=items.find(q=>q.id===k); if(it){ it.x=n[0]; it.y=n[1]; if(n.length>2) it.ang=n[2]; if(n.length>3 && it.rows) it.rows=n[3]===1?1:2; }
   }
   draw();
 })();
