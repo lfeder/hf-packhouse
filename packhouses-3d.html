@@ -71,6 +71,7 @@ h1 em{font-style:normal;color:var(--survey)}
 .tag.mark.dock{background:var(--survey);border-color:var(--survey);color:var(--vellum)}
 .tag.flagged{border-style:dashed;border-color:var(--survey);color:var(--survey)}
 .tag.equip{font-size:9.5px;background:var(--vellum-2);color:var(--ink-2);padding:1px 5px}
+.tag.seldim{background:var(--ink);border-color:var(--ink);color:var(--paper);font-family:"IBM Plex Mono",monospace;text-transform:none;letter-spacing:0;font-size:11px;padding:1px 6px}
 .tag.dim{background:transparent;border:0;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;letter-spacing:.02em;padding:0}
 .bar{position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
 .grp{display:flex;pointer-events:auto;box-shadow:var(--shadow)}
@@ -142,6 +143,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <div class="viewer">
   <canvas id="stage"></canvas>
   <div class="overlay" id="tags"></div>
+  <div class="overlay" id="seltags"></div>
   <div class="bar">
     <div class="grp">
       <button type="button" id="v-iso" aria-pressed="false">Iso</button>
@@ -230,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=4e8ca20</span>
+  <span>Layouts: packhouse-layouts.js?v=628795f</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=4e8ca20"></script>
+<script src="packhouse-layouts.js?v=628795f"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -317,7 +319,7 @@ function resetGroups(){
     var c = root.children.pop();
     c.traverse(function(o){ if (o.geometry) o.geometry.dispose(); });
   }
-  ["site","shell","roof","parts","floors","fit","marks","dims","flows","anim"].forEach(function(k){
+  ["site","shell","roof","parts","floors","fit","marks","dims","flows","anim","sel"].forEach(function(k){
     G[k] = new THREE.Group(); root.add(G[k]);
   });
 }
@@ -550,7 +552,8 @@ function build(id){
 
   applyState();
   renderTables(id);
-  selectRoom(B.rooms[0].id);
+  selTags = []; seltagHost.replaceChildren();
+  selectRoom(B.rooms[0].id, true);
   needsDraw = true;
 }
 
@@ -672,13 +675,13 @@ function fitPackhouse80(){
   var st0 = B.stage || [[22, 81], [27, 81]];
   addTag("Harvest staging", (st0[0][0] + st0[1][0]) / 2, 5, (st0[0][1] + st0[1][1]) / 2, "equip");
   /* break room, with the cleaning store and bathrooms along the west wall */
-  [32, 40].forEach(function(x){ box(2, 1.5, 2.6, M.table, x + 2, 0.75, 98.5); box(2.4, 3, 1.6, M.table, x + 6, 1.5, 99); });   /* toilet and sink in each 8 x 8 bathroom */
+  [38, 43].forEach(function(x){ box(2, 1.5, 2.6, M.table, x + 1.5, 0.75, 98.5); box(2.4, 3, 1.6, M.table, x + 3.7, 1.5, 99); });   /* toilet and sink in each 5 x 8 bathroom */
   box(1.5, 6, 6, M.table, 0.9, 3, 91);   /* 6 x 6 ft block of mini lockers on the north wall, beside P4 */
   addTag("Mini lockers", 3, 7, 91, "equip");
-  box(1.6, 4, 0.8, M.steel, 32, 2, 91.4); addTag("Eyewash", 32, 5.5, 89.5, "equip");   /* on the bathroom wall, between the cleaning store and bathroom doors */
+  box(0.8, 4, 1.6, M.steel, 31.4, 2, 96); addTag("Eyewash", 29, 5.5, 96, "equip");   /* on the cleaning store wall, beside the bathroom doors */
   [[12, 82], [12, 88.5], [22, 82], [22, 88.5]].forEach(function(t){ box(6, 2.6, 3, M.table, t[0], 1.3, t[1]); });   /* break room tables */
   box(11, 3, 1.8, M.table, 32.5, 1.5, 76.2);   /* counter under the east window */
-  box(6, 5, 2, M.steel, 28, 2.5, 98.8);         /* cleaning store shelving */
+  box(5, 5, 2, M.steel, 35, 2.5, 98.8);         /* cleaning store shelving */
   /* box and bag store: one lane against the far wall, 12 ft aisle in from the pack room */
   pallets(50, 88, 7, 2, 4.2, 4.2, 2, M.crate, G.fit, 0.85);
   box(2, 6, 12, M.steel, 78, 3, 82);         /* labels and small-supply shelving */
@@ -688,7 +691,7 @@ var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 /* ============ flows ============ */
 /* Where each building sits on the site map (copied from site-placement.html DEFAULTS), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
-var PLACE = { ph80:{ x:500.6, y:478, rot:1 }, fert80:{ x:500.6, y:608, rot:1 } };
+var PLACE = { ph80:{ x:505.2, y:488, rot:1 }, fert80:{ x:505.2, y:618, rot:1 } };
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
    back empty at SPEED ft/min (a counterbalance truck averaged over turns and doorways). */
 var SPEED = 300, HANDLE = 1.5, BAG_MIN = 0.4, WRAP_MIN = 4;
@@ -715,7 +718,7 @@ var FLOWS = {
       { id:"bin",  name:"Boxes and bags in", what:"Container at D1, each pallet driven straight to a rack bay", tone:"--flow-box", plt:15.7,
         route:["D1", "@rack"] },
       { id:"bout", name:"Boxes to the packhouse", what:"Out R1, west along the lane, across the bin wash into the packhouse's R3", tone:"--flow-crop", plt:15.7,
-        route:["@rack", "R1", { site:[606, 620] }, { site:[606, 598] }, { site:[537.6, 598] }, "ph80:R3", "boxstage"] },
+        route:["@rack", "R1", { site:[610.6, 630] }, { site:[610.6, 608] }, { site:[542.2, 608] }, "ph80:R3", "boxstage"] },
       { id:"src",  name:"Salt pallets to the pick face", what:"Full pallets brought down to break into mixed pallets", tone:"--ink-2", plt:3.9,
         route:["@fert", "pick"] },
       { id:"tout", name:"Mixed pallets to the truck", what:"Weekly 8-pallet box truck at R1", tone:"--survey", plt:7,
@@ -776,9 +779,9 @@ var FLOWS = {
       { id:"hj",   name:"J/E bins to the machine", what:"Carried by hand from staging to the J/E wrapper infeed, at its west end", tone:"--ink-2", plt:1122, mode:"hand",
         route:["stage", "infeed"] },
       { id:"ek",   name:"Keiki empties to the bin wash", what:"A full pallet of empty bins (~27), pallet jack out R3 to the bin wash", tone:"--flow-box", plt:84, mode:"jack",
-        route:["kempty", "R3", { site:[537.6, 570] }] },
+        route:["kempty", "R3", { site:[542.2, 580] }] },
       { id:"ej",   name:"J/E empties to the bin wash", what:"Empties stacked on a pallet at the infeed, pallet jack out R3 to the bin wash", tone:"--flow-box", plt:42, mode:"jack",
-        route:["infeed", "R3", { site:[537.6, 570] }] },
+        route:["infeed", "R3", { site:[542.2, 580] }] },
       { id:"kc",   name:"Keiki cases onto a pallet", what:"Packed cases carried from the tables to the Keiki pallets", tone:"--flow-crop", plt:3983, mode:"hand",
         route:["@tablesOut", "kpalsp"] },
       { id:"jc",   name:"J/E cases onto the pallet", what:"Boxed at the pack table at the wrapper's outfeed, carried to the J/E pallet", tone:"--flow-crop", plt:1757, mode:"hand",
@@ -1286,7 +1289,28 @@ function renderTables(id){
   $("#legend").innerHTML = B.building === "ph" ? '<span><i style="background:var(--flow-crop)"></i>Unpacked cucumbers</span><span><i style="background:var(--empty)"></i>Empty bins</span><span><i style="background:var(--flow-dry)"></i>Packed cases</span>' : "";
   document.querySelectorAll("tr[data-room]").forEach(function(tr){ tr.addEventListener("click", function(){ selectRoom(tr.dataset.room); }); });
 }
-function selectRoom(rid){
+/* Clicking a room outlines it and shows its sizes, even with Labels off: each wall's length and the area. Clicking
+   it again clears them. */
+var seltagHost = $("#seltags"), selTags = [];
+function roomDims(r){
+  while (G.sel.children.length){ var c = G.sel.children.pop(); if (c.geometry) c.geometry.dispose(); }
+  selTags.forEach(function(el){ el.remove(); var i = TAGS.findIndex(function(t){ return t.el === el; }); if (i >= 0) TAGS.splice(i, 1); });
+  selTags = [];
+  if (!r) return;
+  var ft = function(v){ return +v.toFixed(1) + " ft"; };
+  var tag = function(text, x, z){ var el = document.createElement("div"); el.className = "tag seldim"; el.textContent = text;
+    seltagHost.appendChild(el); TAGS.push({ el:el, p:new THREE.Vector3(x, 0.5, z) }); selTags.push(el); };
+  partsOf(r).forEach(function(q){
+    line([[q[0], 0.2, q[1]], [q[2], 0.2, q[1]], [q[2], 0.2, q[1]], [q[2], 0.2, q[3]], [q[2], 0.2, q[3]], [q[0], 0.2, q[3]], [q[0], 0.2, q[3]], [q[0], 0.2, q[1]]], M.mark, G.sel);
+    tag(ft(q[2] - q[0]), (q[0] + q[2]) / 2, q[1] + 1.3);
+    tag(ft(q[3] - q[1]), q[0] + 1.3, (q[1] + q[3]) / 2);
+  });
+  var q0 = partsOf(r)[0];
+  tag((r.short || r.name) + " · " + fmt(areaOf(r)) + " ft²", (q0[0] + q0[2]) / 2, (q0[1] + q0[3]) / 2);
+}
+function selectRoom(rid, quiet){
+  var again = rid === selected && selTags.length;
+  roomDims(quiet || again ? null : B.rooms.filter(function(x){ return x.id === rid; })[0]);
   selected = rid;
   G.floors.children.forEach(function(o){ if (o.userData.room) o.material = M["floor" + B.rooms.filter(function(r){ return r.id === o.userData.room; })[0].tone]; });
   B.rooms.forEach(function(r){ M["floor" + r.tone].opacity = 0.3; });
@@ -1392,7 +1416,7 @@ addEventListener("resize", resize);
 /* Labels never sit on top of each other: they are placed in priority order (door marks, rooms, equipment,
    dimensions), a label that would overlap one already placed tries just above or below, and if neither is clear it
    hides until the view changes and there is room. */
-function tagPri(el){ var c = el.className; return /mark/.test(c) ? 0 : /room/.test(c) ? 1 : /dim/.test(c) ? 3 : 2; }
+function tagPri(el){ var c = el.className; return /seldim/.test(c) ? -1 : /mark/.test(c) ? 0 : /room/.test(c) ? 1 : /dim/.test(c) ? 3 : 2; }
 function placeTags(){
   var b = canvas.getBoundingClientRect(), items = [], kept = [];
   TAGS.forEach(function(tg){

@@ -16,14 +16,14 @@ window.PH_LAYOUTS = {
         note: "Finished goods at 50–55 °F across the whole dock face. 60 floor positions block-stacked 4 deep off a 12 ft dock aisle, clear of the route to the pack-room door. Insulated panel walls, full height." },
       { id: "pack", name: "Pack room", tone: "--flow-crop", noTag: true, x0: 0, x1: 80, z0: 30, z1: 75,
         note: "Harvest comes in through R1 on the north wall at the cooler end, over the floor scale to staging. The Japanese/English packing machine (one machine for both) sits in the vendor's 36 × 36 ft cell, turned so its infeed is at the cooler end, fed straight from staging, and its outfeed at the west end, where the pack table boxes wrapped Js onto the J/E pallet. The five 6 × 3 ft Keiki tables form one row beside it, with two pallet spaces for packed cases and the empty-bin pallet just south of them. A clear 28 × 16 ft palletizing area with the pallet wrapper against the cooler wall just north of the cooler door, 3 desks, hand-wash sinks at the pack room door and the break room door. Epoxy floor." },
-      { id: "break", name: "Break room", tone: "--survey", x0: 0, x1: 48, z0: 75, z1: 100, parts: [[0, 75, 48, 92], [0, 92, 24, 100]],
-        note: "1,008 ft² at the west end, an L around the bathrooms. Staff come in from the parking through P4 at the west end of the north wall, with a 6 × 6 ft block of mini lockers beside the door. Windows and a glass door look into the pack room. 12 ft ceiling." },
-      { id: "clean", name: "Cleaning store", short: "Cleaning", tone: "--ink-3", x0: 24, x1: 32, z0: 92, z1: 100,
-        note: "64 ft² on the west wall for cleaning supplies and the mop sink, next to the bathrooms, door from the break room." },
-      { id: "bath2", name: "Bathroom 2", short: "Bath 2", tone: "--ink-3", x0: 32, x1: 40, z0: 92, z1: 100,
-        note: "8 × 8 ft single-user bathroom on the west wall, door from the break room. Eyewash station on the wall outside." },
-      { id: "bath1", name: "Bathroom 1", short: "Bath 1", tone: "--ink-3", x0: 40, x1: 48, z0: 92, z1: 100,
-        note: "8 × 8 ft single-user bathroom on the west wall, in the break room's southwest corner, door from the break room." },
+      { id: "break", name: "Break room", tone: "--survey", x0: 0, x1: 48, z0: 75, z1: 100, parts: [[0, 75, 48, 92], [0, 92, 32, 100]],
+        note: "1,072 ft² at the west end, an L around the bathrooms. Staff come in from the parking through P4 at the west end of the north wall, with a 6 × 6 ft block of mini lockers beside the door. Windows and a glass door look into the pack room. 12 ft ceiling." },
+      { id: "clean", name: "Cleaning store", short: "Cleaning", tone: "--ink-3", x0: 32, x1: 38, z0: 92, z1: 100,
+        note: "48 ft² on the west wall for cleaning supplies and the mop sink, next to the bathrooms, door from the break room." },
+      { id: "bath2", name: "Bathroom 2", short: "Bath 2", tone: "--ink-3", x0: 38, x1: 43, z0: 92, z1: 100,
+        note: "5 × 8 ft single-user bathroom on the west wall, toilet and sink, door from the break room. Eyewash on the break room wall beside the cleaning store." },
+      { id: "bath1", name: "Bathroom 1", short: "Bath 1", tone: "--ink-3", x0: 43, x1: 48, z0: 92, z1: 100,
+        note: "5 × 8 ft single-user bathroom on the west wall, in the break room's southwest corner, toilet and sink, door from the break room." },
       { id: "store", name: "Box, bag and label store", short: "Box store", tone: "--flow-box", x0: 48, x1: 80, z0: 75, z1: 100,
         note: "800 ft² at the southwest corner, open to the pack room with no wall between: the forklift comes in R3 and sets pallets straight down. A 2-deep lane of boxes and bags two high (28 pallets) off a 12 ft aisle, with shelving for labels and small supplies. The box erector stands here against the bathroom wall, with the cartons it feeds off." }
     ],
@@ -31,10 +31,10 @@ window.PH_LAYOUTS = {
       /* break room to pack room: a glass door, and windows either side of it from 3.5 to 7 ft */
       { axis: "z", at: 75, from: 0, to: 48, h: 12, holes: [[3, 17, 3.5, 7, "glass"], [20, 24, 0, 7, "glass"], [27, 38, 3.5, 7, "glass"]] },
       /* cleaning store and bathrooms along the west wall, doors from the break room */
-      { axis: "z", at: 92, from: 24, to: 48, h: 12, holes: [[26.5, 29.5, 0, 7], [34.5, 37.5, 0, 7], [42.5, 45.5, 0, 7]] },
-      { axis: "x", at: 24, from: 92, to: 100, h: 12, holes: [] },
+      { axis: "z", at: 92, from: 32, to: 48, h: 12, holes: [[33.5, 36.5, 0, 7], [39, 42, 0, 7], [44, 47, 0, 7]] },
       { axis: "x", at: 32, from: 92, to: 100, h: 12, holes: [] },
-      { axis: "x", at: 40, from: 92, to: 100, h: 12, holes: [] },
+      { axis: "x", at: 38, from: 92, to: 100, h: 12, holes: [] },
+      { axis: "x", at: 43, from: 92, to: 100, h: 12, holes: [] },
       { axis: "x", at: 48, from: 75, to: 100, h: 12, holes: [] }
     ],
     openings: [
