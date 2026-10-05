@@ -43,8 +43,6 @@ window.PH_LAYOUTS = {
       { axis: "x", at: 48, from: 75, to: 100, h: 12, holes: [] }
     ],
     openings: [
-      { mark: "P1", type: "door", face: "N", a: 38, b: 41, h: 7, size: "3 × 7 ft", room: "Cold storage",
-        detail: "Egress from the cooler, north of the dock well and its side slope, so it opens onto ground at floor level" },
       { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, size: "9 × 10 ft", room: "Cold storage",
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal, on the low end of the dock face. Auto" },
       { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, size: "9 × 10 ft", room: "Cold storage",
@@ -99,18 +97,20 @@ window.PH_LAYOUTS = {
       { axis: "z", at: 70, from: 0, to: 80, h: "eave", holes: [[2, 12, 0, 10]] }
     ],
     openings: [
-      { mark: "P1", type: "door", face: "N", a: 36, b: 39, h: 7, size: "3 × 7 ft", room: "Dry storage",
-        detail: "Egress, between the two dock wells and clear of their side slopes, so it opens onto ground at floor level" },
       { mark: "D1", type: "dock", face: "N", a: 63, b: 72, h: 10, size: "9 × 10 ft", room: "Dry storage",
         detail: "48 in dock square to the wall, leveller and seal, on the south part of the east wall (site map), where grade is lowest, its apron 4 ft below the floor. This one does not need the packhouse's angle: its 115 ft apron fits straight out, so the container backs in square and the forklift runs straight into dry storage. Container drops of packaging and fertiliser. Auto" },
       { mark: "D2", type: "dock", truck: "box", face: "N", a: 7.5, b: 16.5, h: 10, size: "9 × 10 ft", room: "Dry storage",
         detail: "Box-truck dock on the north part of the east wall (site map), its apron 4 ft below the floor like D1, leveller and seal. The weekly box truck backs in and is loaded straight off the dock. Auto" },
-      { mark: "P2", type: "door", face: "E", a: 40, b: 43, h: 7, size: "3 × 7 ft", room: "Dry storage",
-        detail: "Egress" },
+      { mark: "P1", type: "door", face: "E", a: 2, b: 5, h: 7, size: "3 × 7 ft", room: "Dry storage",
+        detail: "Egress on the south wall (site map) at its east end, out of the dock staging area" },
+      { mark: "P2", type: "door", face: "E", a: 67, b: 70, h: 7, size: "3 × 7 ft", room: "Dry storage",
+        detail: "Egress on the south wall (site map) at the west end of dry storage, past the end of the racks, 65 ft from P1" },
       { mark: "C1", type: "door", face: "E", a: 74, b: 77, h: 7, size: "3 × 7 ft", room: "Fert room",
         detail: "Exterior only" },
       { mark: "R1", type: "rollup", forklift: true, face: "W", a: 73, b: 83, h: 10, size: "10 × 10 ft", room: "Fert room",
         detail: "Forklift roll-up at grade on the fert room's north wall (site map), facing the packhouse across the lane. Boxes come out of dry storage through I1 and leave here for the packhouse's R3. No trucks" },
+      { mark: "P3", type: "door", face: "W", a: 85, b: 88, h: 7, size: "3 × 7 ft", room: "Fert room",
+        detail: "Second exit from the fert room, beside R1 on the north wall: swings out, panic bar" },
       { mark: "V1", type: "louvre", face: "E", a: 90, b: 94, h: 5, sill: 2, size: "4 × 3 ft", room: "Fert room",
         detail: "Low intake. High exhaust above it at 10–13 ft" },
       { mark: "V2", type: "louvre", face: "E", a: 90, b: 94, h: 13, sill: 10, size: "4 × 3 ft", room: "Fert room",

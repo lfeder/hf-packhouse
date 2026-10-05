@@ -86,11 +86,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 </nav>
 <p class="lbl">Packhouse and fert building · relative to finished floor</p>
 <h1>Grades</h1>
-<p class="sub">Both floors and the pad around and between them sit at one level, <b>FF 0.00</b>, set at existing grade
-  along the packhouse's north edge. East of the buildings the whole truck court drops to <b>−4.00</b> so every truck
-  bed meets the 48 in docks. A retaining wall on the line of the buildings' east walls holds the difference: the
-  buildings' own foundation walls, plus the 50 ft gap between them. Trucks come down an 8% ramp at the north end.
-  Feet relative to the floor; existing grade and cut and fill come next, from the Pattison topo.</p>
+
 
 <div class="viewer">
   <canvas id="stage"></canvas>
@@ -103,7 +99,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
       <button type="button" id="v-plan" aria-pressed="false">Plan</button>
     </div>
     <div class="grp">
-      <button type="button" id="t-x" aria-pressed="false">Heights × 3</button>
+      <button type="button" id="t-x" aria-pressed="false" title="Stretch everything vertically 3 times so a 4 ft step is easy to see">Exaggerate heights</button>
       <button type="button" id="t-tags" aria-pressed="true">Labels</button>
     </div>
   </div>
@@ -127,16 +123,21 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     the east so water runs back to a trench drain along the wall and a trailer sits tipped slightly toward its dock.
     All four docks (packhouse D1 and D2, fert D1 for containers and D2 for the box truck) open onto it.</li>
   <li><b>Retaining wall on the east wall line, 4 ft.</b> Along the buildings it is their foundation: the east wall's
-    footing goes 4 ft deeper. Freestanding wall is needed only across the 50 ft gap between the buildings, past the
-    fert building's south-east corner and beside the top of the ramp, about 75 ft in all. It needs a guard rail on
+    footing goes 4 ft deeper. Freestanding wall is needed only across the gap between the buildings (38 ft, the forklift
+    ramp takes the rest), a few feet past each end, and along the forklift ramp's lane side, about 100 ft in all. It needs a guard rail on
     top wherever people walk the pad above.</li>
   <li><b>Ramp at the north end, 8%.</b> 50 ft from the pad down to the court, 30 ft wide, east of the packhouse's R2
     box-truck apron so the two stay apart. The ramp and the court's east and south edges finish in 2:1 earth banks
     (a foot down for every 2 ft across) rather than walls. Grade falls to the south, so the topo may show the court
     meets existing ground there and trucks can come in level from the south or east, with no ramp at all.</li>
-  <li><b>Doors on the east wall.</b> The two P1 personnel doors open 4 ft above the court, so each gets a landing
-    and steps down. The packhouse's could move to the north wall beside R2 instead; the fert building's has no other
-    wall free in dry storage now that the racks run the north wall.</li>
+  <li><b>Forklift ramp for ground-level trucks.</b> Flatbeds and other trucks that cannot use a dock park in the court
+    at its foot. The ramp runs 40 ft at 10% from the lane down to the court, 12 ft wide, along the fert building's
+    north wall, so a forklift can drive out of the fert room's R1, down, and unload from the side. A short wall holds
+    the lane beside it, rising from nothing to 4 ft, with a rail on top. Check the forklift maker's limit for a
+    loaded truck on a 10% grade.</li>
+  <li><b>No doors on the east walls.</b> Both buildings' east walls stand 4 ft above the court, so the packhouse
+    exits through P4 on the north wall and P3 onto the bin wash, and the fert building through P1 and P2 on its south
+    wall and C1 and P3 from the fert room.</li>
   <li><b>At grade:</b> the packhouse's R1 and R2 and the staff door P4 on the north wall, R3 and P3 onto the bin wash,
     the fert building's R1 on the lane, and its south-wall doors. Personnel sills sit 2–6 in above the paving
     outside; roll-ups get a flush threshold with the paving falling away.</li>
@@ -147,13 +148,13 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     and banks really are.</li>
 </ul>
 <footer>
-  <span>Layouts and set positions: packhouse-layouts.js?v=fae84f8</span>
+  <span>Layouts and set positions: packhouse-layouts.js?v=cff4603</span>
   <span>Datum: FF 0.00 = existing grade at the packhouse's north edge</span>
   <span>Drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=fae84f8"></script>
+<script src="packhouse-layouts.js?v=cff4603"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -165,10 +166,15 @@ var WALL = PH.x + PH.w;                                  /* the east wall line *
 var DROP = 4, RISE = 0.01, BANK = 2;                     /* court depth at the wall, its fall back to the wall, bank run per ft */
 var COURT = { x0:WALL, x1:WALL + 115, y0:PH.y, y1:FE.y + FE.h + 10 };
 var RAMP = { x0:WALL + 12, x1:WALL + 42, y0:PH.y - DROP / 0.08, y1:PH.y, pct:8 };   /* clear of R2's truck apron, which ends 6 ft past the corner */
+/* forklift ramp from the lane down to the court, against the fert building's north wall, falling 10% to the east */
+var FRAMP = { x0:WALL - DROP / 0.10, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:10 };
+function framp(x, y){ return x >= FRAMP.x0 && x < FRAMP.x1 && y >= FRAMP.y0 && y <= FRAMP.y1; }
+function frampE(x){ return -(x - FRAMP.x0) * FRAMP.pct / 100; }
 function courtE(x){ return -DROP + RISE * Math.max(0, Math.min(x, COURT.x1) - WALL); }
 function rampE(y){ return -DROP + (PH.y - y) * RAMP.pct / 100; }
 /* finished grade: 0.00 west of the wall line; east of it the court and ramp, with 2:1 banks up to 0.00 around them */
 function E(x, y){
+  if (framp(x, y)) return frampE(x);
   if (x < WALL) return 0;
   if (x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1) return courtE(x);
   if (x >= RAMP.x0 && x <= RAMP.x1 && y >= RAMP.y0 && y < RAMP.y1) return rampE(y);
@@ -209,7 +215,7 @@ function edges(o){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geom
     var x = p.getX(i) + X0 + nx / 2, y = p.getZ(i) + Y0 + ny / 2;
     /* a vertex on the wall line takes the pad side, the next one the court, so the wall shows as a step */
     var e = E(x, y); p.setX(i, x); p.setZ(i, y); p.setY(i, e);
-    var inC = x >= WALL && ((x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1) || (x >= RAMP.x0 && x <= RAMP.x1 && y >= RAMP.y0 && y <= RAMP.y1));
+    var inC = framp(x, y) || x >= WALL && ((x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1) || (x >= RAMP.x0 && x <= RAMP.x1 && y >= RAMP.y0 && y <= RAMP.y1));
     c.setHex(e > -0.02 ? 0xE4E0D2 : inC ? 0x9DA6AE : 0xC9B48F); col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
   }
   geo.setAttribute("color", new THREE.BufferAttribute(col, 3)); geo.computeVertexNormals();
@@ -217,8 +223,12 @@ function edges(o){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geom
 })();
 /* retaining wall, in short runs so its top steps with the ground beside it */
 for (var y = wallY0; y < wallY1; y += 2){
-  var h = -E(WALL + 0.6, y + 1); if (h < 0.05) continue;
-  box(0.8, h + 0.4, 2, M.wall, WALL + 0.4, -h / 2 + 0.2, y + 1);
+  var lo = E(WALL + 0.6, y + 1), h = E(WALL - 0.6, y + 1) - lo; if (h < 0.05) continue;
+  box(0.8, h + 0.4, 2, M.wall, WALL + 0.4, lo + (h + 0.4) / 2, y + 1);
+}
+for (var x = FRAMP.x0; x < FRAMP.x1; x += 2){
+  var hf = -frampE(x + 1); if (hf < 0.05) continue;
+  box(2, hf + 0.4, 0.8, M.wall, x + 1, -hf / 2 + 0.2, FRAMP.y0 - 0.4);
 }
 /* buildings: shell, roof, docks and doors */
 var TAGS = [], host = $("#tags");
@@ -235,12 +245,6 @@ function toSite(id, x, z){ var P = SITE[id], b = L[id]; return [P.x + b.D - z, P
     var m = o.type === "dock" ? M.dock : o.type === "rollup" ? M.roll : M.dark;
     box(along === "y" ? 0.4 : w, o.h, along === "y" ? w : 0.4, m, p[0], o.h / 2, p[1]);
     tag(o.mark, p[0] + (o.face === "N" ? 4 : o.face === "S" ? -4 : 0), o.h + 2, p[1] + (o.face === "W" ? -4 : o.face === "E" ? 4 : 0), "mark" + (o.type === "dock" ? " dock" : ""));
-    /* a personnel door on the east wall opens above the court: landing and steps down */
-    if (o.face === "N" && o.type === "door"){
-      box(5, 0.5, 6, M.step, p[0] + 2.5, -0.25, p[1]);
-      for (var k = 0; k < 6; k++) box(0.95, 0.67, 4, M.step, p[0] + 5.5 + k * 0.95, -0.67 * (k + 1) + 0.33, p[1]);
-      tag("Landing, 6 steps down", p[0] + 9, 3, p[1] + 5, "wall");
-    }
   });
 });
 /* bin wash */
@@ -264,15 +268,21 @@ function rig(x, y, ang, len, ground){
     var p = toSite(id, 0, (o.a + o.b) / 2); rig(p[0], p[1], -Math.PI / 2, 24, 0);
   });
 });
+/* a flatbed standing in the court at the foot of the forklift ramp, unloaded from the side */
+(function(){ var g = new THREE.Group(); g.position.set(WALL + 7, courtE(WALL + 7), FRAMP.y0 - 8); root.add(g);   /* runs east, clear of the dock trucks */
+  box(40, 0.8, 8.2, M.dark, 20, 4, 0, g); box(8, 7.6, 8, M.truck, 45, 4.6, 0, g);
+  for (var i = 0; i < 4; i++) box(3.6, 3.4, 3.6, M.step, 4 + i * 9, 6.1, 0, g); })();
+tag("Forklift ramp 10% · lane <b>0.00</b> to court <b>−4.00</b>", (FRAMP.x0 + FRAMP.x1) / 2, 3, (FRAMP.y0 + FRAMP.y1) / 2, "low");
+tag("Flatbed, unloaded at court level", WALL + 30, 9, FRAMP.y0 - 8, "");
 /* labels on the grading */
 var mid = (COURT.y0 + COURT.y1) / 2;
 tag("Truck court <b>−4.00</b> at the wall", WALL + 22, 2, mid - 10, "low");
 tag("Rises 1% east · <b>" + courtE(COURT.x1).toFixed(2).replace("-", "−") + "</b> at 115 ft", COURT.x1 - 18, 2, mid + 30, "low");
 tag("Ramp 8% · <b>0.00</b> to <b>−4.00</b> over " + (RAMP.y1 - RAMP.y0) + " ft", (RAMP.x0 + RAMP.x1) / 2, 3, (RAMP.y0 + RAMP.y1) / 2 - 8, "low");
-tag("Retaining wall, 4 ft", WALL + 1, 3, (PH.y + PH.h + FE.y) / 2, "wall");
+tag("Retaining wall, 4 ft", WALL + 1, 3, PH.y + PH.h + 12, "wall");
 tag("2:1 bank to <b>0.00</b>", COURT.x1 + 5, 0, mid - 40, "wall");
 tag("Pad <b>0.00</b>", PH.x + 30, 1, PH.y - 22, "");
-tag("Lane <b>0.00</b>", PH.x + 80, 1, (PH.y + PH.h + FE.y) / 2 + 8, "");
+tag("Lane <b>0.00</b>", PH.x + 30, 1, FE.y - 8, "");
 
 /* ---------- camera ---------- */
 var target = new THREE.Vector3(615, 0, 585), cam = { az:2.25, pol:0.95, r:430 }, goal = null, needs = true, ex = 1;
@@ -343,7 +353,9 @@ section("Across the east wall at the fert building's D1 dock, 45 ft container", 
   { building:[-30, 0], truck:[0.6, 45], labels:[[0, -DROP, "at the wall"], [115, courtE(WALL + 115), "115 ft out"]], notes:[[60, -3.2, "#43647F", "COURT RISES 1% EAST"], [-15, 1.2, "#15181C", "FLOOR 0.00"], [131, 0.6, "#15181C", "2:1 BANK"]] });
 section("Across the gap between the buildings: lane, retaining wall, court", [[-50, 0], [0, 0], [0, -DROP], [70, courtE(WALL + 70)]],
   { wall:0, wallTop:3.5, labels:[[0, -DROP, "foot of the wall"]], notes:[[-25, 1.2, "#15181C", "LANE AND BIN WASH 0.00"], [3, 4.3, "#B23A2B", "GUARD RAIL"], [40, -3.0, "#43647F", "COURT"]] });
-section("Down the ramp at the north end", [[-20, 0], [0, 0], [RAMP.y1 - RAMP.y0, -DROP], [RAMP.y1 - RAMP.y0 + 40, -DROP]],
+section("Down the forklift ramp, lane to court, along the fert building", [[-20, 0], [0, 0], [FRAMP.x1 - FRAMP.x0, -DROP], [FRAMP.x1 - FRAMP.x0 + 40, courtE(WALL + 40)]],
+  { labels:[[0, 0, "lane"], [FRAMP.x1 - FRAMP.x0, -DROP, "court"]], notes:[[(FRAMP.x1 - FRAMP.x0) / 2, -1.6, "#43647F", "10% FORKLIFT RAMP"], [-10, 0.8, "#15181C", "LANE"]] });
+section("Down the truck ramp at the north end", [[-20, 0], [0, 0], [RAMP.y1 - RAMP.y0, -DROP], [RAMP.y1 - RAMP.y0 + 40, -DROP]],
   { labels:[[0, 0, "top of the ramp"], [RAMP.y1 - RAMP.y0, -DROP, "court"]], notes:[[(RAMP.y1 - RAMP.y0) / 2, -1.3, "#43647F", "8% RAMP"], [-10, 0.8, "#15181C", "PAD"]] });
 
 var spots = [
@@ -354,7 +366,8 @@ var spots = [
   ["Truck court, 115 ft east of the wall", courtE(WALL + 115), "Rises 1% from the wall"],
   ["Top of the ramp, north end", 0, "Ramp 8% over " + (RAMP.y1 - RAMP.y0) + " ft"],
   ["Retaining wall", 0, "4 ft, on the east wall line from about " + Math.round(wallY0 - PH.y) + " ft north of the packhouse to " + Math.round(wallY1 - FE.y - FE.h) + " ft past the fert building"],
-  ["Landings at both P1 doors", 0, "6 steps down to the court"]
+  ["Forklift ramp, top at the lane", 0, "10% over " + (FRAMP.x1 - FRAMP.x0) + " ft, 12 ft wide, against the fert building's north wall"],
+  ["Forklift ramp, foot at the court", -DROP, "Flatbeds park alongside and unload from the side"]
 ];
 $("#spots").innerHTML = spots.map(function(s){ return "<tr><td>" + s[0] + '</td><td class="n">' + f2(s[1]) + "</td><td>" + s[2] + "</td></tr>"; }).join("");
 })();
