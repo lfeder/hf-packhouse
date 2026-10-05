@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=6381e93</span>
+  <span>Layouts: packhouse-layouts.js?v=b92705a</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=6381e93"></script>
+<script src="packhouse-layouts.js?v=b92705a"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -693,7 +693,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=6381e93), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=b92705a), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
@@ -722,7 +722,7 @@ var FLOWS = {
       { id:"bin",  name:"Boxes and bags in", what:"Container at D1, each pallet driven straight to a rack bay", tone:"--flow-box", plt:15.7,
         route:["D1", "@rack"] },
       { id:"bout", name:"Boxes to the packhouse", what:"Through I1 and the fert room, out R1 on its north wall, across the lane and the bin wash into the packhouse's R3", tone:"--flow-crop", plt:15.7,
-        route:["@rack", "R1", { site:[527.2, 608] }, { site:[542.2, 608] }, "ph80:R3", "boxstage"] },
+        route:["@rack", "R1", { site:[507.7, 608] }, { site:[522.7, 608] }, "ph80:R3", "boxstage"] },
       { id:"src",  name:"Salt pallets to the pick face", what:"Full pallets brought down to break into mixed pallets", tone:"--ink-2", plt:3.9,
         route:["@fert", "pick"] },
       { id:"tout", name:"Mixed pallets to the truck", what:"Weekly 8-pallet box truck at the D2 dock", tone:"--survey", plt:7,
@@ -783,9 +783,9 @@ var FLOWS = {
       { id:"hj",   name:"J/E bins to the machine", what:"Carried by hand from staging to the J/E wrapper infeed, at its west end", tone:"--ink-2", plt:1122, mode:"hand",
         route:["stage", "infeed"] },
       { id:"ek",   name:"Keiki empties to the bin wash", what:"A full pallet of empty bins (~27), pallet jack out R3 to the bin wash", tone:"--flow-box", plt:84, mode:"jack",
-        route:["kempty", "R3", { site:[542.2, 580] }] },
+        route:["kempty", "R3", { site:[522.7, 580] }] },
       { id:"ej",   name:"J/E empties to the bin wash", what:"Empties stacked on a pallet at the infeed, pallet jack out R3 to the bin wash", tone:"--flow-box", plt:42, mode:"jack",
-        route:["infeed", "R3", { site:[542.2, 580] }] },
+        route:["infeed", "R3", { site:[522.7, 580] }] },
       { id:"kc",   name:"Keiki cases onto a pallet", what:"Packed cases carried from the tables to the Keiki pallets", tone:"--flow-crop", plt:3983, mode:"hand",
         route:["@tablesOut", "kpalsp"] },
       { id:"jc",   name:"J/E cases onto the pallet", what:"Boxed at the pack table at the wrapper's outfeed, carried to the J/E pallet", tone:"--flow-crop", plt:1757, mode:"hand",
