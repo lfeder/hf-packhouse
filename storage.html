@@ -51,7 +51,7 @@ footer{margin-top:36px;padding-top:12px;border-top:1px solid var(--rule-2);color
 
 <div class="wrap">
 <nav class="tabs" aria-label="Packhouse pages">
-  <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d">3D models</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html" aria-current="page">Storage</a>
+  <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d">3D models</a><a href="grades.html">Grades</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html" aria-current="page">Storage</a>
 </nav>
 
 <h1>Pallet space after the expansion</h1>
@@ -92,7 +92,7 @@ hold three months of burn; the cooler needs one full round of outbound shipments
   <li><b>Pallet sizes</b> are each item's own pallet or order unit in the system, e.g. 2,420 lb of calcium nitrate,
     500 Keiki boxes, 64 cases of 1,000 bags.</li>
   <li><b>Dry storage</b> is racked two high on the floor plus one shelf level: three pallets per position.
-    8 rack lines × 6 bays × 2 pallets × 3 = 288.</li>
+    8 rack lines × 6 bays × 2 pallets × 3 = 288, plus 2 more bays where the north-wall line runs on to the east wall: 300.</li>
   <li><b>Fert room</b> is block-stacked two high: 88 pallets.</li>
   <li><b>Cooler</b> is floor-stacked: 60 positions.</li>
   <li><b>Dry storage holds cucumber boxes and bags only.</b> Growing supplies stay where they are; coir slabs stay outdoors.</li>
@@ -119,7 +119,7 @@ const ITEMS = [
   ["Bags", "Bags Keiki, 1 lb", 16333, 64000, "64,000", 468 / 64],
   ["Bags", "Bags Keiki, 2 lb", 15000, 64000, "64,000", 450 / 64],
 ];
-const CAP = { cold: 60, fert: 88, dry: 288 };
+const CAP = { cold: 60, fert: 88, dry: 300 };
 /* one round of outbound shipments, staged in the cooler at once */
 const SHIP = [
   ["40 ft container of cucumbers", 20],

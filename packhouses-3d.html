@@ -128,7 +128,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 
 <div class="wrap">
 <nav class="tabs" aria-label="Packhouse pages">
-  <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d" aria-current="page">3D models</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
+  <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d" aria-current="page">3D models</a><a href="grades.html">Grades</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
 </nav>
 <header>
   <div class="stamp" id="stamp"></div>
@@ -232,18 +232,18 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=628795f</span>
+  <span>Layouts: packhouse-layouts.js?v=c38f85a</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=628795f"></script>
+<script src="packhouse-layouts.js?v=c38f85a"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 "use strict";
 var L = window.PH_LAYOUTS, $ = function(s){ return document.querySelector(s); };
-var RIG = 45, APRON = 115;   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
+var RIG = 45, APRON = 115, BOX_DOCK = 75;   /* a depressed box-truck dock needs ~75 ft to ramp 4 ft back up */   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
 var TYPE = { dock:"Loading dock", rollup:"At-grade roll-up", door:"Personnel", louvre:"Louvre", internal:"Internal opening" };
 var COPY = {
   ph80: {
@@ -254,9 +254,9 @@ var COPY = {
   },
   fert80: {
     lede: "Dry storage takes the north 70 ft on standard counterbalance aisles, the fert room the south 30 ft behind a full-height partition. The same 5,600 / 2,400 split as the original fert room model.",
-    open: "Grade falls north to south, so on the east wall the dock sits on the low south part and the at-grade box-truck roll-up on the high north part. Fertiliser runs at most 70 ft from the dock to the fert room through I1. The fert room's exterior door and vents are on the east wall.",
-    note: "<b>This shape needs no reach truck.</b> Eight rack lines on 12 ft aisles carry 288 pallets two high on the floor plus a shelf, against 204 needed for three months after the expansion. The fert room holds 88 positions two-high against 71, with the tanks on the south wall.",
-    stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","1 + 1 roll-up"]]
+    open: "Both docks are on the east wall with their aprons 4 ft below the floor: D1 for containers on the low south part, D2 for the box truck on the north part. Boxes leave for the packhouse through I1 and R1, a forklift roll-up at grade on the fert room's north wall facing the bin wash. Fertiliser runs at most 70 ft from the dock to the fert room through I1. The fert room's exterior door and vents are on the east wall.",
+    note: "<b>This shape needs no reach truck.</b> Eight rack lines on 12 ft aisles carry 300 pallets two high on the floor plus a shelf, against 204 needed for three months after the expansion. The fert room holds 88 positions two-high against 71, with the tanks on the south wall.",
+    stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","2 + 1 roll-up"]]
   }
 };
 
@@ -415,7 +415,8 @@ function build(id){
   /* site */
   var wells = B.openings.filter(function(o){ return o.type === "dock" && !o.angle; }).map(function(o){ return [o.a - 2, -46, o.b + 2, 0]; });
   holedPad(-90, -175, W + 90, D + 80, -0.1, 0.5, M.ground, wells);
-  var sq = B.openings.filter(function(o){ return o.type === "dock" && !o.angle; });          /* square docks share one straight apron */
+  var sq = B.openings.filter(function(o){ return o.type === "dock" && !o.angle && o.truck !== "box"; });   /* square container docks share one straight apron */
+  B.openings.filter(function(o){ return o.truck === "box"; }).forEach(function(o){ holedPad(o.a - 6, -BOX_DOCK, o.b + 6, 0, -0.02, 0.4, M.hard, wells); });
   var sqA = sq.length ? Math.max(-12, Math.min.apply(null, sq.map(function(o){ return o.a; })) - 6) : 0;
   var sqB = sq.length ? Math.min(W + 12, Math.max.apply(null, sq.map(function(o){ return o.b; })) + 6) : 0;
   if (sq.length) holedPad(sqA, -APRON, sqB, 0, -0.02, 0.4, M.hard, wells);                   /* 6 ft past the outer dock, as the plan draws it */
@@ -453,7 +454,7 @@ function build(id){
     [-5.4, 5.4].forEach(function(dx){ box(0.7, o.h + 1.4, 2.6, M.truckd, cx + dx, (o.h + 1.4) / 2, -1.3); });
     box(11.5, 0.7, 2.6, M.truckd, cx, o.h + 1.05, -1.3);
     var lev = box(7, 0.3, 8, M.steel, cx, -0.3, -3.6); lev.rotation.x = Math.atan(0.5 / 8);
-    truck("N", cx, B, RIG, 4, -4, G.site);
+    truck("N", cx, B, o.truck === "box" ? 24 : RIG, 4, -4, G.site);
   });
   B.openings.filter(function(o){ return o.type === "rollup" && !o.forklift; }).forEach(function(o, i){
     var cx = (o.a + o.b) / 2;
@@ -567,11 +568,13 @@ function pallets(x0, z0, nx, nz, stepx, stepz, levels, m, g, fillRate){
   }
 }
 
-function racks(LINES, Z0, BAYS, BAY){
+/* a rack line is its x, or [x, z0, bays] when it starts or ends apart from the rest */
+function lineOf(l, Z0, BAYS){ return typeof l === "number" ? { x:l, z0:Z0, bays:BAYS } : { x:l[0], z0:l[1], bays:l[2] }; }
+function racks(LINES, Z0_, BAYS_, BAY){
   /* two pallets stacked on the floor, one on a shelf beam above */
   var RD = 3.5, LVL = [0, 4.3, 9];
-  LINES.forEach(function(x0){
-    var cx = x0 + RD / 2;
+  LINES.forEach(function(l){
+    var ln = lineOf(l, Z0_, BAYS_), x0 = ln.x, Z0 = ln.z0, BAYS = ln.bays, cx = x0 + RD / 2;
     for (var b = 0; b <= BAYS; b++) box(RD, 14, 0.3, M.steel, cx, 7, Z0 + b * BAY);
     LVL.forEach(function(ly){
       if (ly === 9) [-1.5, 1.5].forEach(function(off){ box(0.3, 0.4, BAYS * BAY, M.steel, cx + off, ly + 0.2, Z0 + BAYS * BAY / 2); });
@@ -592,7 +595,7 @@ function tanks(xs, z){
    routing reads the same spec, so what is drawn is what the forklift drives round. */
 function fitSpec(b){
   return Object.assign({
-    lines: [2, 17.5, 21, 36.5, 40, 55.5, 59, 74.5], z0: 16, bays: 6,   /* eight rack lines on 12 ft aisles, 8.5 ft bays */
+    lines: [[2, 0.5, 8], 17.5, 21, 36.5, 40, 55.5, 59, 74.5], z0: 16, bays: 6,   /* eight rack lines on 12 ft aisles, 8.5 ft bays; the north-wall line runs on to the east wall */
     lanes: [{ x0:14, z0:70.5, nx:16, nz:2, face:"+z" },                 /* 2 deep along the partition, clear of I1 */
             { x0:54, z0:90.5, nx:6, nz:2, face:"-z" }],                 /* 2 deep, south-east */
     tanks: [[7, 95.5], [13, 95.5], [19, 95.5], [25, 95.5], [31, 95.5], [37, 95.5]],
@@ -689,9 +692,9 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (copied from site-placement.html DEFAULTS), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=c38f85a), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
-var PLACE = { ph80:{ x:505.2, y:488, rot:1 }, fert80:{ x:505.2, y:618, rot:1 } };
+var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
    back empty at SPEED ft/min (a counterbalance truck averaged over turns and doorways). */
 var SPEED = 300, HANDLE = 1.5, BAG_MIN = 0.4, WRAP_MIN = 4;
@@ -717,12 +720,12 @@ var FLOWS = {
         route:["D1", "@fert"] },
       { id:"bin",  name:"Boxes and bags in", what:"Container at D1, each pallet driven straight to a rack bay", tone:"--flow-box", plt:15.7,
         route:["D1", "@rack"] },
-      { id:"bout", name:"Boxes to the packhouse", what:"Out R1, west along the lane, across the bin wash into the packhouse's R3", tone:"--flow-crop", plt:15.7,
-        route:["@rack", "R1", { site:[610.6, 630] }, { site:[610.6, 608] }, { site:[542.2, 608] }, "ph80:R3", "boxstage"] },
+      { id:"bout", name:"Boxes to the packhouse", what:"Through I1 and the fert room, out R1 on its north wall, across the lane and the bin wash into the packhouse's R3", tone:"--flow-crop", plt:15.7,
+        route:["@rack", "R1", { site:[527.2, 608] }, { site:[542.2, 608] }, "ph80:R3", "boxstage"] },
       { id:"src",  name:"Salt pallets to the pick face", what:"Full pallets brought down to break into mixed pallets", tone:"--ink-2", plt:3.9,
         route:["@fert", "pick"] },
-      { id:"tout", name:"Mixed pallets to the truck", what:"Weekly 8-pallet box truck at R1", tone:"--survey", plt:7,
-        route:["pick", "R1"] },
+      { id:"tout", name:"Mixed pallets to the truck", what:"Weekly 8-pallet box truck at the D2 dock", tone:"--survey", plt:7,
+        route:["pick", "D2"] },
       { id:"loc",  name:"Fert to the fertigator", what:"Bags for the Lalamilo stock tanks, in this room", tone:"--flow-dry", plt:1.6,
         route:["@fert", "tanks"] }
     ],
@@ -731,14 +734,14 @@ var FLOWS = {
       ["Wrap and label mixed pallets", 7 * WRAP_MIN, "7 pallets at " + WRAP_MIN + " min each"]
     ],
     notes: [
-      ["bout", "<b>Boxes to the packhouse</b> leave R1, run west along the 20 ft lane between the fert building and the bin wash, and turn in across the bin wash pad to the packhouse's R3, then to the box and bag staging beside the erector, which holds a day's supply. The pad is wet and has bins and people on it, so the crossing wants a marked lane."],
+      ["bout", "<b>Boxes to the packhouse</b> go through I1 and the fert room, leave R1 on its north wall, run along the 20 ft lane between the fert building and the bin wash, and turn in across the bin wash pad to the packhouse's R3, then to the box and bag staging beside the erector, which holds a day's supply. The pad is wet and has bins and people on it, so the crossing wants a marked lane."],
       ["", "<b>The pick and build area is not drawn yet.</b> Its spot is marked in the model."],
       ["", "<b>Left out:</b> micros on shelving, empty pallets, and the few minutes of backing the truck in. Small against the rest."]
     ],
     /* the animation, one step at a time: caption, flows chained into one trip */
     play: [
       ["Fertiliser in", "container at D1 to a fert stack", ["fin"]],
-      ["Fertiliser out", "salt pallet to the pick face, mixed pallet out R1 to the truck", ["src", "tout"]],
+      ["Fertiliser out", "salt pallet to the pick face, mixed pallet onto the truck at D2", ["src", "tout"]],
       ["Boxes in", "container at D1 to a rack bay", ["bin"]],
       ["Boxes out", "rack bay out R1, on to the packhouse", ["bout"]]
     ]
@@ -890,15 +893,15 @@ function storeOf(b){
   var add = function(set, sl){ (slots[set] = slots[set] || []).push(sl); };
   (fl.points || []).forEach(function(q){ add(q.set, { x:q.x, z:q.z, n:q.n }); });
   if (fl.racks){
-    var RD = 3.5, BAY = 8.5, Z0 = fl.racks.z0, BAYS = fl.racks.bays, dry = fl.racks.room;
-    var racks = fl.racks.lines.map(function(x){ return [x, Z0, x + RD, Z0 + BAYS * BAY]; });
+    var RD = 3.5, BAY = 8.5, dry = fl.racks.room;
+    var racks = fl.racks.lines.map(function(l){ var ln = lineOf(l, fl.racks.z0, fl.racks.bays); return [ln.x, ln.z0, ln.x + RD, ln.z0 + ln.bays * BAY]; });
     var inRack = function(x, z){ return racks.some(function(r){ return x > r[0] && x < r[2] && z > r[1] && z < r[3]; }); };
     rects = rects.concat(racks);
     racks.forEach(function(r){
       /* a rack line is picked from whichever side has an aisle rather than the back of the next line, from inside its own room */
       [[r[0] - 1, r[0] - 4.5], [r[2] + 1, r[2] + 4.5]].forEach(function(sd){
-        if (sd[1] < dry.x0 + CLEAR || sd[1] > dry.x1 - CLEAR || inRack(sd[0], Z0 + 1)) return;
-        for (var k = 0; k < BAYS; k++) add("rack", { x:sd[1], z:Z0 + BAY * (k + 0.5), n:6 });   /* 2 pallets × 3 levels a bay */
+        if (sd[1] < dry.x0 + CLEAR || sd[1] > dry.x1 - CLEAR || inRack(sd[0], r[1] + 1)) return;
+        for (var k = 0; k < Math.round((r[3] - r[1]) / BAY); k++) add("rack", { x:sd[1], z:r[1] + BAY * (k + 0.5), n:6 });   /* 2 pallets × 3 levels a bay */
       });
     });
   }

@@ -107,7 +107,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 
 <div class="wrap">
 <nav class="tabs" aria-label="Packhouse pages">
-  <a href="site-placement.html" id="nav-site" aria-current="page">Site map</a><a href="packhouses-3d.html#ph80" id="nav-3d">3D models</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
+  <a href="site-placement.html" id="nav-site" aria-current="page">Site map</a><a href="packhouses-3d.html#ph80" id="nav-3d">3D models</a><a href="grades.html">Grades</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
 </nav>
 
 <div class="layout">
@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=628795f" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=c38f85a" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="halos"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
       <path id="prop" fill="none" stroke="#B23A2B" stroke-width="1" opacity=".55" vector-effect="non-scaling-stroke"/>
@@ -173,9 +173,10 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=628795f). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=c38f85a). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
-    forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: one dock and one box-truck roll-up on the east wall.</li>
+    forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
+    forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
   <li><b>Roads are still not checked.</b> The aprons land on the Option 5 road loop, and the road needs redrawing
     around the buildings and parking.</li>
   <li><b>Accuracy.</b> Property line and buildings are traced from the CEAd sheet at 1:1000. Scale is 4.104 px/ft,
@@ -190,11 +191,11 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=628795f · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=c38f85a · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=628795f"></script>
+<script src="packhouse-layouts.js?v=c38f85a"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 40 or 45 ft containers on a chassis; apron sized for the 45 */
 const PROP = [[69.6,55.7],[608.7,54.6],[609.2,400.6],[1025.3,1104.3],[237.7,1570.3],[71.9,1355.6]];
@@ -213,7 +214,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = [{id:"ph", rot:1, x:505.2, y:488}, {id:"fert", rot:1, x:505.2, y:618}];   /* both 20 ft off the Lettuce Grow, room for the septic. Moving east pushes the angled dock apron toward the property line, so they also sit 10 ft further south than before: the apron clears with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=c38f85a; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -256,7 +257,7 @@ const faceName = (p, f) => ({N:"north",E:"east",S:"south",W:"west"})[FACES[(FACE
 /* Truck geometry off the dock face (local N face). Square docks and roll-ups share one straight apron as before;
    a dock with an angle gets a dock house bolted to the wall and its own apron strip along the angled truck path.
    Angle is measured from straight out, turning toward local +x (south on the site map). Returns site polygons. */
-const BOX_APRON = 50;   /* box trucks at a roll-up: truck plus room to pull in */
+const BOX_APRON = 50, BOX_DOCK = 75;   /* box trucks at a roll-up: truck plus room to pull in; at a 4 ft-deep dock, room to ramp back up */
 const LANE = 6, SEAL = 1.5;   /* half-width of a 12 ft dock bay; seal face past each side of the door */
 function dockGeom(p){
   const L = lay(p), out = {aprons:[], houses:[], trucks:[]};
@@ -264,14 +265,15 @@ function dockGeom(p){
   const box4 = (x0, z0, x1, z1) => S([[x0,z0],[x1,z0],[x1,z1],[x0,z1]]);
   const ops = L.openings.filter(o => o.face === "N" && (o.type === "dock" || o.type === "rollup"));
   const square = ops.filter(o => !o.angle);
-  const sqDocks = square.filter(o => o.type === "dock"), rolls = square.filter(o => o.type === "rollup");
+  const sqDocks = square.filter(o => o.type === "dock" && o.truck !== "box"), rolls = square.filter(o => o.type === "rollup");
+  for (const o of square.filter(o => o.truck === "box")) out.aprons.push(box4(o.a - 6, -BOX_DOCK, o.b + 6, 0));   /* box-truck dock: 4 ft down, ~75 ft to ramp back up */
   if (sqDocks.length){
     const a = Math.max(-12, Math.min(...sqDocks.map(o => o.a)) - 6), b = Math.min(L.W + 12, Math.max(...sqDocks.map(o => o.b)) + 6);
     out.aprons.push(box4(a, -APRON, b, 0));
   }
   for (const o of rolls) out.aprons.push(box4(o.a - 6, -BOX_APRON, o.b + 6, 0));
   for (const o of square){
-    const cx = (o.a + o.b) / 2, len = o.type === "dock" ? RIG : 24;
+    const cx = (o.a + o.b) / 2, len = o.type === "dock" && o.truck !== "box" ? RIG : 24;
     out.trucks.push({ body: box4(cx - 4.1, -1 - len, cx + 4.1, -1), cab: box4(cx - 4, -len - 12, cx + 4, -len - 2) });
   }
   for (const o of ops.filter(o => o.angle)){

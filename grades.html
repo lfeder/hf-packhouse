@@ -1,0 +1,289 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Packhouse Grades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F5F5F1; --vellum:#FFFFFF; --vellum-2:#EDEEE8;
+  --ink:#15181C; --ink-2:#565D64; --ink-3:#848C92;
+  --rule:#D3D6CE; --rule-2:#BFC3B9;
+  --survey:#B23A2B; --flow-dry:#A9702B; --flow-crop:#3B7645; --flow-box:#43647F;
+  --shadow:0 1px 0 rgba(21,24,28,.06), 0 8px 24px -18px rgba(21,24,28,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+    --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+    --rule:#2C3138; --rule-2:#3A4148;
+    --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131519; --vellum:#1A1D22; --vellum-2:#22262C;
+  --ink:#E7E9E3; --ink-2:#9CA3AA; --ink-3:#767E86;
+  --rule:#2C3138; --rule-2:#3A4148;
+  --survey:#E4796A; --flow-dry:#D9A15E; --flow-crop:#6FB37C; --flow-box:#7FA6C4;
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -20px #000;
+}
+body{background:var(--paper);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;line-height:1.5;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-block:22px 56px;padding-left:16px;padding-right:16px}
+.tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--rule-2);margin-bottom:22px}
+.tabs a{font:700 12px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  text-decoration:none;padding:12px 16px 10px;border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs a:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.lbl{font:600 11px/1.2 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;color:var(--ink-3);margin:0 0 6px}
+h1{font-size:30px;line-height:1.1;margin:0 0 8px;letter-spacing:-.02em;font-weight:700;text-wrap:balance}
+h2{font:700 13px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;margin:34px 0 10px;padding-top:14px;border-top:1.5px solid var(--ink)}
+.sub{color:var(--ink-2);margin:0;max-width:78ch;font-size:14.5px}
+.card{background:#fff;border:1px solid var(--rule-2);box-shadow:var(--shadow);margin-top:16px}
+.card svg{display:block;width:100%;height:auto}
+.plan svg{max-height:86vh}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--ink-2);margin-top:10px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend svg{width:22px;height:10px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font:600 10.5px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);text-align:left;border-bottom:1px solid var(--rule-2);padding:6px 10px 6px 0}
+td{padding:7px 10px 7px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.notes{margin:14px 0 0;padding:0;list-style:none;max-width:84ch}
+.notes li{padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+.notes b{color:var(--ink)}
+footer{margin-top:30px;color:var(--ink-3);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 26px}
+/* drawing ink stays on the white sheet in both themes */
+svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weight:700;letter-spacing:.04em}
+svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:0}
+</style>
+
+<div class="wrap">
+<nav class="tabs" aria-label="Packhouse pages">
+  <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d">3D models</a><a href="grades.html" aria-current="page">Grades</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
+</nav>
+<p class="lbl">Packhouse and fert building · relative to finished floor</p>
+<h1>Grades</h1>
+<p class="sub">Both floors and the pad between them sit at one level, <b>FF 0.00</b>, set at existing grade along the
+  packhouse's north edge. Every dock apron drops to <b>−4.00</b> at the dock face so a truck bed meets the 48 in docks,
+  then ramps back up to the pad. The sides of each well are graded at 2:1 instead of walled, so the only retaining is
+  the buildings' own dock walls. Elevations are in feet relative to the floor; existing grade and cut and fill come
+  next, from the Pattison topo.</p>
+
+<div class="card plan"><svg id="plan" role="img" aria-label="Plan of both buildings with relative spot elevations"></svg></div>
+<div class="legend">
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#fff" stroke="#15181C" stroke-width="1.4"/></svg>Building, FF 0.00</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#E9E6DA" stroke="#BFC3B9"/></svg>Pad at floor level</span>
+  <span><svg viewBox="0 0 22 10"><defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#43647F" stop-opacity=".75"/><stop offset="1" stop-color="#43647F" stop-opacity=".08"/></linearGradient></defs><rect x="1" y="1" width="20" height="8" fill="url(#lg)" stroke="#43647F"/></svg>Dock well, −4.00 at the face to 0.00</span>
+  <span><svg viewBox="0 0 22 10"><path d="M1 9 L21 9 L1 1 Z" fill="#A9702B" fill-opacity=".3" stroke="#A9702B"/></svg>2:1 side slope, no wall</span>
+  <span><svg viewBox="0 0 22 10"><line x1="1" y1="5" x2="21" y2="5" stroke="#43647F" stroke-width="2" stroke-dasharray="4 2"/></svg>Trench drain</span>
+  <span><svg viewBox="0 0 22 10"><line x1="1" y1="5" x2="21" y2="5" stroke="#B23A2B" stroke-width="2.4"/></svg>Datum: existing grade = FF</span>
+</div>
+
+<h2>Sections through the dock wells</h2>
+<p class="sub">Along each truck's path, from inside the building out to where the apron meets the pad again.
+  Vertical scale is exaggerated 3 times so the falls read.</p>
+<div id="sections"></div>
+
+<h2>Spot elevations</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Where</th><th class="n">Elevation</th><th>Note</th></tr></thead>
+  <tbody id="spots"></tbody>
+</table></div>
+
+<h2>How it is set</h2>
+<ul class="notes">
+  <li><b>One floor level for both buildings and the pad.</b> Grade falls north to south, so setting the floor at the
+    packhouse's north edge puts the at-grade roll-ups R1 and R2 on that wall truly at grade, keeps the forklift run
+    from the fert building across the bin wash to R3 flat, and leaves the south part of the pad above existing
+    ground: fill there, cut little.</li>
+  <li><b>Docks 4 ft down.</b> The packhouse's two angled docks share one well; the fert building's container dock D1
+    and box-truck dock D2 each get their own. Each falls 2% over the length a truck stands in (50 ft for a container,
+    30 ft for a box truck) so the trailer sits nearly level and its top clears the wall, then ramps back up at 6% for
+    containers and 8% for the box truck. The container wells run 100 ft and the box-truck well 72.5 ft.</li>
+  <li><b>Side slopes instead of retaining walls.</b> Each well's sides fall 2:1 from the pad down into it: 8 ft wide at
+    the dock face, running out to nothing where the ramp meets the pad. The buildings' dock walls retain the 4 ft at
+    the face; nothing else does. Both buildings' P1 doors moved along the wall to land on level ground beside the
+    slopes. A 3:1 slope (12 ft at the face) is easier to mow if the room is there.</li>
+  <li><b>Drainage.</b> Each well's low point is against the building, so it gets a trench drain across the dock face,
+    to a gravity outlet if the falls allow, otherwise a sump pump. The bin wash falls 1% away from the packhouse and the
+    lane falls 1.5% from the fert building to a shared trench drain along the bin wash's outer edge, at −0.30.</li>
+  <li><b>Door sills.</b> Personnel doors sit 2 to 6 in above the paving outside so water stays out; the roll-ups get a
+    flush threshold with the paving falling away. Those few inches are left off the plan.</li>
+  <li><b>Container beds sit high.</b> A container on a chassis can stand taller than a 48 in dock truck, and the
+    edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor before it is poured
+    (Dock detail).</li>
+  <li><b>Next: existing grade.</b> Fitting the Pattison topo (1 ft contours, 2025-12-03) to this plan gives existing
+    grade at every spot here, and from that the cut and fill. The ramps back up to the pad assume the pad is at 0.00
+    all the way out; where existing grade outside falls away, the ramps shorten.</li>
+</ul>
+<footer>
+  <span>Layouts and set positions: packhouse-layouts.js?v=c38f85a</span>
+  <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5</span>
+  <span>Datum: FF 0.00 = existing grade at the packhouse's north edge</span>
+</footer>
+</div>
+
+<script src="packhouse-layouts.js?v=c38f85a"></script>
+<script>
+(function(){
+"use strict";
+const L = window.PH_LAYOUTS, SITE = window.PH_SITE, NS = "http://www.w3.org/2000/svg";
+const el = (t, a = {}, txt) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (txt !== undefined) e.textContent = txt; return e; };
+const f2 = v => (v > 0.004 ? "+" : v < -0.004 ? "−" : "") + Math.abs(v).toFixed(2);
+const DROP = 4, LANE = 6, BANK = 2;   /* well depth, half a truck lane, side slope run per foot of drop */
+/* fall from the dock face: near (ft at near %) where the truck stands, then the ramp back up to the pad */
+const PROFILE = { container: { near: 50, nearPct: 2, rampPct: 6 }, box: { near: 30, nearPct: 2, rampPct: 8 } };
+function profile(kind){
+  const p = PROFILE[kind], e1 = -DROP + p.near * p.nearPct / 100, run = -e1 / (p.rampPct / 100);
+  return { ...p, e1, end: p.near + run, at: s => s <= 0 ? -DROP : s <= p.near ? -DROP + s * p.nearPct / 100 : Math.min(0, e1 + (s - p.near) * p.rampPct / 100) };
+}
+/* local building feet to site feet; both buildings are turned a quarter clockwise, so the N face looks east */
+const toSite = (id, x, z) => { const P = SITE[id], b = L[id]; return [P.x + b.D - z, P.y + x]; };
+const rectOf = id => { const P = SITE[id], b = L[id]; return { x:P.x, y:P.y, w:b.D, h:b.W }; };
+
+/* dock wells: docks on one face that share an angle and a truck sit in one well */
+function wells(){
+  const out = [];
+  for (const id of ["ph80", "fert80"]){
+    const b = L[id], docks = b.openings.filter(o => o.type === "dock");
+    const groups = [];
+    for (const o of docks){
+      const kind = o.truck === "box" ? "box" : "container";
+      const g = groups.find(g => g.kind === kind && g.angle === (o.angle || 0) && g.docks.some(q => Math.abs((q.a + q.b) / 2 - (o.a + o.b) / 2) < 20));
+      if (g) g.docks.push(o); else groups.push({ id, kind, angle:o.angle || 0, docks:[o] });
+    }
+    for (const g of groups){
+      const th = g.angle * Math.PI / 180, d = [Math.cos(th), Math.sin(th)], n = [-Math.sin(th), Math.cos(th)];
+      const wallX = SITE[id].x + b.D;
+      const C = g.docks.map(o => toSite(id, (o.a + o.b) / 2, 0)), C0 = C[0];
+      const ts = C.map(c => (c[0] - C0[0]) * n[0] + (c[1] - C0[1]) * n[1]);
+      const t0 = Math.min(...ts) - LANE, t1 = Math.max(...ts) + LANE, pr = profile(g.kind);
+      /* where the line t across the well meets the wall, and a point s ft out from there along the truck path */
+      const W = t => { const px = C0[0] + n[0] * t, py = C0[1] + n[1] * t, s = (wallX - px) / d[0]; return [px + d[0] * s, py + d[1] * s]; };
+      const at = (t, s) => { const w = W(t); return [w[0] + d[0] * s, w[1] + d[1] * s]; };
+      out.push({ ...g, d, n, t0, t1, pr, W, at, marks:g.docks.map(o => o.mark).sort().join(" and ") });
+    }
+  }
+  return out;
+}
+
+/* ---------------- plan ---------------- */
+const VB = [482, 466, 268, 250];
+function plan(){
+  const svg = document.getElementById("plan"); svg.setAttribute("viewBox", VB.join(" "));
+  const fs = 3.6, add = (p, e) => (p.append(e), e);
+  const defs = add(svg, el("defs"));
+  const ph = rectOf("ph80"), fe = rectOf("fert80");
+  add(svg, el("image", { href:"site-plan-option5.jpg?v=c38f85a", x:0, y:0, width:1096.5, height:1644.7, opacity:.35, preserveAspectRatio:"none" }));
+  /* the pad: both footprints and the lane between, at floor level */
+  add(svg, el("rect", { x:ph.x, y:ph.y, width:ph.w, height:fe.y + fe.h - ph.y, fill:"#E9E6DA", stroke:"#BFC3B9", "stroke-width":.4 }));
+  /* bin wash and trench drain */
+  const bw = L.ph80.outdoor[0], q0 = toSite("ph80", bw.x0, bw.z1), q1 = toSite("ph80", bw.x1, bw.z0);
+  add(svg, el("rect", { x:q0[0], y:q0[1], width:q1[0] - q0[0], height:q1[1] - q0[1], fill:"#43647F", "fill-opacity":.12, stroke:"#43647F", "stroke-width":.4, "stroke-dasharray":"2 1" }));
+  add(svg, el("text", { x:(q0[0] + q1[0]) / 2, y:q0[1] + 9, "text-anchor":"middle", "font-size":fs, fill:"#43647F" }, "BIN WASH, FALLS 1% SOUTH"));
+  add(svg, el("line", { x1:q0[0], y1:q1[1], x2:ph.x + ph.w, y2:q1[1], stroke:"#43647F", "stroke-width":1.1, "stroke-dasharray":"3 1.5" }));
+  /* wells, their side slopes and spot elevations */
+  const W = wells(), spots = [];
+  W.forEach((w, i) => {
+    const gid = "g" + i, g = add(defs, el("linearGradient", { id:gid, gradientUnits:"userSpaceOnUse" }));
+    const a = w.at((w.t0 + w.t1) / 2, 0), b = w.at((w.t0 + w.t1) / 2, w.pr.end);
+    Object.assign(g.attributes, {}); g.setAttribute("x1", a[0]); g.setAttribute("y1", a[1]); g.setAttribute("x2", b[0]); g.setAttribute("y2", b[1]);
+    g.append(el("stop", { offset:0, "stop-color":"#43647F", "stop-opacity":.8 }), el("stop", { offset:1, "stop-color":"#43647F", "stop-opacity":.06 }));
+    for (const [t, sgn] of [[w.t0, -1], [w.t1, 1]]){
+      const p = [w.W(t), w.W(t + sgn * BANK * DROP), w.at(t, w.pr.end)];
+      add(svg, el("path", { d:"M" + p.map(q => q.map(v => v.toFixed(2)).join(" ")).join("L") + "Z", fill:"#A9702B", "fill-opacity":.28, stroke:"#A9702B", "stroke-width":.35 }));
+    }
+    const poly = [w.W(w.t0), w.W(w.t1), w.at(w.t1, w.pr.end), w.at(w.t0, w.pr.end)];
+    add(svg, el("path", { d:"M" + poly.map(q => q.map(v => v.toFixed(2)).join(" ")).join("L") + "Z", fill:`url(#${gid})`, stroke:"#43647F", "stroke-width":.45 }));
+    const tc = (w.t0 + w.t1) / 2, face = w.at(tc, 0);
+    add(svg, el("line", { x1:w.W(w.t0)[0] + 0.8, y1:w.W(w.t0)[1], x2:w.W(w.t1)[0] + 0.8, y2:w.W(w.t1)[1], stroke:"#43647F", "stroke-width":1.1, "stroke-dasharray":"3 1.5" }));
+    const pts = [[0, "dock face, trench drain"], [w.pr.near, `end of the ${w.pr.near} ft truck stand`], [w.pr.end, "top of the ramp, back at the pad"]];
+    for (const [s, what] of pts){
+      const p = w.at(tc, s), e = w.pr.at(s);
+      add(svg, el("circle", { cx:p[0], cy:p[1], r:.9, fill:"#15181C" }));
+      const tp = s === 0 ? [p[0] + 3, p[1] - 2] : [p[0] + 2, p[1] - 2];
+      add(svg, el("text", { x:tp[0], y:tp[1], class:"el", "font-size":fs, fill:"#15181C", stroke:"#fff", "stroke-width":1, "paint-order":"stroke" }, f2(e)));
+      spots.push([`${w.id === "ph80" ? "Packhouse" : "Fert building"} ${w.marks}: ${what}`, e, s === 0 ? "Building dock wall retains the 4 ft" : s === w.pr.near ? `${w.pr.nearPct}% fall toward the dock` : `${w.pr.rampPct}% ramp up`]);
+    }
+    /* fall arrow along the well */
+    const m0 = w.at(tc, w.pr.end * .78), m1 = w.at(tc, w.pr.end * .58);
+    add(svg, el("line", { x1:m0[0], y1:m0[1], x2:m1[0], y2:m1[1], stroke:"#15181C", "stroke-width":.6, "marker-end":"url(#arw)" }));
+  });
+  const mk = add(defs, el("marker", { id:"arw", viewBox:"0 0 6 6", refX:5, refY:3, markerWidth:5, markerHeight:5, orient:"auto" }));
+  mk.append(el("path", { d:"M0 0L6 3L0 6Z", fill:"#15181C" }));
+  /* buildings and their doors */
+  for (const id of ["ph80", "fert80"]){
+    const r = rectOf(id), b = L[id];
+    add(svg, el("rect", { x:r.x, y:r.y, width:r.w, height:r.h, fill:"#fff", stroke:b.color, "stroke-width":1.4 }));
+    add(svg, el("text", { x:r.x + r.w / 2, y:r.y + r.h / 2 - 2, "text-anchor":"middle", "font-size":fs * 1.25, fill:"#15181C" }, b.name.toUpperCase()));
+    add(svg, el("text", { x:r.x + r.w / 2, y:r.y + r.h / 2 + 4.5, "text-anchor":"middle", class:"el", "font-size":fs * 1.15, fill:"#15181C" }, "FF 0.00"));
+    for (const o of b.openings.filter(o => o.face !== "I" && o.type !== "louvre")){
+      const c = (o.a + o.b) / 2, p = o.face === "N" ? toSite(id, c, 0) : o.face === "S" ? toSite(id, c, b.D) : o.face === "W" ? toSite(id, 0, c) : toSite(id, b.W, c);
+      const out = { N:[3.2, 0], S:[-3.2, 0], W:[0, -3.2], E:[0, 3.6] }[o.face];
+      add(svg, el("rect", { x:p[0] - 1, y:p[1] - 1, width:2, height:2, fill:o.type === "dock" ? "#B23A2B" : o.type === "rollup" ? "#fff" : "#15181C", stroke:"#B23A2B", "stroke-width":.3 }));
+      add(svg, el("text", { x:p[0] + out[0], y:p[1] + out[1] + 1.1, "text-anchor":"middle", "font-size":fs * .8, fill:"#B23A2B", stroke:"#fff", "stroke-width":.8, "paint-order":"stroke" }, o.mark));
+      if (o.type !== "dock") spots.push([`${id === "ph80" ? "Packhouse" : "Fert building"} ${o.mark} (${o.type === "rollup" ? (o.forklift ? "forklift roll-up" : "truck roll-up") : "personnel door"}), outside`, 0, o.type === "rollup" ? "Flush threshold, paving falls away" : "Sill 2–6 in above the paving"]);
+    }
+  }
+  /* datum: existing grade along the packhouse's north edge */
+  add(svg, el("line", { x1:ph.x, y1:ph.y - 1.2, x2:ph.x + ph.w, y2:ph.y - 1.2, stroke:"#B23A2B", "stroke-width":1.6 }));
+  add(svg, el("text", { x:ph.x + 6, y:ph.y - 8, "font-size":fs, fill:"#B23A2B", stroke:"#fff", "stroke-width":.8, "paint-order":"stroke" }, "DATUM: EXISTING GRADE = FF 0.00"));
+  add(svg, el("text", { x:q1[0] - 1, y:q1[1] - 1.5, "text-anchor":"end", class:"el", "font-size":fs, fill:"#43647F" }, "−0.30 TRENCH"));
+  add(svg, el("text", { x:ph.x + 40, y:fe.y - 4, class:"el", "font-size":fs * .9, fill:"#15181C" }, "LANE 0.00 AT WALL, 1.5% NORTH"));
+  spots.unshift(["Packhouse north edge, outside", 0, "Datum: existing grade here sets the floor"],
+                ["Bin wash, at the packhouse wall", 0, "Falls 1% away from the building"],
+                ["Trench drain along the bin wash's outer edge", -0.3, "Shared low point of the bin wash and the lane"],
+                ["Lane, at the fert building's north wall", 0, "Falls 1.5% to the trench"]);
+  /* compass: drawing frame */
+  add(svg, el("text", { x:VB[0] + VB[2] - 6, y:VB[1] + 9, "text-anchor":"middle", "font-size":fs * 1.2, fill:"#15181C" }, "N"));
+  add(svg, el("path", { d:`M${VB[0] + VB[2] - 6} ${VB[1] + 11} l2 6 l-2 -1.5 l-2 1.5 Z`, fill:"#15181C" }));
+  return spots;
+}
+
+/* ---------------- sections ---------------- */
+function section(w){
+  const pr = w.pr, S0 = -24, S1 = pr.end + 18, VX = 3;   /* ft before the wall, after the ramp, vertical exaggeration */
+  const sx = 5.2, sy = sx * VX, top = 13, bot = -5.5, padL = 8, padT = 22;
+  const Wd = (S1 - S0) * sx + padL * 2, H = (top - bot) * sy + padT + 20;
+  const X = s => padL + (s - S0) * sx, Y = e => padT + (top - e) * sy;
+  const svg = el("svg", { viewBox:`0 0 ${Wd.toFixed(0)} ${H.toFixed(0)}`, role:"img", "aria-label":`Section through ${w.marks}` });
+  const add = e => (svg.append(e), e), fs = 11;
+  add(el("text", { x:padL, y:15, "font-size":fs + 1, fill:"#15181C" }, `${w.id === "ph80" ? "PACKHOUSE" : "FERT BUILDING"} ${w.marks} · ${w.kind === "box" ? "BOX TRUCK" : "45 FT CONTAINER"}${w.angle ? " · ALONG THE 22.5° TRUCK PATH" : ""}`));
+  /* ground: building slab, then the well profile, then the pad */
+  const pts = [[S0, 0], [0, 0], [0, -DROP], [pr.near, pr.at(pr.near)], [pr.end, 0], [S1, 0]];
+  add(el("path", { d:"M" + pts.map(p => X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("L") + `L${X(S1)} ${Y(bot)}L${X(S0)} ${Y(bot)}Z`, fill:"#E9E6DA", stroke:"none" }));
+  add(el("path", { d:"M" + pts.slice(1).map(p => X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("L"), fill:"none", stroke:"#15181C", "stroke-width":1.6 }));
+  add(el("rect", { x:X(S0), y:Y(0), width:X(0) - X(S0), height:Y(-0.6) - Y(0), fill:"#848C92" }));            /* slab */
+  add(el("rect", { x:X(-1), y:Y(top - 1), width:X(0) - X(-1), height:Y(-DROP - 1) - Y(top - 1), fill:"#565D64" })); /* dock wall */
+  add(el("text", { x:X(S0) + 4, y:Y(0) - 6, "font-size":fs, fill:"#15181C" }, "FLOOR"));
+  /* truck: bed about 4 ft above the ground it stands on */
+  const L = w.kind === "box" ? 24 : 45, bodyH = w.kind === "box" ? 8 : 8.6, rear = 3, front = L - 6;
+  const bed = s => pr.at(s < L / 2 ? rear : front) + 4;
+  const b0 = [X(0.6), Y(bed(0))], b1 = [X(L), Y(bed(L))];
+  add(el("path", { d:`M${b0[0]} ${b0[1]}L${b1[0]} ${b1[1]}L${b1[0]} ${b1[1] - bodyH * sy}L${b0[0]} ${b0[1] - bodyH * sy}Z`, fill:"#fff", stroke:"#15181C", "stroke-width":1 }));
+  /* wheels 3.3 ft across, drawn at the same exaggeration as the ground, and the chassis up to the bed */
+  for (const s of [rear, rear + 4, front]){
+    add(el("line", { x1:X(s), y1:Y(pr.at(s) + 1.65), x2:X(s), y2:Y(bed(s)), stroke:"#15181C", "stroke-width":2 }));
+    add(el("ellipse", { cx:X(s), cy:Y(pr.at(s) + 1.65), rx:1.65 * sx, ry:1.65 * sy, fill:"#15181C" }));
+  }
+  const cab0 = L + 1, cab1 = L + (w.kind === "box" ? 7 : 10);
+  add(el("path", { d:`M${X(cab0)} ${Y(pr.at(cab0) + 1.6)}L${X(cab1)} ${Y(pr.at(cab1) + 1.6)}L${X(cab1)} ${Y(pr.at(cab1) + 8.5)}L${X(cab0)} ${Y(pr.at(cab0) + 9.5)}Z`, fill:"#848C92", stroke:"#15181C", "stroke-width":.8 }));
+  /* elevations and falls */
+  const lab = (s, e, txt) => { add(el("line", { x1:X(s), y1:Y(e), x2:X(s), y2:Y(bot) + 2, stroke:"#848C92", "stroke-width":.6, "stroke-dasharray":"2 2" }));
+    add(el("text", { x:X(s) + 3, y:Y(bot) - 2, class:"el", "font-size":fs, fill:"#15181C" }, f2(e) + (txt ? "  " + txt : ""))); };
+  lab(0, -DROP, "face"); lab(pr.near, pr.at(pr.near), pr.near + " ft"); lab(pr.end, 0, pr.end.toFixed(1) + " ft");
+  const mid = (a, b, t) => add(el("text", { x:X((a + b) / 2), y:Y(pr.at((a + b) / 2)) + 16, "text-anchor":"middle", "font-size":fs, fill:"#43647F" }, t));
+  mid(0, pr.near, pr.nearPct + "% FALL TO THE DOCK"); mid(pr.near, pr.end, pr.rampPct + "% RAMP");
+  add(el("text", { x:X(S1) - 4, y:Y(0) - 6, "text-anchor":"end", "font-size":fs, fill:"#15181C" }, "PAD 0.00"));
+  const card = document.createElement("div"); card.className = "card"; card.append(svg);
+  document.getElementById("sections").append(card);
+}
+
+const spots = plan();
+wells().forEach(section);
+document.getElementById("spots").innerHTML = spots.map(s => `<tr><td>${s[0]}</td><td class="n">${f2(s[1])}</td><td>${s[2]}</td></tr>`).join("");
+})();
+</script>

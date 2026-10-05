@@ -7,6 +7,11 @@
    its face (x for N/S, z for E/W); h is head height, sill is the bottom above slab. A partition hole is
    [a, b, bottom, top] along the partition, with "glass" as a fifth entry for a window or glazed door. */
 
+/* Set position of each building on the site map, in site feet (x east, y south, drawing frame): its north-west corner
+   once turned a quarter clockwise. Both sit 20 ft off the Lettuce Grow for the septic, and far enough south that the
+   packhouse's angled dock apron clears the property line. Read by the site map, the 3D flows and the grades page. */
+window.PH_SITE = { ph80: { x: 505.2, y: 488, rot: 1 }, fert80: { x: 505.2, y: 618, rot: 1 } };
+
 window.PH_LAYOUTS = {
   /* docks on the 80 ft N face (east on the site map) */
   ph80: {
@@ -38,8 +43,8 @@ window.PH_LAYOUTS = {
       { axis: "x", at: 48, from: 75, to: 100, h: 12, holes: [] }
     ],
     openings: [
-      { mark: "P1", type: "door", face: "N", a: 46, b: 49, h: 7, size: "3 × 7 ft", room: "Cold storage",
-        detail: "Egress from the cooler, clear of the truck well" },
+      { mark: "P1", type: "door", face: "N", a: 38, b: 41, h: 7, size: "3 × 7 ft", room: "Cold storage",
+        detail: "Egress from the cooler, north of the dock well and its side slope, so it opens onto ground at floor level" },
       { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, size: "9 × 10 ft", room: "Cold storage",
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal, on the low end of the dock face. Auto" },
       { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, size: "9 × 10 ft", room: "Cold storage",
@@ -86,7 +91,7 @@ window.PH_LAYOUTS = {
     id: "fert80", building: "fert", shape: "A", name: "Fert Room & Storage", W: 80, D: 100, eave: 17, color: "#A9702B",
     rooms: [
       { id: "dry", name: "Dry storage", tone: "--flow-box", x0: 0, x1: 80, z0: 0, z1: 70,
-        note: "Eight rack lines run north–south on 12 ft counterbalance aisles, 6 bays each, two high on the floor plus one shelf: 288 positions against 204 needed (three months after the expansion). 16 ft staging behind the dock." },
+        note: "Eight rack lines run east–west on 12 ft counterbalance aisles, 6 bays each, two high on the floor plus one shelf, and the line on the north wall runs on to the east wall, 8 bays: 300 positions against 204 needed (three months after the expansion). 16 ft staging behind the docks." },
       { id: "fert", name: "Fertigator and fert storage", short: "Fert room", tone: "--survey", x0: 0, x1: 80, z0: 70, z1: 100,
         note: "Six tanks and the skid along the south wall. Block-stacked lanes two-high, 88 positions against 71 needed. Partition to the roof, no curb." }
     ],
@@ -94,16 +99,18 @@ window.PH_LAYOUTS = {
       { axis: "z", at: 70, from: 0, to: 80, h: "eave", holes: [[2, 12, 0, 10]] }
     ],
     openings: [
-      { mark: "R1", type: "rollup", face: "N", a: 6, b: 18, h: 14, size: "12 × 14 ft", room: "Dry storage",
-        detail: "At grade on the north part of the east wall (site map), the high end. Box trucks going out. Auto" },
-      { mark: "P1", type: "door", face: "N", a: 24, b: 27, h: 7, size: "3 × 7 ft", room: "Dry storage",
-        detail: "Egress, clear of the truck well" },
+      { mark: "P1", type: "door", face: "N", a: 36, b: 39, h: 7, size: "3 × 7 ft", room: "Dry storage",
+        detail: "Egress, between the two dock wells and clear of their side slopes, so it opens onto ground at floor level" },
       { mark: "D1", type: "dock", face: "N", a: 63, b: 72, h: 10, size: "9 × 10 ft", room: "Dry storage",
-        detail: "48 in dock square to the wall, leveller and seal, on the south part of the east wall (site map), where grade is lowest. This one does not need the packhouse's angle: its 115 ft apron fits straight out, so the container backs in square and the forklift runs straight into dry storage. Container drops of packaging and fertiliser. Auto" },
+        detail: "48 in dock square to the wall, leveller and seal, on the south part of the east wall (site map), where grade is lowest, its apron 4 ft below the floor. This one does not need the packhouse's angle: its 115 ft apron fits straight out, so the container backs in square and the forklift runs straight into dry storage. Container drops of packaging and fertiliser. Auto" },
+      { mark: "D2", type: "dock", truck: "box", face: "N", a: 7.5, b: 16.5, h: 10, size: "9 × 10 ft", room: "Dry storage",
+        detail: "Box-truck dock on the north part of the east wall (site map), its apron 4 ft below the floor like D1, leveller and seal. The weekly box truck backs in and is loaded straight off the dock. Auto" },
       { mark: "P2", type: "door", face: "E", a: 40, b: 43, h: 7, size: "3 × 7 ft", room: "Dry storage",
         detail: "Egress" },
       { mark: "C1", type: "door", face: "E", a: 74, b: 77, h: 7, size: "3 × 7 ft", room: "Fert room",
         detail: "Exterior only" },
+      { mark: "R1", type: "rollup", forklift: true, face: "W", a: 73, b: 83, h: 10, size: "10 × 10 ft", room: "Fert room",
+        detail: "Forklift roll-up at grade on the fert room's north wall (site map), facing the packhouse across the lane. Boxes come out of dry storage through I1 and leave here for the packhouse's R3. No trucks" },
       { mark: "V1", type: "louvre", face: "E", a: 90, b: 94, h: 5, sill: 2, size: "4 × 3 ft", room: "Fert room",
         detail: "Low intake. High exhaust above it at 10–13 ft" },
       { mark: "V2", type: "louvre", face: "E", a: 90, b: 94, h: 13, sill: 10, size: "4 × 3 ft", room: "Fert room",
