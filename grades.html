@@ -108,7 +108,6 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
       <button type="button" id="k-mid" aria-pressed="false">3 · One floor, mid-level</button>
     </div>
         <div class="grp">
-      <button type="button" id="t-topo" aria-pressed="true">Contours</button>
       <button type="button" id="t-bld" aria-pressed="false">Buildings and trucks</button>
     </div>
   </div>
@@ -142,8 +141,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=8b3aaad"></script>
-<script src="topo-site.js?v=8b3aaad"></script>
+<script src="packhouse-layouts.js?v=33390ec"></script>
+<script src="topo-site.js?v=33390ec"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -672,7 +671,6 @@ function pickScheme(k){
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
-$("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
 /* buildings, trucks and walls switch off together, leaving the ground and its cut and fill */
 function applyBld(){ $("#t-bld").setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
