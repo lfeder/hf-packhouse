@@ -103,7 +103,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     <div class="grp">
       <button type="button" id="k-court" aria-pressed="true">1 · Lowered court</button>
       <button type="button" id="k-split" aria-pressed="false">2 · Buildings at grade</button>
-      <button type="button" id="k-mid" aria-pressed="false">3 · Recessed docks</button>
+      <button type="button" id="k-mid" aria-pressed="false">3 · One floor, mid-level</button>
     </div>
     <div class="grp">
       <button type="button" id="s-existing" aria-pressed="false">Existing</button>
@@ -130,7 +130,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
-  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · Recessed docks</th></tr></thead>
+  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · One floor, mid-level</th></tr></thead>
   <tbody id="wallWhere"></tbody>
 </table></div>
 
@@ -145,8 +145,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=3a56eba"></script>
-<script src="topo-site.js?v=3a56eba"></script>
+<script src="packhouse-layouts.js?v=624debf"></script>
+<script src="topo-site.js?v=624debf"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -389,7 +389,7 @@ function westSouth(k){
   for (var x = PH.x; x < WALL; x += 2) so = Math.max(so, fl.fe - xAt(x, FE.y + FE.h + 10));
   return { w:w, s:so };
 }
-var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"3 · Recessed docks" }, ALL = ["court", "split", "mid"];
+var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"3 · One floor, mid-level" }, ALL = ["court", "split", "mid"];
 function renderSummary(){
   $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
@@ -427,7 +427,7 @@ function renderLevels(){
 var LEDE = {
   split:"<b>Option 2, buildings at grade.</b> Each building sits at the average ground under it, so neither stands much above or below its surroundings; the lane ramps between the two floors. Every dock gets its own conventional well 4 ft down with wing walls, and the yard stays at existing grade.",
   court:"<b>Lowered court.</b> The whole truck area east of the buildings sits 4 ft down, ramping in from 0.00 at the packhouse's north edge, held by a retaining wall on the east wall line.",
-  mid:"<b>Option 3, recessed docks.</b> Both buildings share one floor 1.5 ft below the packhouse's north-edge grade, halfway between the ground under the two, so the packhouse sits a little below its ground and the fert building a little above. Every dock gets an ordinary recessed well with triangular wing walls, the yard stays at existing grade, and the ground north of the packhouse has to drain away from it.",
+  mid:"<b>Option 3, one floor at mid-level: the middle ground.</b> One floor like option 1, dock wells like option 2. Both buildings share one floor 1.5 ft below the packhouse's north-edge grade, halfway between the ground under the two, so the packhouse sits a little below its ground and the fert building a little above. Every dock gets an ordinary recessed well with triangular wing walls, the yard stays at existing grade, and the ground north of the packhouse has to drain away from it.",
   recess:"<b>Recessed docks.</b> The yard stays at existing grade. The packhouse's two docks share one conventional well 4 ft down with short wing walls; the fert building already stands about 3.5 ft above the ground on its east side, so its docks need only a trim."
 };
 
