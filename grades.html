@@ -103,13 +103,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     <div class="grp">
       <button type="button" id="k-court" aria-pressed="true">1 · Lowered court</button>
       <button type="button" id="k-split" aria-pressed="false">2 · Buildings at grade</button>
-      <button type="button" id="k-recess" aria-pressed="false">3 · Recessed docks</button>
-      <button type="button" id="k-mid" aria-pressed="false">4 · One floor, mid-level</button>
-    </div>
-    <div class="grp">
-      <button type="button" id="f-0" aria-pressed="true" title="Floor level with existing grade at the packhouse's north edge">Floor at grade</button>
-      <button type="button" id="f-1" aria-pressed="false">1 ft lower</button>
-      <button type="button" id="f-2" aria-pressed="false">2 ft lower</button>
+      <button type="button" id="k-mid" aria-pressed="false">3 · Recessed docks</button>
     </div>
     <div class="grp">
       <button type="button" id="s-graded" aria-pressed="true">Graded</button>
@@ -136,23 +130,23 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
-  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · Recessed docks</th><th class="n">4 · One floor, mid-level</th></tr></thead>
+  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · Recessed docks</th></tr></thead>
   <tbody id="wallWhere"></tbody>
 </table></div>
 
 <h2>Lowering the floor</h2>
-<p class="sub">Options 1 and 3 with the floor at the packhouse's north-edge grade, and 1 and 2 ft below it (option 2's floors follow the ground). Lower floors fill
+<p class="sub">How the floor level moves things, for one floor with a lowered court or with recessed docks: at the packhouse's north-edge grade, and 1 and 2 ft below it. Option 3 sits at 1.5 ft below. Lower floors fill
   less on the west and south and dig more on the east; the north side then sits above the floor and has to drain away
   from the packhouse.</p>
 <div class="tbl"><table>
-  <thead><tr><th>Floor</th><th class="n">1 · Lowered court<span class="sm"> cut / fill, yd³</span></th><th class="n">3 · Recessed docks<span class="sm"> cut / fill, yd³</span></th><th class="n">Deepest fill<span class="sm"> west side</span></th><th class="n">North side<span class="sm"> above the floor</span></th></tr></thead>
+  <thead><tr><th>Floor</th><th class="n">Lowered court<span class="sm"> cut / fill, yd³</span></th><th class="n">Recessed docks<span class="sm"> cut / fill, yd³</span></th><th class="n">Deepest fill<span class="sm"> west side</span></th><th class="n">North side<span class="sm"> above the floor</span></th></tr></thead>
   <tbody id="levels"></tbody>
 </table></div>
 
 </div>
 
-<script src="packhouse-layouts.js?v=8a60c45"></script>
-<script src="topo-site.js?v=8a60c45"></script>
+<script src="packhouse-layouts.js?v=819035d"></script>
+<script src="topo-site.js?v=819035d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -320,7 +314,7 @@ function model(zoneFn){
   return { G:G, K:K, cf:cf, tot:tot, over:over };
 }
 var MODELS, scheme = "court", G, K;
-function runModels(){ MODELS = { court:model(SCHEMES.court), split:model(SCHEMES.split), recess:model(SCHEMES.recess), mid:model(SCHEMES.mid) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
+function runModels(){ MODELS = { court:model(SCHEMES.court), split:model(SCHEMES.split), mid:model(SCHEMES.mid) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
 function gAt(x, y){ return bil(G, x, y); }
 
 /* ---------- volumes, both schemes ---------- */
@@ -395,7 +389,7 @@ function westSouth(k){
   for (var x = PH.x; x < WALL; x += 2) so = Math.max(so, fl.fe - xAt(x, FE.y + FE.h + 10));
   return { w:w, s:so };
 }
-var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"4 · One floor, mid-level" }, ALL = ["court", "split", "recess", "mid"];
+var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"3 · Recessed docks" }, ALL = ["court", "split", "mid"];
 function renderSummary(){
   $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
@@ -433,7 +427,7 @@ function renderLevels(){
 var LEDE = {
   split:"<b>Option 2, buildings at grade.</b> Each building sits at the average ground under it, so neither stands much above or below its surroundings; the lane ramps between the two floors. Every dock gets its own conventional well 4 ft down with wing walls, and the yard stays at existing grade.",
   court:"<b>Lowered court.</b> The whole truck area east of the buildings sits 4 ft down, ramping in from 0.00 at the packhouse's north edge, held by a retaining wall on the east wall line.",
-  mid:"<b>Option 4, one floor at mid-level.</b> Both buildings share one floor 1.5 ft below the packhouse's north-edge grade, halfway between the ground under the two, so the packhouse sits a little below its ground and the fert building a little above. Every dock gets an ordinary recessed well with triangular wing walls, the yard stays at existing grade, and the ground north of the packhouse has to drain away from it.",
+  mid:"<b>Option 3, recessed docks.</b> Both buildings share one floor 1.5 ft below the packhouse's north-edge grade, halfway between the ground under the two, so the packhouse sits a little below its ground and the fert building a little above. Every dock gets an ordinary recessed well with triangular wing walls, the yard stays at existing grade, and the ground north of the packhouse has to drain away from it.",
   recess:"<b>Recessed docks.</b> The yard stays at existing grade. The packhouse's two docks share one conventional well 4 ft down with short wing walls; the fert building already stands about 3.5 ft above the ground on its east side, so its docks need only a trim."
 };
 
@@ -463,7 +457,7 @@ var showExisting = false, showCF = true, groundGeo = new THREE.BufferGeometry();
   var pos = new Float32Array(NX * NY * 3), idx = [];
   for (var j = 0; j < NY; j++) for (var i = 0; i < NX; i++){ var k = j * NX + i; pos[k * 3] = T.x0 + i * ST; pos[k * 3 + 2] = T.y0 + j * ST; }
   for (var j = 0; j < NY - 1; j++) for (var i = 0; i < NX - 1; i++){ var k = j * NX + i;
-    if ([k, k + 1, k + NX, k + NX + 1].some(function(q){ return isNaN(MODELS.court.G[q]) || isNaN(MODELS.recess.G[q]); })) continue;   /* past the survey: left out */
+    if ([k, k + 1, k + NX, k + NX + 1].some(function(q){ return ALL.some(function(k){ return isNaN(MODELS[k].G[q]); }); })) continue;   /* past the survey: left out */
     idx.push(k, k + NX, k + 1, k + 1, k + NX, k + NX + 1); }
   groundGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); groundGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(NX * NY * 3), 3)); groundGeo.setIndex(idx);
   var m = new THREE.Mesh(groundGeo, new THREE.MeshLambertMaterial({ vertexColors:true })); m.receiveShadow = true; root.add(m);
@@ -565,7 +559,7 @@ tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x
 tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", "court");
 /* recessed docks: wing walls down each well's sides where the yard stands above it, a wall across the lane's east end,
    and the forklift ramp's side wall */
-["recess", "mid"].forEach(function(k){
+["mid"].forEach(function(k){
   var fl = floors(k), f = fl.fe; G = MODELS[k].G;
   wallsOf(k).forEach(function(w){ wallRun(k, w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); });
   WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
@@ -610,10 +604,10 @@ function surface(existing){ showExisting = existing; $("#s-graded").setAttribute
 $("#s-graded").addEventListener("click", function(){ surface(false); });
 function pickFloor(lv){
   setFloor(lv); runModels(); buildSchemes(); renderLevels();
-  [0, 1, 2].forEach(function(n){ $("#f-" + n).setAttribute("aria-pressed", String(n === lv)); });
+
   pickScheme(scheme);
 }
-[0, 1, 2].forEach(function(n){ $("#f-" + n).addEventListener("click", function(){ pickFloor(n); }); });
+
 function pickScheme(k){
   scheme = k; G = MODELS[k].G; K = MODELS[k].K;
   ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; });
@@ -629,7 +623,6 @@ function pickScheme(k){
   paintGround(); drapeTopo(); saveHash(); needs = true;
 }
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
-$("#k-recess").addEventListener("click", function(){ pickScheme("recess"); });
 $("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
 $("#s-existing").addEventListener("click", function(){ surface(true); });
@@ -670,6 +663,6 @@ resize(); frame();
 
 /* the scheme and floor ride in the hash, e.g. #recess,lower1 */
 function saveHash(){ try { history.replaceState(null, "", "#" + [scheme].concat(LOWER ? ["lower" + LOWER] : []).join(",")); } catch(e){} }
-(function(){ var h = location.hash.slice(1).split(","); scheme = ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(h.indexOf("lower2") >= 0 ? 2 : h.indexOf("lower1") >= 0 ? 1 : 0); })();
+(function(){ var h = location.hash.slice(1).split(","); scheme = h.indexOf("recess") >= 0 ? "mid" : ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(h.indexOf("lower2") >= 0 ? 2 : h.indexOf("lower1") >= 0 ? 1 : 0); })();
 })();
 </script>
