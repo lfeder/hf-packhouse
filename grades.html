@@ -146,8 +146,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=4f59fca"></script>
-<script src="topo-site.js?v=4f59fca"></script>
+<script src="packhouse-layouts.js?v=0570336"></script>
+<script src="topo-site.js?v=0570336"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -203,8 +203,18 @@ function padZone(x, y, fl){
   fl = fl || { ph:0, fe:0 };
   if (x < PH.x && x >= PH.x - 20 && y >= PH.y && y <= FE.y + FE.h + 10) return { z:xAt(x, y), k:"yard" };   /* the septic strip: no doors on the west walls, so the footings hold the step and this stays natural */
   if (!(x < WALL && x >= PH.x - 10 && y >= PH.y - 50 && y <= FE.y + FE.h + 10)) return null;
-  var y0 = PH.y + PH.h, z = y <= y0 ? fl.ph : y >= FE.y ? fl.fe : fl.ph + (fl.fe - fl.ph) * (y - y0) / (FE.y - y0);
+  var y0 = PH.y + PH.h, z = y <= y0 ? fl.ph : y >= FE.y ? fl.fe : laneZ(x, y, fl);
   return { z:z, k:x >= PH.x && ((y >= PH.y && y <= PH.y + PH.h) || (y >= FE.y && y <= FE.y + FE.h)) ? "bld" : "pad" };
+}
+/* Between the buildings. One floor: flat. Two floors (option 2): a forklift ramp up the west strip, from the fert
+   building's R1 to the packhouse, with the north 35 ft flat at the packhouse floor and the south 15 ft flat at the fert
+   floor east of it, so the bin wash sits flat. */
+var LANE = { y0:PH.y + PH.h, y1:FE.y, step:FE.y - 15, rx:PH.x + 18 };   /* the ramp runs x PH.x..rx, clear of the bin wash */
+function rampZ(y, fl){ return fl.ph + (fl.fe - fl.ph) * (y - LANE.y0) / (LANE.y1 - LANE.y0); }
+function laneZ(x, y, fl){
+  if (fl.ph === fl.fe) return fl.ph;
+  if (x < LANE.rx) return rampZ(y, fl);
+  return y < LANE.step ? fl.ph : fl.fe;
 }
 /* a conventional well at each dock, 4 ft below that building's floor for the 50 ft a trailer stands in, then up at 8% */
 function wellBase(w, fl){ return w.bld === "ph80" ? fl.ph : fl.fe; }
@@ -350,9 +360,17 @@ function wallsOf(k){
       }
     });
   });
+  if (fl.ph !== fl.fe){
+    where = "Between the buildings, upper to lower level";
+    for (var xs = LANE.rx; xs < WALL; xs += 2) add(xs, LANE.step, xs + 2, LANE.step, fl.fe, fl.ph);
+    where = "Forklift ramp, east side";
+    for (var ys = LANE.y0; ys < LANE.y1; ys += 2){ var rz = rampZ(ys + 1, fl), side = ys + 1 < LANE.step ? fl.ph : fl.fe;
+      add(LANE.rx, ys, LANE.rx, ys + 2, Math.min(rz, side), Math.max(rz, side)); }
+  }
+  where = "Lane, east end";
   for (var y2 = PH.y + PH.h; y2 < FE.y; y2 += 2){   /* across the lane's east end, where the lane stands above the yard */
     if (isRec(k) && y2 + 1 >= FRAMP.y0) break;
-    var lane = padZone(WALL - 1, y2 + 1, fl).z, e2 = xAt(WALL + 2, y2 + 1); add(WALL + 0.4, y2, WALL + 0.4, y2 + 2, e2, lane);
+    var lane = padZone(WALL - 1, y2 + 1, fl).z, e2 = xAt(WALL + 2, y2 + 1); add(WALL + 0.4, y2, WALL + 0.4, y2 + 2, Math.min(e2, lane), Math.max(e2, lane));
   }
   where = "Forklift ramp, lane side";
   if (isRec(k)){ var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2), f3 = fl.fe;
@@ -426,7 +444,7 @@ function renderLevels(){
 
 var LEDE = {
   court:"<b>Option 1, lowered court.</b> One floor at the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line.",
-  split:"<b>Option 2, buildings at grade.</b> Each building sits at the average ground under it, with the lane ramping between the two floors. Every dock gets its own recessed well with wing walls; the yard stays at existing grade.",
+  split:"<b>Option 2, buildings at grade.</b> Each building sits at the average ground under it. Between them a forklift ramp runs up the west side from fert R1; east of it the north 35 ft is at the packhouse floor, the south 15 ft at the fert floor. Dock wells with wing walls; yard at existing grade.",
   mid:"<b>Option 3, one floor at mid-level: the middle ground.</b> One floor like option 1, set halfway between the ground under the two buildings; dock wells like option 2; yard at existing grade. The north side drains away from the packhouse.",
   recess:""
 };
@@ -608,7 +626,9 @@ G = MODELS.split.G;
     tag("Dock well " + w.marks + " · <b>" + rel(wellBase(w, fl) - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, wellBase(w, fl) - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", "split"); });
   trucks("split");
   tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", "split");
-  tag("Lane ramps " + Math.abs((fl.fe - fl.ph) / (FE.y - PH.y - PH.h) * 100).toFixed(1) + "% between the floors", PH.x + 40, (fl.ph + fl.fe) / 2 + 1, (PH.y + PH.h + FE.y) / 2 + 12, "low", "split");
+  tag("Forklift ramp " + Math.abs((fl.fe - fl.ph) / (LANE.y1 - LANE.y0) * 100).toFixed(1) + "%, fert R1 up to the packhouse", (PH.x + LANE.rx) / 2, (fl.ph + fl.fe) / 2 + 1, (LANE.y0 + LANE.y1) / 2, "low", "split");
+  tag("Upper 35 ft at the packhouse floor", (LANE.rx + WALL) / 2, fl.ph + 1, (LANE.y0 + LANE.step) / 2, "low", "split");
+  tag("Lower 15 ft at the fert floor", (LANE.rx + WALL) / 2, fl.fe + 1, (LANE.step + LANE.y1) / 2, "low", "split");
 })();
 G = MODELS.court.G;
 /* property line, on existing ground so it reads the same in both schemes */
