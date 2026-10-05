@@ -143,9 +143,14 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <li><b>Pad, floors and lane at 0.00.</b> The buildings, the lane and bin wash between them, a 10 ft margin round
     them and the area north of the packhouse (its truck aprons and the north-wall parking) are level with the floor.
     Grade falls to the south, so most of this is fill.</li>
-  <li><b>Truck court at −4.00 at the wall, rising 1% east</b>, so water runs back to a trench drain along the wall
-    and a trailer sits tipped slightly toward its dock. It stops 8 ft inside the property line and is held from the
-    pad by a 4 ft retaining wall on the east wall line: the buildings' foundations and the gap between them.</li>
+  <li><b>Truck court at −4.00 at the wall, rising 1% east</b> over the 50 ft a trailer stands in (containers are 45 ft
+    at most), so water runs back to a trench drain along the wall and a trailer sits tipped slightly toward its dock.
+    Past that the tractor turns on a climb of 8% until it meets the ground, so it does not dig deep into the bank that rises toward the property line.
+    It stops 8 ft inside the line and is held from the pad by a 4 ft retaining wall on the east wall line: the
+    buildings' foundations and the gap between them.</li>
+  <li><b>Over the property line.</b> Grade at the line is about 2,598 to 2,600, a bank up to the higher ground next
+    door. Where the court's cut slope cannot finish inside the 8 ft margin it runs onto Lot 9, which the survey shows
+    as Hawaii Farming's; that needs the owner's say-so and a grading permit that covers both lots, not a wall.</li>
   <li><b>Trucks come in from either end.</b> From the north at grade, past R2's apron: the court starts at 0.00 level
     with the packhouse's north edge and ramps down the east wall at 8% to −4.00 by 50 ft, just before the first dock,
     D2, so the retaining wall tapers from nothing at the corner to 4 ft at the docks. From the south almost level:
@@ -164,14 +169,14 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor (Dock detail).</li>
 </ul>
 <footer>
-  <span>Layouts, positions and property line: packhouse-layouts.js?v=ce01e89</span>
-  <span>Existing ground: topo-site.js?v=ce01e89, from scripts/topo-site.py</span>
+  <span>Layouts, positions and property line: packhouse-layouts.js?v=e3725be</span>
+  <span>Existing ground: topo-site.js?v=e3725be, from scripts/topo-site.py</span>
   <span>Drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=ce01e89"></script>
-<script src="topo-site.js?v=ce01e89"></script>
+<script src="packhouse-layouts.js?v=e3725be"></script>
+<script src="topo-site.js?v=e3725be"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -202,11 +207,18 @@ var FRAMP = { x0:WALL - DROP / 0.10, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:10 };
 var DRIVE = { x0:WALL + 50, x1:WALL + 90, y0:COURT.y1, y1:COURT.y1 + 90, pct:6 };   /* in from the south, along the road east of Grow 3 */
 /* the court slopes from 0.00 at the packhouse's north edge down to −4.00 before the first dock, D2, 52 ft along */
 var RAMPN = 50;
-function courtE(x, y){ return -DROP + RISE * Math.max(0, x - WALL) + (y === undefined ? 0 : DROP * Math.max(0, 1 - (y - PH.y) / RAMPN)); }
+/* trucks stand in the first STAND ft out from the wall: −4.00 rising 1%; past that the court is turning room and climbs
+   at CLIMB until it meets existing ground, so its east edge is not dug deep into the bank along the property line */
+var STAND = 50, CLIMB = 0.08;   /* containers are 45 ft at most: even at the packhouse's 22.5° the trailer sits within 45 ft of the wall */
+function courtE(x, y){ var dx = Math.max(0, x - WALL);
+  return -DROP + RISE * Math.min(dx, STAND) + CLIMB * Math.max(0, dx - STAND) + (y === undefined ? 0 : DROP * Math.max(0, 1 - (y - PH.y) / RAMPN)); }
 function zone(x, y){
   if (x >= FRAMP.x0 && x < FRAMP.x1 && y >= FRAMP.y0 && y <= FRAMP.y1) return { z:-(x - FRAMP.x0) * FRAMP.pct / 100, k:"pad" };
   if (x < WALL && x >= PH.x - 10 && y >= PH.y - 50 && y <= FE.y + FE.h + 10) return { z:0, k:x >= PH.x && x <= WALL && ((y >= PH.y && y <= PH.y + PH.h) || (y >= FE.y && y <= FE.y + FE.h)) ? "bld" : "pad" };
-  if (x >= WALL && x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1 && propGap(x, y) >= COURT.inset) return { z:courtE(x, y), k:"court" };
+  if (x >= WALL && x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1 && propGap(x, y) >= COURT.inset){
+    var cz = courtE(x, y), ez = bil(EX, x, y) - FF;
+    return { z:x - WALL > STAND && !isNaN(ez) ? Math.min(cz, ez) : cz, k:"court" };   /* the climb stops where it meets the ground */
+  }
   /* trucks come in at grade from the north, past R2's apron, to the top of the ramp */
   if (x >= WALL && x <= COURT.x1 && y >= PH.y - 50 && y < COURT.y0 && propGap(x, y) >= COURT.inset) return { z:RISE * (x - WALL), k:"court" };
   if (x >= DRIVE.x0 && x <= DRIVE.x1 && y > DRIVE.y0 && y <= DRIVE.y1 && propGap(x, y) >= 2){
@@ -242,6 +254,17 @@ var G = new Float64Array(NX * NY), K = new Array(NX * NY), XR = new Float64Array
 function gAt(x, y){ return bil(G, x, y); }
 function xAt(x, y){ return bil(XR, x, y); }
 
+/* ---------- where the tie-in slopes run past the property line, onto Lot 9 ---------- */
+/* The survey stops at the line, so the slope past it cannot be drawn from the grid: measure it at the court's edge
+   instead. A cut of h there needs 2h of 2:1 slope; whatever does not fit in the margin to the line runs onto Lot 9. */
+var OVER = { len:0, depth:0, maxH:0 };
+for (var k = 0; k < G.length; k++){
+  if (K[k] !== "court") continue;
+  var px = T.x0 + (k % NX) * ST, py = T.y0 + Math.floor(k / NX) * ST, gp = propGap(px, py);
+  if (gp > COURT.inset + ST || isNaN(XR[k])) continue;
+  var h = XR[k] - G[k], run = 2 * h - gp;
+  if (run > 0){ OVER.len += ST; OVER.depth = Math.max(OVER.depth, run); OVER.maxH = Math.max(OVER.maxH, h); }
+}
 /* ---------- volumes ---------- */
 var CF = {};
 ["bld", "pad", "court", "slope"].forEach(function(k){ CF[k] = { cut:0, fill:0, maxC:0, maxF:0 }; });
@@ -258,7 +281,8 @@ $("#cf").innerHTML = Object.keys(CF).map(function(k){ var c = CF[k]; return "<tr
 var net = tot.cut - tot.fill;
 $("#cfLede").innerHTML = "Finished floor <b>" + FF.toFixed(2) + "</b> (existing grade along the packhouse's north edge runs " + FFlo.toFixed(2) + " to " + FFhi.toFixed(2) + ", right on the 2597 contour). " +
   "About <b>" + fmt(tot.cut) + " yd³ of cut and " + fmt(tot.fill) + " yd³ of fill</b>: the truck court comes out of the ground and the pad goes up on it as the land falls south, so the site " +
-  (Math.abs(net) < 0.15 * Math.max(tot.cut, tot.fill) ? "roughly balances" : net > 0 ? "has about " + fmt(net) + " yd³ to spare" : "is short about " + fmt(-net) + " yd³") + ", before topsoil and shrinkage.";
+  (Math.abs(net) < 0.15 * Math.max(tot.cut, tot.fill) ? "roughly balances" : net > 0 ? "has about " + fmt(net) + " yd³ to spare" : "is short about " + fmt(-net) + " yd³") + ", before topsoil and shrinkage." +
+  (OVER.len ? " Along about " + fmt(OVER.len) + " ft of the court's east edge the cut is up to " + OVER.maxH.toFixed(1) + " ft, so its 2:1 slope runs onto Lot 9 by up to <b>" + Math.round(OVER.depth) + " ft</b>." : " Every tie-in slope stays on the property.");
 
 /* ---------- three ---------- */
 var canvas = $("#stage"), renderer = new THREE.WebGLRenderer({ canvas:canvas, antialias:true });
@@ -365,6 +389,16 @@ tag("Truck court <b>−4.00</b> at the wall", WALL + 22, 2 - 4, mid - 10, "low")
 tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low");
 tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x0 + DRIVE.x1) / 2, DRIVE.y0 + 30) + 2, DRIVE.y0 + 30, "low");
 tag("Retaining wall, 4 ft", WALL + 1, 1, PH.y + PH.h + 12, "wall");
+(function(){
+  var pts = [];
+  for (var i = 0; i < PROP.length; i++){ var a = PROP[i], b = PROP[(i + 1) % PROP.length], n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 2);
+    for (var s2 = 0; s2 < n; s2++){ var p = [a[0] + (b[0] - a[0]) * s2 / n, a[1] + (b[1] - a[1]) * s2 / n], q = [a[0] + (b[0] - a[0]) * (s2 + 1) / n, a[1] + (b[1] - a[1]) * (s2 + 1) / n];
+      var hp = gAt(p[0], p[1]), hq = gAt(q[0], q[1]); if (isNaN(hp) || isNaN(hq)) continue; pts.push(p[0], hp + 0.25, p[1], q[0], hq + 0.25, q[1]); } }
+  var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+  root.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color:0xB23A2B })));
+  tag("Property line · Lot 9 beyond (Hawaii Farming)", 700, 2, 600, "wall");
+})();
+tag("Court climbs 8% past the trailers", WALL + STAND + 25, 0, PH.y + 120, "low");
 tag("Ramp 8% · <b>0.00</b> at the north edge to <b>−4.00</b> before D2", WALL + 30, -1, PH.y + RAMPN / 2, "low");
 tag("In from the north at grade", WALL + 30, 1, PH.y - 25, "low");
 
