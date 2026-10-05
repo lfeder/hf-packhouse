@@ -104,6 +104,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
       <button type="button" id="k-court" aria-pressed="true">1 · Lowered court</button>
       <button type="button" id="k-split" aria-pressed="false">2 · Buildings at grade</button>
       <button type="button" id="k-recess" aria-pressed="false">3 · Recessed docks</button>
+      <button type="button" id="k-mid" aria-pressed="false">4 · One floor, mid-level</button>
     </div>
     <div class="grp">
       <button type="button" id="f-0" aria-pressed="true" title="Floor level with existing grade at the packhouse's north edge">Floor at grade</button>
@@ -135,7 +136,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
-  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · Recessed docks</th></tr></thead>
+  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · Recessed docks</th><th class="n">4 · One floor, mid-level</th></tr></thead>
   <tbody id="wallWhere"></tbody>
 </table></div>
 
@@ -150,8 +151,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=ce932d7"></script>
-<script src="topo-site.js?v=ce932d7"></script>
+<script src="packhouse-layouts.js?v=8a60c45"></script>
+<script src="topo-site.js?v=8a60c45"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -197,7 +198,10 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
 var AVG = (function(){ var o = {}; [["ph", PH], ["fe", FE]].forEach(function(b){ var s = 0, n = 0, r = b[1];
   for (var x = r.x; x <= r.x + r.w; x += 2) for (var y = r.y; y <= r.y + r.h; y += 2){ var e = bil(EX, x, y); if (!isNaN(e)){ s += e; n++; } } o[b[0]] = s / n; }); return o; })();
 /* floor of each building, relative to FF: one level for options 1 and 3, each at its own grade for option 2 */
-function floors(k){ return k === "split" ? { ph:AVG.ph - FF, fe:AVG.fe - FF } : { ph:0, fe:0 }; }
+/* option 4 holds one floor 1.5 ft below the north-edge grade, halfway between the ground under the two buildings */
+var MID = 1.5;
+function floors(k){ return k === "split" ? { ph:AVG.ph - FF, fe:AVG.fe - FF } : k === "mid" ? { ph:LOWER - MID, fe:LOWER - MID } : { ph:0, fe:0 }; }
+function isRec(k){ return k === "recess" || k === "mid"; }
 /* the pad: both floors, the lane and bin wash (ramping between the floors if they differ), a 10 ft margin and the area
    north of the packhouse */
 function padZone(x, y, fl){
@@ -227,6 +231,12 @@ function wellsYard(x, y, fl){
   if (!isNaN(ez2) && y >= PH.y - 50 && y <= DRIVE.y1 && propGap(x, y) >= 0) return { z:ez2, k:"yard" };   /* yard at existing grade */
   return null;
 }
+function recessed(x, y, fl){
+  var exW = xAt(WALL + 2, y), f = fl.fe;
+  if (y >= FRAMP.y0 && y <= FRAMP.y1 && exW < f && x < WALL && x >= WALL - (f - exW) / 0.10) return { z:(WALL - x) * 0.10 + exW, k:"pad" };   /* forklift ramp down to the yard */
+  var pz = padZone(x, y, fl); if (pz) return pz;
+  return x < WALL ? null : wellsYard(x, y, fl);
+}
 var SCHEMES = {
   /* one court 4 ft down along the whole east side, held by a wall on the east wall line */
   court: function(x, y){
@@ -244,12 +254,9 @@ var SCHEMES = {
     return null;
   },
   /* option 3: one floor, a conventional recessed well at each dock, the yard round them left at existing grade */
-  recess: function(x, y){
-    var exW = xAt(WALL + 2, y);
-    if (y >= FRAMP.y0 && y <= FRAMP.y1 && exW < 0 && x < WALL && x >= WALL + exW / 0.10) return { z:(WALL - x) * 0.10 + exW, k:"pad" };   /* forklift ramp down to the yard */
-    var pz = padZone(x, y); if (pz) return pz;
-    return x < WALL ? null : wellsYard(x, y, floors("recess"));
-  },
+  recess: function(x, y){ return recessed(x, y, floors("recess")); },
+  /* option 4: option 3 with the one floor set halfway between the ground under the two buildings */
+  mid: function(x, y){ return recessed(x, y, floors("mid")); },
   /* option 2: each building at the average ground under it, the lane ramping between them, a well at every dock */
   split: function(x, y){
     var fl = floors("split"), pz = padZone(x, y, fl); if (pz) return pz;
@@ -313,7 +320,7 @@ function model(zoneFn){
   return { G:G, K:K, cf:cf, tot:tot, over:over };
 }
 var MODELS, scheme = "court", G, K;
-function runModels(){ MODELS = { court:model(SCHEMES.court), split:model(SCHEMES.split), recess:model(SCHEMES.recess) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
+function runModels(){ MODELS = { court:model(SCHEMES.court), split:model(SCHEMES.split), recess:model(SCHEMES.recess), mid:model(SCHEMES.mid) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
 function gAt(x, y){ return bil(G, x, y); }
 
 /* ---------- volumes, both schemes ---------- */
@@ -349,12 +356,12 @@ function wallsOf(k){
     });
   });
   for (var y2 = PH.y + PH.h; y2 < FE.y; y2 += 2){   /* across the lane's east end, where the lane stands above the yard */
-    if (k === "recess" && y2 + 1 >= FRAMP.y0) break;
+    if (isRec(k) && y2 + 1 >= FRAMP.y0) break;
     var lane = padZone(WALL - 1, y2 + 1, fl).z, e2 = xAt(WALL + 2, y2 + 1); add(WALL + 0.4, y2, WALL + 0.4, y2 + 2, e2, lane);
   }
   where = "Forklift ramp, lane side";
-  if (k === "recess"){ var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2);
-    if (e3 < 0) for (var x3 = WALL + e3 / 0.10; x3 < WALL; x3 += 2) add(x3, FRAMP.y0 - 0.4, x3 + 2, FRAMP.y0 - 0.4, (WALL - x3 - 1) * 0.10 + e3, 0); }
+  if (isRec(k)){ var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2), f3 = fl.fe;
+    if (e3 < f3) for (var x3 = WALL - (f3 - e3) / 0.10; x3 < WALL; x3 += 2) add(x3, FRAMP.y0 - 0.4, x3 + 2, FRAMP.y0 - 0.4, (WALL - x3 - 1) * 0.10 + e3, f3); }
   return out;
 }
 /* building footings that hold back grade: walk both perimeters, comparing the floor with finished grade 1.5 ft outside */
@@ -388,9 +395,9 @@ function westSouth(k){
   for (var x = PH.x; x < WALL; x += 2) so = Math.max(so, fl.fe - xAt(x, FE.y + FE.h + 10));
   return { w:w, s:so };
 }
-var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks" };
+var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"4 · One floor, mid-level" }, ALL = ["court", "split", "recess", "mid"];
 function renderSummary(){
-  $("#summary").innerHTML = ["court", "split", "recess"].map(function(k){
+  $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
     var all = ws.concat(ft), walls = fmt(wallLen(all)) + " ft<span class='sm' style='display:block;color:var(--ink-3)'>" + fmt(wallLen(ft)) + " at footings · " + fmt(wallFace(all)) + " ft² of face</span>";
     var floor = fl.ph === fl.fe ? (FF + fl.ph).toFixed(2) + " both" : (FF + fl.ph).toFixed(2) + " packhouse, " + (FF + fl.fe).toFixed(2) + " fert";
@@ -402,14 +409,14 @@ function renderSummary(){
   }).join("");
   /* where the walls are, option by option */
   var rowsW = {}, order = [];
-  ["court", "split", "recess"].forEach(function(k){
+  ALL.forEach(function(k){
     wallsOf(k).concat(footingsOf(k)).filter(counts).forEach(function(w){
       if (!rowsW[w.where]){ rowsW[w.where] = {}; order.push(w.where); }
       var c = rowsW[w.where][k] = rowsW[w.where][k] || { len:0, h:0 };
       c.len += Math.hypot(w.x1 - w.x0, w.y1 - w.y0); c.h = Math.max(c.h, w.hi - w.lo);
     });
   });
-  $("#wallWhere").innerHTML = order.map(function(wh){ return "<tr><td>" + wh + "</td>" + ["court", "split", "recess"].map(function(k){ var c = rowsW[wh][k];
+  $("#wallWhere").innerHTML = order.map(function(wh){ return "<tr><td>" + wh + "</td>" + ALL.map(function(k){ var c = rowsW[wh][k];
     return '<td class="n">' + (c ? fmt(c.len) + " ft, to " + c.h.toFixed(1) + " ft" : "—") + "</td>"; }).join("") + "</tr>"; }).join("");
 }
 /* the same two schemes with the floor 0, 1 and 2 ft below the north-edge grade */
@@ -426,6 +433,7 @@ function renderLevels(){
 var LEDE = {
   split:"<b>Option 2, buildings at grade.</b> Each building sits at the average ground under it, so neither stands much above or below its surroundings; the lane ramps between the two floors. Every dock gets its own conventional well 4 ft down with wing walls, and the yard stays at existing grade.",
   court:"<b>Lowered court.</b> The whole truck area east of the buildings sits 4 ft down, ramping in from 0.00 at the packhouse's north edge, held by a retaining wall on the east wall line.",
+  mid:"<b>Option 4, one floor at mid-level.</b> Both buildings share one floor 1.5 ft below the packhouse's north-edge grade, halfway between the ground under the two, so the packhouse sits a little below its ground and the fert building a little above. Every dock gets an ordinary recessed well with triangular wing walls, the yard stays at existing grade, and the ground north of the packhouse has to drain away from it.",
   recess:"<b>Recessed docks.</b> The yard stays at existing grade. The packhouse's two docks share one conventional well 4 ft down with short wing walls; the fert building already stands about 3.5 ft above the ground on its east side, so its docks need only a trim."
 };
 
@@ -519,7 +527,7 @@ function rig(x, y, ang, len, parent){
   box(8, 7.6, 8, M.truck, len + 6, ground + 4.6, 0, g); box(8, 1.2, 8, M.dark, len + 6, ground + 0.8, 0, g);
 }
 /* what differs between the schemes: walls, where the trucks stand, labels */
-var SG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group() }, PL = new THREE.Group(); root.add(SG.court, SG.split, SG.recess, PL);
+var SG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, PL = new THREE.Group(); root.add(SG.court, SG.split, SG.recess, SG.mid, PL);
 var rel = function(v){ return (v > 0.004 ? "+" : v < -0.004 ? "−" : "") + Math.abs(v).toFixed(2); };
 function trucks(k){
   [["ph80", L.ph80], ["fert80", L.fert80]].forEach(function(bb){
@@ -539,7 +547,7 @@ function wallRun(k, x0, y0, x1, y1, lo, hi){
 }
 var dynTags = [];
 function buildSchemes(){
-[SG.court, SG.split, SG.recess, PL].forEach(function(g){ while (g.children.length) g.remove(g.children[0]); });
+[SG.court, SG.split, SG.recess, SG.mid, PL].forEach(function(g){ while (g.children.length) g.remove(g.children[0]); });
 dynTags.forEach(function(t){ t.el.remove(); TAGS.splice(TAGS.indexOf(t), 1); }); dynTags = [];
 var tag0 = tag; tag = function(){ var t = tag0.apply(null, arguments); dynTags.push(t); return t; };
 /* lowered court: the wall on the east wall line, tapering up the ramp, and beside the forklift ramp */
@@ -557,14 +565,16 @@ tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x
 tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", "court");
 /* recessed docks: wing walls down each well's sides where the yard stands above it, a wall across the lane's east end,
    and the forklift ramp's side wall */
-G = MODELS.recess.G;
-wallsOf("recess").forEach(function(w){ wallRun("recess", w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); });
-WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
-  tag("Dock well " + w.marks + " · <b>−4.00</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, -2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", "recess"); });
-(function(){ var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2); if (e3 < 0) tag("Forklift ramp 10% down to the yard", WALL + e3 / 0.2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", "recess"); })();
-trucks("recess");
-tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", "recess");
-tag("Wall across the lane's east end, up to " + Math.max(0, -xAt(WALL + 2, FRAMP.y0 - 2)).toFixed(1) + " ft", WALL + 1, 1, PH.y + PH.h + 18, "wall", "recess");
+["recess", "mid"].forEach(function(k){
+  var fl = floors(k), f = fl.fe; G = MODELS[k].G;
+  wallsOf(k).forEach(function(w){ wallRun(k, w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); });
+  WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
+    tag("Dock well " + w.marks + " · <b>" + rel(f - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, f - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", k); });
+  var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2); if (e3 < f) tag("Forklift ramp 10% down to the yard", WALL - (f - e3) / 0.2, f + 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", k);
+  trucks(k);
+  tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", k);
+  var lw = f - xAt(WALL + 2, FRAMP.y0 - 2); if (lw > 0.5) tag("Wall across the lane's east end, up to " + lw.toFixed(1) + " ft", WALL + 1, f + 1, PH.y + PH.h + 18, "wall", k);
+});
 /* option 2 */
 G = MODELS.split.G;
 (function(){ var fl = floors("split");
@@ -591,8 +601,8 @@ G = MODELS[scheme].G;
 }
 
 /* ---------- camera ---------- */
-var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:470 }, goal = null, needs = true;
-var VIEWS = { iso:{ az:2.25, pol:0.95, r:470 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI, pol:0.02, r:520 } };
+var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:330 }, goal = null, needs = true;
+var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI, pol:0.02, r:520 } };
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
 function go(k){ ["iso","east","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
 ["iso","east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
@@ -606,7 +616,7 @@ function pickFloor(lv){
 [0, 1, 2].forEach(function(n){ $("#f-" + n).addEventListener("click", function(){ pickFloor(n); }); });
 function pickScheme(k){
   scheme = k; G = MODELS[k].G; K = MODELS[k].K;
-  ["court", "split", "recess"].forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; });
+  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; });
   var fl = floors(k);
   [["ph80", fl.ph], ["fert80", fl.fe]].forEach(function(b){
     BG[b[0]].position.y = b[1];
@@ -620,6 +630,7 @@ function pickScheme(k){
 }
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-recess").addEventListener("click", function(){ pickScheme("recess"); });
+$("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
 $("#s-existing").addEventListener("click", function(){ surface(true); });
 $("#t-cf").addEventListener("click", function(){ showCF = !showCF; this.setAttribute("aria-pressed", String(showCF)); paintGround(); needs = true; });
@@ -659,6 +670,6 @@ resize(); frame();
 
 /* the scheme and floor ride in the hash, e.g. #recess,lower1 */
 function saveHash(){ try { history.replaceState(null, "", "#" + [scheme].concat(LOWER ? ["lower" + LOWER] : []).join(",")); } catch(e){} }
-(function(){ var h = location.hash.slice(1).split(","); scheme = h.indexOf("recess") >= 0 ? "recess" : h.indexOf("split") >= 0 ? "split" : "court"; pickFloor(h.indexOf("lower2") >= 0 ? 2 : h.indexOf("lower1") >= 0 ? 1 : 0); })();
+(function(){ var h = location.hash.slice(1).split(","); scheme = ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(h.indexOf("lower2") >= 0 ? 2 : h.indexOf("lower1") >= 0 ? 1 : 0); })();
 })();
 </script>
