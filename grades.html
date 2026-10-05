@@ -97,8 +97,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <div class="overlay" id="tags"></div>
   <div class="bar">
     <div class="grp">
-      <button type="button" id="v-east" aria-pressed="false">East</button>
-      <button type="button" id="v-south" aria-pressed="false">South</button>
+      <button type="button" id="v-iso" aria-pressed="true">Iso</button>
       <button type="button" id="v-plan" aria-pressed="false">Plan</button>
     </div>
     <div class="grp">
@@ -146,8 +145,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=b1a31c5"></script>
-<script src="topo-site.js?v=b1a31c5"></script>
+<script src="packhouse-layouts.js?v=3a56eba"></script>
+<script src="topo-site.js?v=3a56eba"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -628,8 +627,8 @@ G = MODELS[scheme].G;
 var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:330 }, goal = null, needs = true;
 var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI, pol:0.02, r:520 } };
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
-function go(k){ ["east","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
-["east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
+function go(k){ ["iso","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
+["iso","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
 /* what the ground shows: existing, graded plain, or graded coloured by cut and fill */
 function surface(mode){ showExisting = mode === "existing"; showCF = mode === "cf";
   ["existing", "cf"].forEach(function(m){ $("#s-" + m).setAttribute("aria-pressed", String(m === mode)); }); paintGround(); drapeTopo(); needs = true; }
