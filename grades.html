@@ -203,14 +203,14 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor (Dock detail).</li>
 </ul>
 <footer>
-  <span>Layouts, positions and property line: packhouse-layouts.js?v=da62ed4</span>
-  <span>Existing ground: topo-site.js?v=da62ed4, from scripts/topo-site.py</span>
+  <span>Layouts, positions and property line: packhouse-layouts.js?v=d8cacbf</span>
+  <span>Existing ground: topo-site.js?v=d8cacbf, from scripts/topo-site.py</span>
   <span>Drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=da62ed4"></script>
-<script src="topo-site.js?v=da62ed4"></script>
+<script src="packhouse-layouts.js?v=d8cacbf"></script>
+<script src="topo-site.js?v=d8cacbf"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -378,6 +378,8 @@ function northCut(){ var m = 0; for (var x = PH.x; x <= WALL; x += 2) m = Math.m
 function onBuilding(y){ return (y >= PH.y && y <= PH.y + PH.h) || (y >= FE.y && y <= FE.y + FE.h); }
 function wallsOf(k){
   var out = [], fl = floors(k), add = function(x0, y0, x1, y1, lo, hi){ if (hi - lo > 0.1) out.push({ x0:x0, y0:y0, x1:x1, y1:y1, lo:lo, hi:hi }); };
+  /* the lane's west end, where it stands above the septic strip: every option */
+  for (var yw = PH.y + PH.h; yw < FE.y; yw += 2) add(PH.x - 0.4, yw, PH.x - 0.4, yw + 2, xAt(PH.x - 1.5, yw + 1), padZone(PH.x + 0.5, yw + 1, fl).z);
   if (k === "court"){
     for (var y = COURT.y0; y < COURT.y1; y += 2){ if ((y + 1 >= FRAMP.y0 && y + 1 <= FRAMP.y1) || onBuilding(y + 1)) continue; add(WALL + 0.4, y, WALL + 0.4, y + 2, courtE(WALL, y + 1), 0); }
     for (var x = FRAMP.x0; x < FRAMP.x1; x += 2) add(x, FRAMP.y0 - 0.4, x + 2, FRAMP.y0 - 0.4, -(x + 1 - FRAMP.x0) * FRAMP.pct / 100, 0);
