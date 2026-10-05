@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=693a384</span>
+  <span>Layouts: packhouse-layouts.js?v=6381e93</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=693a384"></script>
+<script src="packhouse-layouts.js?v=6381e93"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -436,11 +436,12 @@ function build(id){
     edges(prism(tri, o.h + 3, o.h + 3, M.part), M.edge, G.site);
     prism(tri, o.h + 3.4, 0.4, M.roof);
     box(7, 1, 1, M.steel, 0, 3.5, -h - 0.5, g);                                                   /* edge-of-dock leveller */
-    box(8.2, 9.2, RIG, M.truck, 0, 4 + 4.6, -h - 1 - RIG / 2, g);                                 /* container on chassis */
-    box(8.2, 0.6, RIG, M.truckd, 0, 3.7, -h - 1 - RIG / 2, g);
-    box(7.8, 5.2, 8, M.truckd, 0, 3, -h - RIG - 5, g);
-    box(8, 8.6, 8, M.truck, 0, 5.1, -h - RIG - 11, g);
-    pad(-6, -h - APRON, 6, -h, 0, 0.3, M.hard, g);                                                  /* apron strip, a 12 ft dock bay */
+    var R = o.rig || RIG;                                                                          /* the longest container this dock takes */
+    box(8.2, 9.2, R, M.truck, 0, 4 + 4.6, -h - 1 - R / 2, g);                                     /* container on chassis */
+    box(8.2, 0.6, R, M.truckd, 0, 3.7, -h - 1 - R / 2, g);
+    box(7.8, 5.2, 8, M.truckd, 0, 3, -h - R - 5, g);
+    box(8, 8.6, 8, M.truck, 0, 5.1, -h - R - 11, g);
+    pad(-6, -h - APRON + (RIG - R), 6, -h, 0, 0.3, M.hard, g);                                                  /* apron strip, a 12 ft dock bay */
   });
   B.openings.filter(function(o){ return o.type === "dock" && !o.angle; }).forEach(function(o){
     var a = o.a - 2, b = o.b + 2;
@@ -454,7 +455,7 @@ function build(id){
     [-5.4, 5.4].forEach(function(dx){ box(0.7, o.h + 1.4, 2.6, M.truckd, cx + dx, (o.h + 1.4) / 2, -1.3); });
     box(11.5, 0.7, 2.6, M.truckd, cx, o.h + 1.05, -1.3);
     var lev = box(7, 0.3, 8, M.steel, cx, -0.3, -3.6); lev.rotation.x = Math.atan(0.5 / 8);
-    truck("N", cx, B, o.truck === "box" ? 24 : RIG, 4, -4, G.site);
+    truck("N", cx, B, o.truck === "box" ? 24 : (o.rig || RIG), 4, -4, G.site);
   });
   B.openings.filter(function(o){ return o.type === "rollup" && !o.forklift; }).forEach(function(o, i){
     var cx = (o.a + o.b) / 2;
@@ -549,7 +550,7 @@ function build(id){
   line([[W + 14, 0, D], [W + 14, E, D], [W + 12, E, D], [W + 16, E, D]]);
   addTag(E + " ft eave", W + 14, E / 2, D, "dim");
   (function(){ var o = B.openings.filter(function(o){ return o.type === "dock"; })[0], th = (o.angle || 0) * Math.PI / 180, s = 32;
-    addTag(RIG + " ft container", (o.a + o.b) / 2 + Math.sin(th) * s, 12, -Math.cos(th) * s, "dim"); })();
+    addTag((o.rig || RIG) + " ft container", (o.a + o.b) / 2 + Math.sin(th) * s, 12, -Math.cos(th) * s, "dim"); })();
 
   applyState();
   renderTables(id);
@@ -692,7 +693,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=693a384), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=6381e93), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and

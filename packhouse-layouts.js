@@ -4,7 +4,8 @@
    Local frame, both buildings: x runs 0..W across the 80 ft width, z runs 0..D down the 100 ft depth, drawing
    frame of CEAd Option 5 before the site map turns the building a quarter clockwise. Faces: N at z=0, S at z=D,
    W at x=0, E at x=W; on the site map N is east, S is west, W is north and E is south. An opening's a/b run along
-   its face (x for N/S, z for E/W); h is head height, sill is the bottom above slab. A partition hole is
+   its face (x for N/S, z for E/W); h is head height, sill is the bottom above slab; rig is the longest container a
+   dock takes, 45 ft where not given. A partition hole is
    [a, b, bottom, top] along the partition, with "glass" as a fifth entry for a window or glazed door. */
 
 /* Set position of each building on the site map, in site feet (x east, y south, drawing frame): its north-west corner
@@ -45,10 +46,10 @@ window.PH_LAYOUTS = {
       { axis: "x", at: 48, from: 75, to: 100, h: 12, holes: [] }
     ],
     openings: [
-      { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, size: "9 × 10 ft", room: "Cold storage",
+      { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal, on the low end of the dock face. Auto" },
-      { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, size: "9 × 10 ft", room: "Cold storage",
-        detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal. 40 and 45 ft containers out. Auto" },
+      { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
+        detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal. 40 ft containers out. Auto" },
       { mark: "P4", type: "door", face: "W", a: 95.5, b: 98.5, h: 7, size: "3 × 7 ft", room: "Break room",
         detail: "Staff entry at the west end of the north wall, beside the parking along it, into the break room by the mini lockers" },
       { mark: "R2", type: "rollup", face: "W", a: 1, b: 13, h: 14, size: "12 × 14 ft", room: "Cold storage",
