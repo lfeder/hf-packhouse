@@ -68,6 +68,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 .tag b{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:0}
 .tag.low{border-left:3px solid var(--flow-box)}
 .tag.wall{border-left:3px solid var(--flow-dry)}
+#tags .tag:not(.topo){display:none}   /* only the contour elevations are labelled */
 .tag.topo{padding:0 4px;font-size:10px}
 .tag.topo.minor{background:transparent;border-color:transparent;color:var(--ink-2)}
 .tag.mark{border-radius:999px;padding:1px 6px;font-size:10px}
@@ -112,7 +113,6 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     <div class="grp">
       <button type="button" id="t-topo" aria-pressed="true">Contours</button>
       <button type="button" id="t-bld" aria-pressed="false">Buildings and trucks</button>
-      <button type="button" id="t-tags" aria-pressed="false">Labels</button>
     </div>
   </div>
   <p class="hint">Drag to orbit · shift-drag to pan · scroll to zoom</p>
@@ -145,8 +145,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=7ef8ba1"></script>
-<script src="topo-site.js?v=7ef8ba1"></script>
+<script src="packhouse-layouts.js?v=993c8f8"></script>
+<script src="topo-site.js?v=993c8f8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -665,8 +665,7 @@ function applyBld(){ $("#t-bld").setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
   TG[scheme].visible = showTrucks; needs = true; }
 $("#t-bld").addEventListener("click", function(){ showBld = showTrucks = !showBld; applyBld(); });
-host.style.display = "none";   /* labels off to start */
-$("#t-tags").addEventListener("click", function(){ var on = host.style.display === "none"; host.style.display = on ? "" : "none"; this.setAttribute("aria-pressed", String(on)); needs = true; });
+
 var drag = null;
 canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
 canvas.addEventListener("pointermove", function(e){ if (!drag) return; var dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
