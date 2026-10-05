@@ -134,7 +134,6 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Retaining walls<span class="sm"> incl. footings</span></th><th class="n">Docks in walled wells</th><th>West and south sides</th></tr></thead>
   <tbody id="summary"></tbody>
 </table></div>
-<p class="sub" id="cfLede" style="margin-top:10px"></p>
 <div class="tbl" style="margin-top:12px"><table>
   <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · Recessed docks</th></tr></thead>
   <tbody id="wallWhere"></tbody>
@@ -149,73 +148,10 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="levels"></tbody>
 </table></div>
 
-<h2>Sections</h2>
-<p class="sub">Finished grade solid, existing ground dashed. Vertical scale exaggerated 3 times.</p>
-<div id="sections"></div>
-
-<h2>Spot elevations</h2>
-<div class="tbl"><table>
-  <thead><tr><th>Where</th><th class="n">Relative</th><th class="n">Elevation</th><th>Note</th></tr></thead>
-  <tbody id="spots"></tbody>
-</table></div>
-
-<h2>How it is set</h2>
-<ul class="notes">
-  <li><b>Datum.</b> Finished floor for both buildings is the average existing grade along the packhouse's north
-    edge, so R1, R2 and P4 on that wall open at grade. Everything else is relative to it.</li>
-  <li><b>Pad, floors and lane at 0.00.</b> The buildings, the lane and bin wash between them, a 10 ft margin round
-    them and the area north of the packhouse (its truck aprons and the north-wall parking) are level with the floor.
-    Grade falls to the south, so most of this is fill.</li>
-  <li><b>Truck court at −4.00 at the wall, rising 1% east</b> over the 50 ft a trailer stands in (containers are 45 ft
-    at most), so water runs back to a trench drain along the wall and a trailer sits tipped slightly toward its dock.
-    Past that the tractor turns on a climb of 8% until it meets the ground, so it does not dig deep into the bank that rises toward the property line.
-    It stops 8 ft inside the line and is held from the pad by a 4 ft retaining wall on the east wall line: the
-    buildings' foundations and the gap between them.</li>
-  <li><b>Over the property line.</b> Grade at the line is about 2,598 to 2,600, a bank up to the higher ground next
-    door. Where the court's cut slope cannot finish inside the 8 ft margin it runs onto Lot 9, which the survey shows
-    as Hawaii Farming's; that needs the owner's say-so and a grading permit that covers both lots, not a wall.</li>
-  <li><b>Trucks come in from either end.</b> From the north at grade, past R2's apron: the court starts at 0.00 level
-    with the packhouse's north edge and ramps down the east wall at 8% to −4.00 by 50 ft, just before the first dock,
-    D2, so the retaining wall tapers from nothing at the corner to 4 ft at the docks. From the south almost level:
-    there the court is only about a foot below existing ground, along the road east of Grow 3.</li>
-  <li><b>Recessed docks, the other scheme.</b> The yard east of the buildings stays at existing grade. The packhouse's
-    D1 and D2 share one conventional well, −4.00 at the face for the 50 ft a trailer stands in, ramping up over that length to meet
-    the yard (never steeper than 10%), with triangular wing walls along the ramp. The fert building already stands about 3.5 ft above the ground on its
-    east side, so its docks need only a trim. A short wall closes the lane's east end, and the forklift ramp runs
-    down to the yard. Far less cut, so most of the pad's fill has to be brought in.</li>
-  <li><b>West and south sides, all options.</b> Nothing opens on the west walls, so each building's west footing
-    holds the step to the ground and the 20 ft strip toward the Lettuce Grow stays at natural grade for the septic.
-    That footing is up to 4 ft high at the floor's present level (1.2 ft in option 2). On the south the pad's 10 ft
-    margin ties down at 2:1 in the 16 ft left before Grow 1–3: an 8 ft slope at most, which fits. Lowering the floor
-    shortens both, at the cost of more cut on the east and a north side that stands above the floor and has to drain
-    away from the packhouse.</li>
-  <li><b>Option 2, buildings at grade.</b> Each floor sits at the average ground under its building, 2596.2 for the
-    packhouse and 2593.8 for the fert building, with the lane ramping about 5% between them. Almost no fill, and every
-    dock gets an ordinary recessed well: 4 ft down at the face, ramping up over the 50 ft a container stands in (30 ft
-    for the box truck), never steeper than 10%, with triangular wing walls along the ramp. Past the ramp's top the yard
-    is graded to meet it.</li>
-  <li><b>Forklift ramp</b> from the lane down to the court, 10% over 40 ft, 12 ft wide, along the fert building's north
-    wall, for unloading flatbeds parked in the court. A short wall with a rail holds the lane beside it.</li>
-  <li><b>Everything else ties back to existing ground at 2:1</b> (a foot of height over 2 ft across), cut or fill as the
-    ground needs, with no other retaining walls. On the west side the pad stands up to 4 ft above the ground falling
-    toward the Lettuce Grow, so its fill slope takes about 8 ft of the 20 ft gap the septic sits in.</li>
-  <li><b>How the volumes are worked out.</b> Existing ground is a surface through every contour of the Pattison topo
-    (1 ft contours, 2025-12-03), fitted to the site map on the six lot corners to within 0.3 ft
-    (scripts/topo-site.py). Volumes are finished grade less existing on a 2 ft grid, to finished grade, with no
-    allowance for topsoil stripping, slab base, footings or shrinkage; expect the real numbers within about 20%.
-    The fill under the buildings is to the underside of the floor build-up, so it is a little high.</li>
-  <li><b>Container beds sit high.</b> A container on a chassis can stand taller than a 48 in dock truck, and the
-    edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor (Dock detail).</li>
-</ul>
-<footer>
-  <span>Layouts, positions and property line: packhouse-layouts.js?v=baec807</span>
-  <span>Existing ground: topo-site.js?v=baec807, from scripts/topo-site.py</span>
-  <span>Drawing frame, not true north</span>
-</footer>
 </div>
 
-<script src="packhouse-layouts.js?v=baec807"></script>
-<script src="topo-site.js?v=baec807"></script>
+<script src="packhouse-layouts.js?v=ce932d7"></script>
+<script src="topo-site.js?v=ce932d7"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -464,10 +400,6 @@ function renderSummary(){
     return "<tr" + (k === scheme ? ' class="on"' : "") + "><td><b>" + OPT[k] + "</b></td><td>" + floor + '</td><td class="n">' + fmt(t.cut) + " / " + fmt(t.fill) + " / " +
       (net >= 0 ? "+" : "−") + fmt(Math.abs(net)) + '</td><td class="n">' + walls + '</td><td class="n">' + (k === "court" ? "0, one wall along the court" : walledDocks(ws) + " of 4") + "</td><td>" + ws2 + "</td></tr>";
   }).join("");
-  var m = MODELS.court;
-  $("#cfLede").innerHTML = "Net is cut less fill: + means soil to haul away, − means fill to bring in, before topsoil and shrinkage. Options 1 and 3 use the floor buttons (now " +
-    (LOWER ? LOWER + " ft below" : "level with") + " the packhouse's north-edge grade, " + FFlo.toFixed(2) + " to " + FFhi.toFixed(2) + "); option 2's floors follow the ground under each building." +
-    (m.over.len ? " Option 1's cut slope runs onto Lot 9 by up to " + Math.round(m.over.depth) + " ft." : "") + " Walls count freestanding walls holding more than half a foot of grade, and building footings only where they hold more than 1.5 ft, beyond an ordinary stem wall; face is length × height, the better guide to cost.";
   /* where the walls are, option by option */
   var rowsW = {}, order = [];
   ["court", "split", "recess"].forEach(function(k){
@@ -684,7 +616,7 @@ function pickScheme(k){
   renderSummary();
   TAGS.forEach(function(t){ if (t.scheme) t.el.hidden = t.scheme !== k; });
   $("#schemeLede").innerHTML = LEDE[k];
-  paintGround(); drapeTopo(); renderSections(); renderSpots(); saveHash(); needs = true;
+  paintGround(); drapeTopo(); saveHash(); needs = true;
 }
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-recess").addEventListener("click", function(){ pickScheme("recess"); });
@@ -725,66 +657,6 @@ function frame(){
 }
 resize(); frame();
 
-/* ---------- sections: finished grade and existing ground sampled along a line ---------- */
-var NS = "http://www.w3.org/2000/svg";
-function el(t, a, txt){ var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (txt !== undefined) e.textContent = txt; return e; }
-function section(title, from, to, opts){
-  var len = Math.hypot(to[0] - from[0], to[1] - from[1]), at = function(s){ var t = s / len; return [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]; };
-  var S0 = 0, S1 = len, sx = 4.4, sy = sx * 3, top = opts.top || 6, bot = -7, pl = 8, pt = 24;
-  var Wd = (S1 - S0) * sx + pl * 2, H = (top - bot) * sy + pt + 18, X = function(s){ return pl + (s - S0) * sx; }, Y = function(e){ return pt + (top - e) * sy; };
-  var svg = el("svg", { viewBox:"0 0 " + Wd.toFixed(0) + " " + H.toFixed(0), role:"img", "aria-label":title }), add = function(e){ svg.append(e); return e; };
-  add(el("text", { x:pl, y:16, "font-size":12, fill:"#15181C" }, title.toUpperCase()));
-  var fin = [], exi = [];
-  for (var s = 0; s <= len; s += 1){ var p = at(s), g = (opts.design ? opts.design(p[0], p[1]) : null); if (g === null || g === undefined) g = gAt(p[0], p[1]); fin.push([s, g]); exi.push([s, xAt(p[0], p[1])]); }
-  var path = function(a){ return a.filter(function(q){ return !isNaN(q[1]); }).map(function(q, i){ return (i ? "L" : "M") + X(q[0]).toFixed(1) + " " + Y(q[1]).toFixed(1); }).join(""); };
-  add(el("path", { d:path(fin) + "L" + X(S1) + " " + Y(bot) + "L" + X(S0) + " " + Y(bot) + "Z", fill:"#E4E0D2" }));
-  add(el("path", { d:path(fin), fill:"none", stroke:"#15181C", "stroke-width":1.6 }));
-  add(el("path", { d:path(exi), fill:"none", stroke:"#A9702B", "stroke-width":1.4, "stroke-dasharray":"5 3" }));
-  (opts.marks || []).forEach(function(m){ var s = m[0], g = fin[Math.round(s)] ? fin[Math.round(s)][1] : 0, x = exi[Math.round(s)] ? exi[Math.round(s)][1] : NaN;
-    add(el("line", { x1:X(s), y1:Y(Math.max(g, isNaN(x) ? g : x)) - 4, x2:X(s), y2:Y(bot) + 2, stroke:"#848C92", "stroke-dasharray":"2 2" }));
-    add(el("text", { x:X(s) + 3, y:Y(bot) - 2, class:"el", "font-size":11, fill:"#15181C" }, rel(g) + (isNaN(x) ? "" : "  (existing " + rel(x) + ")") + (m[1] ? "  " + m[1] : ""))); });
-  (opts.notes || []).forEach(function(n){ add(el("text", { x:X(n[0]), y:Y(n[1]), "text-anchor":"middle", "font-size":11, fill:n[2] || "#43647F" }, n[3])); });
-  if (opts.wallAt !== undefined) add(el("rect", { x:X(opts.wallAt) - 3, y:Y(opts.wallTop === undefined ? 0.6 : opts.wallTop), width:6, height:Y(-DROP - 1) - Y(opts.wallTop === undefined ? 0.6 : opts.wallTop), fill:"#8E8A82" }));
-  svg.style.width = Wd.toFixed(0) + "px"; svg.style.maxWidth = "100%";
-  var card = document.createElement("div"); card.className = "card"; card.append(svg); $("#sections").append(card);
-}
-var yD1 = FE.y + 67.5;
-function renderSections(){
-$("#sections").replaceChildren();
-section("West to east through the fert building's D1 dock", [FE.x - 30, yD1], [WALL + 150, yD1],
-  { wallAt:FE.w + 30, marks:[[30, "fert floor, west wall"], [FE.w + 30, "dock face"], [FE.w + 30 + 112, ""]], notes:[[30 + FE.w / 2, floors(scheme).fe + 1.2, "#15181C", "FERT BUILDING, FF " + (FF + floors(scheme).fe).toFixed(2)]] });
-section(scheme === "court" ? "North to south down the court, 30 ft out from the wall" : "North to south through the yard and wells, 30 ft out from the wall", [WALL + 30, PH.y - 60], [WALL + 30, DRIVE.y1],
-  scheme === "court" ? { marks:[[60, "north edge"], [60 + RAMPN, "foot of the ramp"], [60 + (COURT.y1 - COURT.y0), "court ends, drive begins"]], notes:[[60 + (COURT.y1 - COURT.y0) / 2, -2.6, "#43647F", "TRUCK COURT"]] }
-                     : { marks:[[60, "packhouse north edge"], [60 + (COURT.y1 - COURT.y0), "south of the fert building"]] });
-section("North to south along the buildings, through both floors", [PH.x + 50, PH.y - 60], [PH.x + 50, FE.y + FE.h + 60],
-  { marks:[[60, "packhouse north wall"], [60 + FE.y + FE.h - PH.y, "fert south wall"]], notes:[[60 + (FE.y + FE.h - PH.y) / 2, 1.2, "#15181C", "FLOORS AND LANE"]] });
-}
-
-/* ---------- spot table ---------- */
-function renderSpots(){
-  var fl = floors(scheme), common = fl.ph === fl.fe ? [["Floors, both buildings", 0, "The datum"]] :
-    [["Packhouse floor", fl.ph, "Average ground under it"], ["Fert building floor", fl.fe, "Average ground under it"]];
-  common = common.concat([
-    ["Packhouse north edge, outside, existing", 0, "Ranges " + rel(FFlo - FF) + " to " + rel(FFhi - FF) + " along the wall"],
-    ["Fert building south-west corner, existing ground", xAt(FE.x, FE.y + FE.h), (fl.fe - xAt(FE.x, FE.y + FE.h) > 0.5 ? "Fill to the floor here; 2:1 slope west and south" : "About at the floor")]
-  ]);
-  var own = scheme === "court" ? [
-    ["Truck court at the packhouse's north edge", 0, "Ramps 8% down the east wall over " + RAMPN + " ft"],
-    ["Truck court at the wall, every dock face", -DROP, "Trench drain along the wall"],
-    ["Existing ground at the fert D1 dock", xAt(WALL + 10, yD1), "Cut to the court here"],
-    ["Forklift ramp, foot at the court", -DROP, "Flatbeds park alongside"]
-  ] : scheme === "split" ? [
-    ["Packhouse dock well, at D1 and D2", fl.ph - DROP, "Trench drain across the face; wing walls each side"],
-    ["Fert D2 and D1 dock wells", fl.fe - DROP, "Each its own well with wing walls"],
-    ["Lane between the buildings", (fl.ph + fl.fe) / 2, "Ramps " + Math.abs((fl.fe - fl.ph) / (FE.y - PH.y - PH.h) * 100).toFixed(1) + "% from one floor to the other"]
-  ] : [
-    ["Packhouse dock well, at D1 and D2", -DROP, "Trench drain across the face; wing walls each side"],
-    ["Existing ground beside the packhouse well", xAt(WALL + 2, PH.y + 50), "Yard level there"],
-    ["Fert D2 and D1 dock faces", -DROP, "Existing ground is " + rel(xAt(WALL + 2, FE.y + 12)) + " and " + rel(xAt(WALL + 2, yD1)) + ": a trim, not a well"],
-    ["Forklift ramp, foot at the yard", xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2), "10% from the lane"]
-  ];
-  $("#spots").innerHTML = common.concat(own).map(function(s){ return "<tr><td>" + s[0] + '</td><td class="n">' + rel(s[1]) + '</td><td class="n">' + (FF + s[1]).toFixed(2) + "</td><td>" + s[2] + "</td></tr>"; }).join("");
-}
 /* the scheme and floor ride in the hash, e.g. #recess,lower1 */
 function saveHash(){ try { history.replaceState(null, "", "#" + [scheme].concat(LOWER ? ["lower" + LOWER] : []).join(",")); } catch(e){} }
 (function(){ var h = location.hash.slice(1).split(","); scheme = h.indexOf("recess") >= 0 ? "recess" : h.indexOf("split") >= 0 ? "split" : "court"; pickFloor(h.indexOf("lower2") >= 0 ? 2 : h.indexOf("lower1") >= 0 ? 1 : 0); })();
