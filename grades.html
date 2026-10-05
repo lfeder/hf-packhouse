@@ -146,10 +146,10 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <li><b>Truck court at −4.00 at the wall, rising 1% east</b>, so water runs back to a trench drain along the wall
     and a trailer sits tipped slightly toward its dock. It stops 8 ft inside the property line and is held from the
     pad by a 4 ft retaining wall on the east wall line: the buildings' foundations and the gap between them.</li>
-  <li><b>Trucks come in from the south.</b> The north ramp drawn before does not fit: between R2's truck apron and the
-    property line there is about 13 ft. The ground falls the other way, though: at the court's south end existing
-    grade is only about a foot above it, so trucks drive in up a short ramp at no more than 6% along the existing road
-    east of Grow 3.</li>
+  <li><b>Trucks come in from either end.</b> From the north at grade, past R2's apron: the court starts at 0.00 level
+    with the packhouse's north edge and ramps down the east wall at 8% to −4.00 by 50 ft, just before the first dock,
+    D2, so the retaining wall tapers from nothing at the corner to 4 ft at the docks. From the south almost level:
+    there the court is only about a foot below existing ground, along the road east of Grow 3.</li>
   <li><b>Forklift ramp</b> from the lane down to the court, 10% over 40 ft, 12 ft wide, along the fert building's north
     wall, for unloading flatbeds parked in the court. A short wall with a rail holds the lane beside it.</li>
   <li><b>Everything else ties back to existing ground at 2:1</b> (a foot of height over 2 ft across), cut or fill as the
@@ -164,14 +164,14 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor (Dock detail).</li>
 </ul>
 <footer>
-  <span>Layouts, positions and property line: packhouse-layouts.js?v=fddbf94</span>
-  <span>Existing ground: topo-site.js?v=fddbf94, from scripts/topo-site.py</span>
+  <span>Layouts, positions and property line: packhouse-layouts.js?v=ce01e89</span>
+  <span>Existing ground: topo-site.js?v=ce01e89, from scripts/topo-site.py</span>
   <span>Drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=fddbf94"></script>
-<script src="topo-site.js?v=fddbf94"></script>
+<script src="packhouse-layouts.js?v=ce01e89"></script>
+<script src="topo-site.js?v=ce01e89"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -200,13 +200,17 @@ function propGap(x, y){ var d = Infinity; for (var i = 0; i < PROP.length; i++){
 var COURT = { x1:WALL + 115, y0:PH.y, y1:FE.y + FE.h + 10, inset:8 };
 var FRAMP = { x0:WALL - DROP / 0.10, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:10 };
 var DRIVE = { x0:WALL + 50, x1:WALL + 90, y0:COURT.y1, y1:COURT.y1 + 90, pct:6 };   /* in from the south, along the road east of Grow 3 */
-function courtE(x){ return -DROP + RISE * Math.max(0, x - WALL); }
+/* the court slopes from 0.00 at the packhouse's north edge down to −4.00 before the first dock, D2, 52 ft along */
+var RAMPN = 50;
+function courtE(x, y){ return -DROP + RISE * Math.max(0, x - WALL) + (y === undefined ? 0 : DROP * Math.max(0, 1 - (y - PH.y) / RAMPN)); }
 function zone(x, y){
   if (x >= FRAMP.x0 && x < FRAMP.x1 && y >= FRAMP.y0 && y <= FRAMP.y1) return { z:-(x - FRAMP.x0) * FRAMP.pct / 100, k:"pad" };
   if (x < WALL && x >= PH.x - 10 && y >= PH.y - 50 && y <= FE.y + FE.h + 10) return { z:0, k:x >= PH.x && x <= WALL && ((y >= PH.y && y <= PH.y + PH.h) || (y >= FE.y && y <= FE.y + FE.h)) ? "bld" : "pad" };
-  if (x >= WALL && x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1 && propGap(x, y) >= COURT.inset) return { z:courtE(x), k:"court" };
+  if (x >= WALL && x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1 && propGap(x, y) >= COURT.inset) return { z:courtE(x, y), k:"court" };
+  /* trucks come in at grade from the north, past R2's apron, to the top of the ramp */
+  if (x >= WALL && x <= COURT.x1 && y >= PH.y - 50 && y < COURT.y0 && propGap(x, y) >= COURT.inset) return { z:RISE * (x - WALL), k:"court" };
   if (x >= DRIVE.x0 && x <= DRIVE.x1 && y > DRIVE.y0 && y <= DRIVE.y1 && propGap(x, y) >= 2){
-    var up = courtE(x) + (y - DRIVE.y0) * DRIVE.pct / 100, ex = bil(EX, x, y) - FF;
+    var up = courtE(x, y) + (y - DRIVE.y0) * DRIVE.pct / 100, ex = bil(EX, x, y) - FF;
     return { z:isNaN(ex) ? up : Math.min(up, ex), k:"court" };
   }
   return null;
@@ -324,7 +328,8 @@ function drapeTopo(){
 /* retaining wall on the east wall line, and beside the forklift ramp */
 for (var y = COURT.y0; y < COURT.y1; y += 2){
   if (y + 1 >= FRAMP.y0 && y + 1 <= FRAMP.y1) continue;   /* the forklift ramp meets the court here */
-  box(0.8, DROP + 0.4, 2, M.wall, WALL + 0.4, -DROP / 2 + 0.2, y + 1);
+  var hw = -courtE(WALL, y + 1); if (hw < 0.1) continue;   /* tapers to nothing up the ramp */
+  box(0.8, hw + 0.4, 2, M.wall, WALL + 0.4, -hw / 2 + 0.2, y + 1);
 }
 for (var x = FRAMP.x0; x < FRAMP.x1; x += 2){ var hf = (x + 1 - FRAMP.x0) * FRAMP.pct / 100; if (hf < 0.05) continue; box(2, hf + 0.4, 0.8, M.wall, x + 1, -hf / 2 + 0.2, FRAMP.y0 - 0.4); }
 /* buildings, docks, doors, trucks */
@@ -360,6 +365,8 @@ tag("Truck court <b>−4.00</b> at the wall", WALL + 22, 2 - 4, mid - 10, "low")
 tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low");
 tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x0 + DRIVE.x1) / 2, DRIVE.y0 + 30) + 2, DRIVE.y0 + 30, "low");
 tag("Retaining wall, 4 ft", WALL + 1, 1, PH.y + PH.h + 12, "wall");
+tag("Ramp 8% · <b>0.00</b> at the north edge to <b>−4.00</b> before D2", WALL + 30, -1, PH.y + RAMPN / 2, "low");
+tag("In from the north at grade", WALL + 30, 1, PH.y - 25, "low");
 
 /* ---------- camera ---------- */
 var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:470 }, goal = null, needs = true, ex = 1;
@@ -433,7 +440,7 @@ var yD1 = FE.y + 67.5;
 section("West to east through the fert building's D1 dock", [FE.x - 30, yD1], [WALL + 150, yD1],
   { wallAt:FE.w + 30, marks:[[30, "fert floor, west wall"], [FE.w + 30, "dock face"], [FE.w + 30 + 112, ""]], notes:[[30 + FE.w / 2, 1.2, "#15181C", "FERT BUILDING, FF 0.00"]] });
 section("North to south down the court, 30 ft out from the wall", [WALL + 30, PH.y - 60], [WALL + 30, DRIVE.y1],
-  { marks:[[60, "court starts"], [60 + (COURT.y1 - COURT.y0), "court ends, drive begins"]], notes:[[60 + (COURT.y1 - COURT.y0) / 2, -2.6, "#43647F", "TRUCK COURT"]] });
+  { marks:[[60, "north edge"], [60 + RAMPN, "foot of the ramp"], [60 + (COURT.y1 - COURT.y0), "court ends, drive begins"]], notes:[[60 + (COURT.y1 - COURT.y0) / 2, -2.6, "#43647F", "TRUCK COURT"]] });
 section("North to south along the buildings, through both floors", [PH.x + 50, PH.y - 60], [PH.x + 50, FE.y + FE.h + 60],
   { marks:[[60, "packhouse north wall"], [60 + FE.y + FE.h - PH.y, "fert south wall"]], notes:[[60 + (FE.y + FE.h - PH.y) / 2, 1.2, "#15181C", "FLOORS AND LANE 0.00"]] });
 
@@ -442,6 +449,7 @@ var spots = [
   ["Floors, both buildings", 0, "The datum"],
   ["Packhouse north edge, outside, existing", 0, "Ranges " + rel(FFlo - FF) + " to " + rel(FFhi - FF) + " along the wall"],
   ["Fert building south-west corner, existing ground", xAt(FE.x, FE.y + FE.h), "Fill to the floor here"],
+  ["Truck court at the packhouse's north edge", 0, "Ramps 8% down the east wall over " + RAMPN + " ft"],
   ["Truck court at the wall, every dock face", -DROP, "Trench drain along the wall"],
   ["Truck court, existing ground at the fert D1 dock", xAt(WALL + 10, yD1), "Cut to the court here"],
   ["Truck court at its south end, existing ground", xAt(WALL + 70, COURT.y1), "Where the drive starts up"],
