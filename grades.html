@@ -68,6 +68,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 .tag b{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:0}
 .tag.low{border-left:3px solid var(--flow-box)}
 .tag.wall{border-left:3px solid var(--flow-dry)}
+.tag.topo{padding:0 4px;font-size:10px}
+.tag.topo.minor{background:transparent;border-color:transparent;color:var(--ink-2)}
 .tag.mark{border-radius:999px;padding:1px 6px;font-size:10px}
 .tag.mark.dock{background:var(--survey);border-color:var(--survey);color:var(--vellum)}
 .bar{position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
@@ -95,7 +97,6 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <div class="overlay" id="tags"></div>
   <div class="bar">
     <div class="grp">
-      <button type="button" id="v-iso" aria-pressed="true">Iso</button>
       <button type="button" id="v-east" aria-pressed="false">East</button>
       <button type="button" id="v-south" aria-pressed="false">South</button>
       <button type="button" id="v-plan" aria-pressed="false">Plan</button>
@@ -126,7 +127,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 </div>
 
 <div class="tbl" style="margin-top:16px"><table>
-  <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Retaining walls<span class="sm"> incl. footings</span></th><th class="n">Docks in walled wells</th><th>West and south sides</th></tr></thead>
+  <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Retaining walls<span class="sm"> ft</span></th><th class="n">of which footings<span class="sm"> ft</span></th><th class="n">Wall face<span class="sm"> ft²</span></th><th class="n">Docks needing wing walls</th><th>West</th><th>South</th></tr></thead>
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
@@ -145,8 +146,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=58f5a00"></script>
-<script src="topo-site.js?v=58f5a00"></script>
+<script src="packhouse-layouts.js?v=b1a31c5"></script>
+<script src="topo-site.js?v=b1a31c5"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -393,13 +394,13 @@ var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:
 function renderSummary(){
   $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
-    var all = ws.concat(ft), walls = fmt(wallLen(all)) + " ft<span class='sm' style='display:block;color:var(--ink-3)'>" + fmt(wallLen(ft)) + " at footings · " + fmt(wallFace(all)) + " ft² of face</span>";
+    var all = ws.concat(ft), walls = fmt(wallLen(all)) + '</td><td class="n">' + fmt(wallLen(ft)) + '</td><td class="n">' + fmt(wallFace(all));
     var floor = fl.ph === fl.fe ? (FF + fl.ph).toFixed(2) + " both" : (FF + fl.ph).toFixed(2) + " packhouse, " + (FF + fl.fe).toFixed(2) + " fert";
     var room = 724.4 - (FE.y + FE.h + 10);   /* margin's edge to Grow 1–3 */
-    var ws2 = "West: " + (wsd.w < 0.5 ? "about at grade" : "footing retains up to " + wsd.w.toFixed(1) + " ft") + ", septic strip left natural. South: " +
-      (wsd.s < 0.5 ? "about at grade" : wsd.s.toFixed(1) + " ft of fill, a " + Math.round(2 * wsd.s) + " ft 2:1 slope in the " + Math.round(room) + " ft before Grow 1–3");
+    var ws2 = (wsd.w < 0.5 ? "At grade" : "Footing holds " + wsd.w.toFixed(1) + " ft") + "; septic strip stays natural</td><td>" +
+      (wsd.s < 0.5 ? "At grade" : wsd.s.toFixed(1) + " ft fill, " + Math.round(2 * wsd.s) + " ft slope of the " + Math.round(room) + " ft to Grow 1–3");
     return "<tr" + (k === scheme ? ' class="on"' : "") + "><td><b>" + OPT[k] + "</b></td><td>" + floor + '</td><td class="n">' + fmt(t.cut) + " / " + fmt(t.fill) + " / " +
-      (net >= 0 ? "+" : "−") + fmt(Math.abs(net)) + '</td><td class="n">' + walls + '</td><td class="n">' + (k === "court" ? "0, one wall along the court" : walledDocks(ws) + " of 4") + "</td><td>" + ws2 + "</td></tr>";
+      (net >= 0 ? "+" : "−") + fmt(Math.abs(net)) + '</td><td class="n">' + walls + '</td><td class="n">' + (k === "court" ? "0, court wall instead" : walledDocks(ws) + " of 4") + "</td><td>" + ws2 + "</td></tr>";
   }).join("");
   /* where the walls are, option by option */
   var rowsW = {}, order = [];
@@ -444,7 +445,7 @@ sun.shadow.mapSize.set(2048, 2048); var sc = sun.shadow.camera; sc.left = -230; 
 sun.target.position.set(600, 0, 590); scene.add(sun, sun.target);
 var root = new THREE.Group(); scene.add(root);
 function lam(c, o){ o = o || {}; return new THREE.MeshLambertMaterial({ color:c, transparent:o.op !== undefined, opacity:o.op === undefined ? 1 : o.op, side:o.side || THREE.FrontSide, depthWrite:o.dw !== false }); }
-var M = { wall:lam(0x8E8A82), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
+var M = { wall:lam(0x5E5A54), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
 function box(w, h, d, m, x, y, z, g){ var o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; (g || root).add(o); return o; }
 var edgeM = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.55 });
 function edges(o){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 20), edgeM); e.position.copy(o.position); e.rotation.copy(o.rotation); o.parent.add(e); }
@@ -476,26 +477,52 @@ function paintGround(){
 }
 /* existing contours draped on whichever surface is showing, so their elevations read against the grading */
 var topoGrp = new THREE.Group(); root.add(topoGrp);
-var lineMaj = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.85 }), lineMin = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.35 });
+var bandMaj = new THREE.MeshBasicMaterial({ color:0x15181C, transparent:true, opacity:.8, side:THREE.DoubleSide, depthWrite:false }),
+    bandMin = new THREE.MeshBasicMaterial({ color:0x15181C, transparent:true, opacity:.45, side:THREE.DoubleSide, depthWrite:false });
 var topoTags = [];
+/* Contours traced from whichever surface is showing, every 1 ft and darker every 5 ft: existing ground in the
+   existing view, finished grade in the cut and fill view, so the ramps, wells and pad edges read as lines. Marching
+   squares on the 2 ft grid; each line sits exactly at its own level. */
 function drapeTopo(){
   while (topoGrp.children.length){ var c = topoGrp.children.pop(); c.geometry.dispose(); }
   topoTags.forEach(function(t){ t.el.remove(); TAGS.splice(TAGS.indexOf(t), 1); }); topoTags = [];
-  var maj = [], min = [], best = {};
-  window.TOPO.contours.forEach(function(c){
-    var P = c.p, out = c.e % 5 ? min : maj, len = 0;
-    for (var i = 2; i < P.length; i += 2){
-      var x0 = P[i - 2], y0 = P[i - 1], x1 = P[i], y1 = P[i + 1], n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 2)); len += Math.hypot(x1 - x0, y1 - y0);
-      for (var s = 0; s < n; s++){
-        var a = [x0 + (x1 - x0) * s / n, y0 + (y1 - y0) * s / n], b = [x0 + (x1 - x0) * (s + 1) / n, y0 + (y1 - y0) * (s + 1) / n];
-        var ha = (showExisting ? xAt : gAt)(a[0], a[1]), hb = (showExisting ? xAt : gAt)(b[0], b[1]); if (isNaN(ha) || isNaN(hb)) continue;
-        out.push(a[0], ha + 0.12, a[1], b[0], hb + 0.12, b[1]);
-      }
+  var A = showExisting ? XR : G, maj = [], min = [];
+  var cross = function(x0, y0, v0, x1, y1, v1, lv){ var t = (lv - v0) / (v1 - v0); return [x0 + (x1 - x0) * t, y0 + (y1 - y0) * t]; };
+  for (var j = 0; j < NY - 1; j++) for (var i = 0; i < NX - 1; i++){
+    var k = j * NX + i, v = [A[k], A[k + 1], A[k + NX + 1], A[k + NX]];
+    if (v.some(isNaN)) continue;
+    var x0 = T.x0 + i * ST, y0 = T.y0 + j * ST, P = [[x0, y0], [x0 + ST, y0], [x0 + ST, y0 + ST], [x0, y0 + ST]];
+    var lo = Math.min.apply(null, v) + FF, hi = Math.max.apply(null, v) + FF;
+    for (var L0 = Math.ceil(lo - 0.005); L0 <= hi + 0.005; L0++){
+      /* the surface is a TIN through the survey's lines, so on flat ground whole patches sit exactly at a contour's
+         level: trace a hair below it, which puts the line on the patch's edge, where the survey drew it */
+      var lv = L0 - FF - 0.005, pts = [];
+      for (var e = 0; e < 4; e++){ var f = (e + 1) % 4; if ((v[e] - lv) * (v[f] - lv) < 0) pts.push(cross(P[e][0], P[e][1], v[e], P[f][0], P[f][1], v[f], lv)); }
+      var out = L0 % 5 ? min : maj;
+      for (var q = 0; q + 1 < pts.length; q += 2) out.push(pts[q][0], lv + 0.15, pts[q][1], pts[q + 1][0], lv + 0.15, pts[q + 1][1]);
     }
-    if (!(c.e % 5) && (!best[c.e] || len > best[c.e].len)) best[c.e] = { len:len, x:P[Math.floor(P.length / 4) * 2], y:P[Math.floor(P.length / 4) * 2 + 1] };
+  }
+  /* each segment becomes a flat band: 0.7 ft wide every 5 ft, 0.35 ft every foot */
+  [[maj, bandMaj, 0.35], [min, bandMin, 0.18]].forEach(function(m){
+    var src = m[0], pos = [];
+    for (var q = 0; q < src.length; q += 6){
+      var ax = src[q], ay = src[q + 1], az = src[q + 2], bx = src[q + 3], bz = src[q + 5], dx = bx - ax, dz = bz - az, L1 = Math.hypot(dx, dz); if (L1 < 1e-6) continue;
+      var nx = -dz / L1 * m[2], nz = dx / L1 * m[2];
+      pos.push(ax + nx, ay, az + nz, bx + nx, ay, bz + nz, bx - nx, ay, bz - nz, ax + nx, ay, az + nz, bx - nx, ay, bz - nz, ax - nx, ay, az - nz);
+    }
+    var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); topoGrp.add(new THREE.Mesh(g, m[1]));
   });
-  [[maj, lineMaj], [min, lineMin]].forEach(function(m){ var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(m[0], 3)); topoGrp.add(new THREE.LineSegments(g, m[1])); });
-  Object.keys(best).forEach(function(e){ var b = best[e], h = (showExisting ? xAt : gAt)(b.x, b.y); if (!isNaN(h)) topoTags.push(tag("<b>" + e + "</b>", b.x, h + 1, b.y, "topo")); });
+  /* one label a foot, where each line crosses a strip west of the buildings, else one east of the yard */
+  var done = {};
+  [PH.x - 12, WALL + 95].forEach(function(tx){
+    var prev = NaN;
+    for (var y = T.y0 + 4; y < T.y0 + (NY - 1) * ST - 4; y += 1){
+      var h = bil(A, tx, y); if (isNaN(h)){ prev = NaN; continue; }
+      if (!isNaN(prev)){ var a1 = Math.floor(Math.max(prev, h) + FF), b1 = Math.min(prev, h) + FF;
+        if (a1 > b1 && !done[a1]){ done[a1] = 1; topoTags.push(tag(a1 % 5 ? String(a1) : "<b>" + a1 + "</b>", tx, a1 - FF + 0.6, y, "topo" + (a1 % 5 ? " minor" : ""))); } }
+      prev = h;
+    }
+  });
   topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; });
 }
 /* buildings, docks, doors, trucks */
@@ -537,9 +564,11 @@ function trucks(k){
   for (var i = 0; i < 4; i++) box(3.6, 3.4, 3.6, M.step, 4 + i * 9, 6.1, 0, g);
 }
 /* a wall segment along x0,y0 → x1,y1, standing from lo up to hi */
+/* every wall the table counts, footings that retain included, drawn 2 ft thick so they read */
+function drawWalls(k){ wallsOf(k).concat(footingsOf(k)).filter(counts).forEach(function(w){ wallRun(k, w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); }); }
 function wallRun(k, x0, y0, x1, y1, lo, hi){
   var h = hi - lo; if (!(h > 0.1)) return;
-  var o = box(Math.hypot(x1 - x0, y1 - y0), h + 0.4, 0.8, M.wall, (x0 + x1) / 2, lo + (h + 0.4) / 2, (y0 + y1) / 2, SG[k]); o.rotation.y = -Math.atan2(y1 - y0, x1 - x0);
+  var o = box(Math.hypot(x1 - x0, y1 - y0) + 0.2, h + 0.6, 2, M.wall, (x0 + x1) / 2, lo + (h + 0.4) / 2, (y0 + y1) / 2, SG[k]); o.rotation.y = -Math.atan2(y1 - y0, x1 - x0);
 }
 var dynTags = [];
 function buildSchemes(){
@@ -548,8 +577,7 @@ dynTags.forEach(function(t){ t.el.remove(); TAGS.splice(TAGS.indexOf(t), 1); });
 var tag0 = tag; tag = function(){ var t = tag0.apply(null, arguments); dynTags.push(t); return t; };
 /* lowered court: the wall on the east wall line, tapering up the ramp, and beside the forklift ramp */
 G = MODELS.court.G;
-for (var y = COURT.y0; y < COURT.y1; y += 2) if (onBuilding(y + 1)) wallRun("court", WALL + 0.4, y, WALL + 0.4, y + 2, courtE(WALL, y + 1), 0);   /* the footings */
-wallsOf("court").forEach(function(w){ wallRun("court", w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); });
+drawWalls("court");
 trucks("court");
 var mid = (COURT.y0 + COURT.y1) / 2;
 tag("Truck court <b>−4.00</b> at the wall", WALL + 22, -2, mid - 10, "low", "court");
@@ -563,7 +591,7 @@ tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2
    and the forklift ramp's side wall */
 ["mid"].forEach(function(k){
   var fl = floors(k), f = fl.fe; G = MODELS[k].G;
-  wallsOf(k).forEach(function(w){ wallRun(k, w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); });
+  drawWalls(k);
   WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
     tag("Dock well " + w.marks + " · <b>" + rel(f - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, f - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", k); });
   var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2); if (e3 < f) tag("Forklift ramp 10% down to the yard", WALL - (f - e3) / 0.2, f + 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", k);
@@ -574,7 +602,7 @@ tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2
 /* option 2 */
 G = MODELS.split.G;
 (function(){ var fl = floors("split");
-  wallsOf("split").forEach(function(w){ wallRun("split", w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); });
+  drawWalls("split");
   WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
     tag("Dock well " + w.marks + " · <b>" + rel(wellBase(w, fl) - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, wellBase(w, fl) - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", "split"); });
   trucks("split");
@@ -600,8 +628,8 @@ G = MODELS[scheme].G;
 var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:330 }, goal = null, needs = true;
 var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI, pol:0.02, r:520 } };
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
-function go(k){ ["iso","east","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
-["iso","east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
+function go(k){ ["east","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
+["east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
 /* what the ground shows: existing, graded plain, or graded coloured by cut and fill */
 function surface(mode){ showExisting = mode === "existing"; showCF = mode === "cf";
   ["existing", "cf"].forEach(function(m){ $("#s-" + m).setAttribute("aria-pressed", String(m === mode)); }); paintGround(); drapeTopo(); needs = true; }
