@@ -111,8 +111,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     </div>
     <div class="grp">
       <button type="button" id="t-topo" aria-pressed="true">Contours</button>
-      <button type="button" id="t-bld" aria-pressed="true">Buildings and trucks</button>
-      <button type="button" id="t-tags" aria-pressed="true">Labels</button>
+      <button type="button" id="t-bld" aria-pressed="false">Buildings and trucks</button>
+      <button type="button" id="t-tags" aria-pressed="false">Labels</button>
     </div>
   </div>
   <p class="hint">Drag to orbit · shift-drag to pan · scroll to zoom</p>
@@ -145,8 +145,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=624debf"></script>
-<script src="topo-site.js?v=624debf"></script>
+<script src="packhouse-layouts.js?v=2057d1d"></script>
+<script src="topo-site.js?v=2057d1d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -369,7 +369,7 @@ function footingsOf(k){
         var t0 = i / n, t1 = (i + 1) / n, x0 = sd[0] + (sd[2] - sd[0]) * t0, y0 = sd[1] + (sd[3] - sd[1]) * t0, x1 = sd[0] + (sd[2] - sd[0]) * t1, y1 = sd[1] + (sd[3] - sd[1]) * t1;
         var px = (x0 + x1) / 2 + sd[4], py = (y0 + y1) / 2 + sd[5], z = zf(px, py), g = z ? z.z : bil(Gk, px, py);
         if (isNaN(g)) continue;
-        out.push({ x0:x0, y0:y0, x1:x1, y1:y1, lo:Math.min(f, g), hi:Math.max(f, g), footing:true, where:b[3] + " " + sd[6] + " footing" });
+        out.push({ x0:x0, y0:y0, x1:x1, y1:y1, lo:Math.min(f, g), hi:Math.max(f, g), footing:true, where:b[3] + " " + sd[6] + " footing", ox:sd[4] / 1.5, oy:sd[5] / 1.5 });
       }
     });
   });
@@ -444,7 +444,7 @@ sun.shadow.mapSize.set(2048, 2048); var sc = sun.shadow.camera; sc.left = -230; 
 sun.target.position.set(600, 0, 590); scene.add(sun, sun.target);
 var root = new THREE.Group(); scene.add(root);
 function lam(c, o){ o = o || {}; return new THREE.MeshLambertMaterial({ color:c, transparent:o.op !== undefined, opacity:o.op === undefined ? 1 : o.op, side:o.side || THREE.FrontSide, depthWrite:o.dw !== false }); }
-var M = { wall:lam(0x5E5A54), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
+var M = { wall:lam(0x2E2C29), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
 function box(w, h, d, m, x, y, z, g){ var o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; (g || root).add(o); return o; }
 var edgeM = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.55 });
 function edges(o){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 20), edgeM); e.position.copy(o.position); e.rotation.copy(o.rotation); o.parent.add(e); }
@@ -548,7 +548,7 @@ function rig(x, y, ang, len, parent){
 }
 /* what differs between the schemes: walls, where the trucks stand, labels */
 var SG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, PL = new THREE.Group(); root.add(SG.court, SG.split, SG.recess, SG.mid, PL);
-var TG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, showTrucks = true, showBld = true;   /* trucks on their own, to switch off */
+var TG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, showTrucks = false, showBld = false;   /* the page opens on the ground alone */   /* trucks on their own, to switch off */
 root.add(TG.court, TG.split, TG.recess, TG.mid);
 var rel = function(v){ return (v > 0.004 ? "+" : v < -0.004 ? "−" : "") + Math.abs(v).toFixed(2); };
 function trucks(k){
@@ -564,10 +564,12 @@ function trucks(k){
 }
 /* a wall segment along x0,y0 → x1,y1, standing from lo up to hi */
 /* every wall the table counts, footings that retain included, drawn 2 ft thick so they read */
-function drawWalls(k){ wallsOf(k).concat(footingsOf(k)).filter(counts).forEach(function(w){ wallRun(k, w.x0, w.y0, w.x1, w.y1, w.lo, w.hi); }); }
+/* footings are drawn just outside the building line, not half inside the translucent building, so both sides read alike */
+function drawWalls(k){ wallsOf(k).concat(footingsOf(k)).filter(counts).forEach(function(w){ var d = w.footing ? 1.3 : 0;
+  wallRun(k, w.x0 + (w.ox || 0) * d, w.y0 + (w.oy || 0) * d, w.x1 + (w.ox || 0) * d, w.y1 + (w.oy || 0) * d, w.lo, w.hi); }); }
 function wallRun(k, x0, y0, x1, y1, lo, hi){
   var h = hi - lo; if (!(h > 0.1)) return;
-  var o = box(Math.hypot(x1 - x0, y1 - y0) + 0.2, h + 0.6, 2, M.wall, (x0 + x1) / 2, lo + (h + 0.4) / 2, (y0 + y1) / 2, SG[k]); o.rotation.y = -Math.atan2(y1 - y0, x1 - x0);
+  var o = box(Math.hypot(x1 - x0, y1 - y0) + 0.2, h + 0.6, 2.5, M.wall, (x0 + x1) / 2, lo + (h + 0.4) / 2, (y0 + y1) / 2, SG[k]); o.rotation.y = -Math.atan2(y1 - y0, x1 - x0);
 }
 var dynTags = [];
 function buildSchemes(){
@@ -625,7 +627,7 @@ G = MODELS[scheme].G;
 
 /* ---------- camera ---------- */
 var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:330 }, goal = null, needs = true;
-var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI, pol:0.02, r:520 } };
+var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:0, pol:0.02, r:520 } };   /* plan looks down with north up, like the site map */
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
 function go(k){ ["iso","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
 ["iso","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
@@ -641,7 +643,7 @@ function pickFloor(lv){
 
 function pickScheme(k){
   scheme = k; G = MODELS[k].G; K = MODELS[k].K;
-  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = TG[n].visible = n === k && showTrucks; });
+  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; TG[n].visible = n === k && showTrucks; });   /* walls stay: they are part of the grading */
   TG.recess.visible = SG.recess.visible = false;
   var fl = floors(k);
   [["ph80", fl.ph], ["fert80", fl.fe]].forEach(function(b){
@@ -652,16 +654,18 @@ function pickScheme(k){
   renderSummary();
   TAGS.forEach(function(t){ if (t.scheme) t.el.hidden = t.scheme !== k; });
   $("#schemeLede").innerHTML = LEDE[k];
-  paintGround(); drapeTopo(); saveHash(); needs = true;
+  paintGround(); drapeTopo(); saveHash(); if (typeof applyBld === "function") applyBld(); needs = true;
 }
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
 $("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
 /* buildings, trucks and walls switch off together, leaving the ground and its cut and fill */
-$("#t-bld").addEventListener("click", function(){ showBld = showTrucks = !showBld; this.setAttribute("aria-pressed", String(showBld));
+function applyBld(){ $("#t-bld").setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
-  TG[scheme].visible = SG[scheme].visible = showTrucks; needs = true; });
+  TG[scheme].visible = showTrucks; needs = true; }
+$("#t-bld").addEventListener("click", function(){ showBld = showTrucks = !showBld; applyBld(); });
+host.style.display = "none";   /* labels off to start */
 $("#t-tags").addEventListener("click", function(){ var on = host.style.display === "none"; host.style.display = on ? "" : "none"; this.setAttribute("aria-pressed", String(on)); needs = true; });
 var drag = null;
 canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
