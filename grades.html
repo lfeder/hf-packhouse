@@ -113,7 +113,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
       <button type="button" id="t-cf" aria-pressed="true">Cut and fill</button>
       <button type="button" id="t-topo" aria-pressed="true">Contours</button>
       <button type="button" id="t-bld" aria-pressed="true">Buildings</button>
-      <button type="button" id="t-trk" aria-pressed="true">Trucks</button>
+      <button type="button" id="t-trk" aria-pressed="true">Trucks and walls</button>
       <button type="button" id="t-tags" aria-pressed="true">Labels</button>
     </div>
   </div>
@@ -147,8 +147,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=4febacc"></script>
-<script src="topo-site.js?v=4febacc"></script>
+<script src="packhouse-layouts.js?v=54d4a90"></script>
+<script src="topo-site.js?v=54d4a90"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -614,7 +614,7 @@ function pickFloor(lv){
 
 function pickScheme(k){
   scheme = k; G = MODELS[k].G; K = MODELS[k].K;
-  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; TG[n].visible = n === k && showTrucks; });
+  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = TG[n].visible = n === k && showTrucks; });
   TG.recess.visible = SG.recess.visible = false;
   var fl = floors(k);
   [["ph80", fl.ph], ["fert80", fl.fe]].forEach(function(b){
@@ -635,7 +635,7 @@ $("#t-cf").addEventListener("click", function(){ showCF = !showCF; this.setAttri
 $("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
 $("#t-bld").addEventListener("click", function(){ showBld = !showBld; this.setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; }); needs = true; });
-$("#t-trk").addEventListener("click", function(){ showTrucks = !showTrucks; this.setAttribute("aria-pressed", String(showTrucks)); TG[scheme].visible = showTrucks; needs = true; });
+$("#t-trk").addEventListener("click", function(){ showTrucks = !showTrucks; this.setAttribute("aria-pressed", String(showTrucks)); TG[scheme].visible = SG[scheme].visible = showTrucks; needs = true; });
 $("#t-tags").addEventListener("click", function(){ var on = host.style.display === "none"; host.style.display = on ? "" : "none"; this.setAttribute("aria-pressed", String(on)); needs = true; });
 var drag = null;
 canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
