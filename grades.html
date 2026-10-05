@@ -106,11 +106,11 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
       <button type="button" id="k-mid" aria-pressed="false">3 · Recessed docks</button>
     </div>
     <div class="grp">
-      <button type="button" id="s-graded" aria-pressed="true">Graded</button>
-      <button type="button" id="s-existing" aria-pressed="false">Existing ground</button>
+      <button type="button" id="s-existing" aria-pressed="false">Existing</button>
+      <button type="button" id="s-graded" aria-pressed="false">Graded</button>
+      <button type="button" id="s-cf" aria-pressed="true">Cut and fill</button>
     </div>
     <div class="grp">
-      <button type="button" id="t-cf" aria-pressed="true">Cut and fill</button>
       <button type="button" id="t-topo" aria-pressed="true">Contours</button>
       <button type="button" id="t-bld" aria-pressed="true">Buildings</button>
       <button type="button" id="t-trk" aria-pressed="true">Trucks and walls</button>
@@ -147,8 +147,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=54d4a90"></script>
-<script src="topo-site.js?v=54d4a90"></script>
+<script src="packhouse-layouts.js?v=e487780"></script>
+<script src="topo-site.js?v=e487780"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -604,8 +604,10 @@ var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, 
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
 function go(k){ ["iso","east","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
 ["iso","east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
-function surface(existing){ showExisting = existing; $("#s-graded").setAttribute("aria-pressed", String(!existing)); $("#s-existing").setAttribute("aria-pressed", String(existing)); paintGround(); drapeTopo(); needs = true; }
-$("#s-graded").addEventListener("click", function(){ surface(false); });
+/* what the ground shows: existing, graded plain, or graded coloured by cut and fill */
+function surface(mode){ showExisting = mode === "existing"; showCF = mode === "cf";
+  ["existing", "graded", "cf"].forEach(function(m){ $("#s-" + m).setAttribute("aria-pressed", String(m === mode)); }); paintGround(); drapeTopo(); needs = true; }
+["existing", "graded", "cf"].forEach(function(m){ $("#s-" + m).addEventListener("click", function(){ surface(m); }); });
 function pickFloor(lv){
   setFloor(lv); runModels(); buildSchemes(); renderLevels();
 
@@ -630,8 +632,6 @@ function pickScheme(k){
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
-$("#s-existing").addEventListener("click", function(){ surface(true); });
-$("#t-cf").addEventListener("click", function(){ showCF = !showCF; this.setAttribute("aria-pressed", String(showCF)); paintGround(); needs = true; });
 $("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
 $("#t-bld").addEventListener("click", function(){ showBld = !showBld; this.setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; }); needs = true; });
