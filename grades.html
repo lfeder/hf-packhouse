@@ -131,7 +131,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 </div>
 
 <div class="tbl" style="margin-top:16px"><table>
-  <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Retaining walls<span class="sm"> freestanding</span></th><th class="n">Docks in walled wells</th><th>West and south sides</th></tr></thead>
+  <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Retaining walls<span class="sm"> incl. footings</span></th><th class="n">Docks in walled wells</th><th>West and south sides</th></tr></thead>
   <tbody id="summary"></tbody>
 </table></div>
 <p class="sub" id="cfLede" style="margin-top:10px"></p>
@@ -203,14 +203,14 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor (Dock detail).</li>
 </ul>
 <footer>
-  <span>Layouts, positions and property line: packhouse-layouts.js?v=25cf3dd</span>
-  <span>Existing ground: topo-site.js?v=25cf3dd, from scripts/topo-site.py</span>
+  <span>Layouts, positions and property line: packhouse-layouts.js?v=da62ed4</span>
+  <span>Existing ground: topo-site.js?v=da62ed4, from scripts/topo-site.py</span>
   <span>Drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=25cf3dd"></script>
-<script src="topo-site.js?v=25cf3dd"></script>
+<script src="packhouse-layouts.js?v=da62ed4"></script>
+<script src="topo-site.js?v=da62ed4"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -402,6 +402,24 @@ function wallsOf(k){
     if (e3 < 0) for (var x3 = WALL + e3 / 0.10; x3 < WALL; x3 += 2) add(x3, FRAMP.y0 - 0.4, x3 + 2, FRAMP.y0 - 0.4, (WALL - x3 - 1) * 0.10 + e3, 0); }
   return out;
 }
+/* building footings that hold back grade: walk both perimeters, comparing the floor with finished grade 1.5 ft outside */
+function footingsOf(k){
+  var out = [], fl = floors(k), Gk = MODELS[k].G, zf = SCHEMES[k];
+  [["ph80", PH, fl.ph], ["fert80", FE, fl.fe]].forEach(function(b){
+    var r = b[1], f = b[2], sides = [[r.x, r.y, r.x + r.w, r.y, 0, -1.5], [r.x + r.w, r.y, r.x + r.w, r.y + r.h, 1.5, 0], [r.x, r.y + r.h, r.x + r.w, r.y + r.h, 0, 1.5], [r.x, r.y, r.x, r.y + r.h, -1.5, 0]];
+    sides.forEach(function(sd){
+      var len = Math.hypot(sd[2] - sd[0], sd[3] - sd[1]), n = Math.round(len / 2);
+      for (var i = 0; i < n; i++){
+        var t0 = i / n, t1 = (i + 1) / n, x0 = sd[0] + (sd[2] - sd[0]) * t0, y0 = sd[1] + (sd[3] - sd[1]) * t0, x1 = sd[0] + (sd[2] - sd[0]) * t1, y1 = sd[1] + (sd[3] - sd[1]) * t1;
+        var px = (x0 + x1) / 2 + sd[4], py = (y0 + y1) / 2 + sd[5], z = zf(px, py), g = z ? z.z : bil(Gk, px, py);
+        if (isNaN(g)) continue;
+        out.push({ x0:x0, y0:y0, x1:x1, y1:y1, lo:Math.min(f, g), hi:Math.max(f, g), footing:true });
+      }
+    });
+  });
+  return out;
+}
+function wallFace(ws){ return ws.filter(function(w){ return w.hi - w.lo > 0.5; }).reduce(function(t, w){ return t + Math.hypot(w.x1 - w.x0, w.y1 - w.y0) * (w.hi - w.lo); }, 0); }
 function wallLen(ws){ return ws.filter(function(w){ return w.hi - w.lo > 0.5; }).reduce(function(t, w){ return t + Math.hypot(w.x1 - w.x0, w.y1 - w.y0); }, 0); }
 function walledDocks(ws){ var set = []; ws.forEach(function(w){ if (w.well && w.hi - w.lo > 0.5 && set.indexOf(w.well) < 0) set.push(w.well); });
   return set.reduce(function(t, w){ return t + w.marks.split(" and ").length; }, 0); }
@@ -415,18 +433,19 @@ function westSouth(k){
 var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks" };
 function renderSummary(){
   $("#summary").innerHTML = ["court", "split", "recess"].map(function(k){
-    var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
+    var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
+    var all = ws.concat(ft), walls = fmt(wallLen(all)) + " ft<span class='sm' style='display:block;color:var(--ink-3)'>" + fmt(wallLen(ft)) + " at footings · " + fmt(wallFace(all)) + " ft² of face</span>";
     var floor = fl.ph === fl.fe ? (FF + fl.ph).toFixed(2) + " both" : (FF + fl.ph).toFixed(2) + " packhouse, " + (FF + fl.fe).toFixed(2) + " fert";
     var room = 724.4 - (FE.y + FE.h + 10);   /* margin's edge to Grow 1–3 */
     var ws2 = "West: " + (wsd.w < 0.5 ? "about at grade" : "footing retains up to " + wsd.w.toFixed(1) + " ft") + ", septic strip left natural. South: " +
       (wsd.s < 0.5 ? "about at grade" : wsd.s.toFixed(1) + " ft of fill, a " + Math.round(2 * wsd.s) + " ft 2:1 slope in the " + Math.round(room) + " ft before Grow 1–3");
     return "<tr" + (k === scheme ? ' class="on"' : "") + "><td><b>" + OPT[k] + "</b></td><td>" + floor + '</td><td class="n">' + fmt(t.cut) + " / " + fmt(t.fill) + " / " +
-      (net >= 0 ? "+" : "−") + fmt(Math.abs(net)) + '</td><td class="n">' + fmt(wallLen(ws)) + ' ft</td><td class="n">' + (k === "court" ? "0, one wall along the court" : walledDocks(ws) + " of 4") + "</td><td>" + ws2 + "</td></tr>";
+      (net >= 0 ? "+" : "−") + fmt(Math.abs(net)) + '</td><td class="n">' + walls + '</td><td class="n">' + (k === "court" ? "0, one wall along the court" : walledDocks(ws) + " of 4") + "</td><td>" + ws2 + "</td></tr>";
   }).join("");
   var m = MODELS.court;
   $("#cfLede").innerHTML = "Net is cut less fill: + means soil to haul away, − means fill to bring in, before topsoil and shrinkage. Options 1 and 3 use the floor buttons (now " +
     (LOWER ? LOWER + " ft below" : "level with") + " the packhouse's north-edge grade, " + FFlo.toFixed(2) + " to " + FFhi.toFixed(2) + "); option 2's floors follow the ground under each building." +
-    (m.over.len ? " Option 1's cut slope runs onto Lot 9 by up to " + Math.round(m.over.depth) + " ft." : "") + " Walls under half a foot are left out, as are the buildings' own footings.";
+    (m.over.len ? " Option 1's cut slope runs onto Lot 9 by up to " + Math.round(m.over.depth) + " ft." : "") + " Walls count every stretch, freestanding or building footing, holding back more than half a foot of grade; face is length × height, the better guide to cost.";
 }
 /* the same two schemes with the floor 0, 1 and 2 ft below the north-edge grade */
 function renderLevels(){
