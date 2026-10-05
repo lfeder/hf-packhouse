@@ -112,6 +112,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     <div class="grp">
       <button type="button" id="t-cf" aria-pressed="true">Cut and fill</button>
       <button type="button" id="t-topo" aria-pressed="true">Contours</button>
+      <button type="button" id="t-bld" aria-pressed="true">Buildings</button>
+      <button type="button" id="t-trk" aria-pressed="true">Trucks</button>
       <button type="button" id="t-tags" aria-pressed="true">Labels</button>
     </div>
   </div>
@@ -145,8 +147,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=214c55c"></script>
-<script src="topo-site.js?v=214c55c"></script>
+<script src="packhouse-layouts.js?v=4febacc"></script>
+<script src="topo-site.js?v=4febacc"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -522,15 +524,17 @@ function rig(x, y, ang, len, parent){
 }
 /* what differs between the schemes: walls, where the trucks stand, labels */
 var SG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, PL = new THREE.Group(); root.add(SG.court, SG.split, SG.recess, SG.mid, PL);
+var TG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, showTrucks = true, showBld = true;   /* trucks on their own, to switch off */
+root.add(TG.court, TG.split, TG.recess, TG.mid);
 var rel = function(v){ return (v > 0.004 ? "+" : v < -0.004 ? "−" : "") + Math.abs(v).toFixed(2); };
 function trucks(k){
   [["ph80", L.ph80], ["fert80", L.fert80]].forEach(function(bb){
     var id = bb[0], b = bb[1];
-    b.openings.filter(function(o){ return o.type === "dock"; }).forEach(function(o){ var p = toSite(id, (o.a + o.b) / 2, 0); rig(p[0] + (o.angle ? 2.3 : 0), p[1], (o.angle || 0) * Math.PI / 180, o.truck === "box" ? 24 : 45, SG[k]); });
-    b.openings.filter(function(o){ return o.type === "rollup" && !o.forklift && o.face === "W"; }).forEach(function(o){ var p = toSite(id, 0, (o.a + o.b) / 2); rig(p[0], p[1], -Math.PI / 2, 24, SG[k]); });
+    b.openings.filter(function(o){ return o.type === "dock"; }).forEach(function(o){ var p = toSite(id, (o.a + o.b) / 2, 0); rig(p[0] + (o.angle ? 2.3 : 0), p[1], (o.angle || 0) * Math.PI / 180, o.truck === "box" ? 24 : 45, TG[k]); });
+    b.openings.filter(function(o){ return o.type === "rollup" && !o.forklift && o.face === "W"; }).forEach(function(o){ var p = toSite(id, 0, (o.a + o.b) / 2); rig(p[0], p[1], -Math.PI / 2, 24, TG[k]); });
   });
   if (k === "split") return;   /* no forklift ramp: the lane is about level with the yard */
-  var g = new THREE.Group(); g.position.set(WALL + 7, gAt(WALL + 30, FRAMP.y0 - 8), FRAMP.y0 - 8); SG[k].add(g);   /* a flatbed by the forklift ramp */
+  var g = new THREE.Group(); g.position.set(WALL + 7, gAt(WALL + 30, FRAMP.y0 - 8), FRAMP.y0 - 8); TG[k].add(g);   /* a flatbed by the forklift ramp */
   box(40, 0.8, 8.2, M.dark, 20, 4, 0, g); box(8, 7.6, 8, M.truck, 45, 4.6, 0, g);
   for (var i = 0; i < 4; i++) box(3.6, 3.4, 3.6, M.step, 4 + i * 9, 6.1, 0, g);
 }
@@ -541,7 +545,7 @@ function wallRun(k, x0, y0, x1, y1, lo, hi){
 }
 var dynTags = [];
 function buildSchemes(){
-[SG.court, SG.split, SG.recess, SG.mid, PL].forEach(function(g){ while (g.children.length) g.remove(g.children[0]); });
+[SG.court, SG.split, SG.recess, SG.mid, TG.court, TG.split, TG.recess, TG.mid, PL].forEach(function(g){ while (g.children.length) g.remove(g.children[0]); });
 dynTags.forEach(function(t){ t.el.remove(); TAGS.splice(TAGS.indexOf(t), 1); }); dynTags = [];
 var tag0 = tag; tag = function(){ var t = tag0.apply(null, arguments); dynTags.push(t); return t; };
 /* lowered court: the wall on the east wall line, tapering up the ramp, and beside the forklift ramp */
@@ -610,7 +614,8 @@ function pickFloor(lv){
 
 function pickScheme(k){
   scheme = k; G = MODELS[k].G; K = MODELS[k].K;
-  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; });
+  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; TG[n].visible = n === k && showTrucks; });
+  TG.recess.visible = SG.recess.visible = false;
   var fl = floors(k);
   [["ph80", fl.ph], ["fert80", fl.fe]].forEach(function(b){
     BG[b[0]].position.y = b[1];
@@ -628,6 +633,9 @@ $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
 $("#s-existing").addEventListener("click", function(){ surface(true); });
 $("#t-cf").addEventListener("click", function(){ showCF = !showCF; this.setAttribute("aria-pressed", String(showCF)); paintGround(); needs = true; });
 $("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
+$("#t-bld").addEventListener("click", function(){ showBld = !showBld; this.setAttribute("aria-pressed", String(showBld));
+  ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; }); needs = true; });
+$("#t-trk").addEventListener("click", function(){ showTrucks = !showTrucks; this.setAttribute("aria-pressed", String(showTrucks)); TG[scheme].visible = showTrucks; needs = true; });
 $("#t-tags").addEventListener("click", function(){ var on = host.style.display === "none"; host.style.display = on ? "" : "none"; this.setAttribute("aria-pressed", String(on)); needs = true; });
 var drag = null;
 canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
