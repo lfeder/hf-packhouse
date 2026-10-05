@@ -141,8 +141,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=49c6a8d"></script>
-<script src="topo-site.js?v=49c6a8d"></script>
+<script src="packhouse-layouts.js?v=f28a216"></script>
+<script src="topo-site.js?v=f28a216"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -644,7 +644,8 @@ G = MODELS[scheme].G;
 var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:330 }, goal = null, needs = true;
 var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI / 2, pol:0.02, r:520 } };   /* plan looks down with west up */
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
-function go(k){ ["iso","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
+function go(k){ ["iso","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); if (k === "plan") target.set((PH.x + WALL) / 2 + 15, -2, (PH.y + FE.y + FE.h) / 2); else target.set(620, -2, 600);   /* plan centres on the buildings */
+  goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
 ["iso","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
 
 function pickFloor(lv){
