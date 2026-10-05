@@ -122,7 +122,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 </div>
 
 <div class="tbl" style="margin-top:16px"><table>
-  <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Walls<span class="sm"> ft</span></th><th class="n">Face<span class="sm"> ft²</span></th><th class="n">Walled docks</th><th class="n">West footing<span class="sm"> ft</span></th><th class="n">South fill / slope<span class="sm"> ft</span></th></tr></thead>
+  <thead><tr><th>Option</th><th>Floor</th><th class="n">Cut / fill / net<span class="sm"> yd³</span></th><th class="n">Walls<span class="sm"> ft</span></th><th class="n">Face<span class="sm"> ft²</span></th><th class="n">Rough cost<span class="sm"> $k</span></th><th class="n">Walled docks</th><th class="n">West footing<span class="sm"> ft</span></th><th class="n">South fill / slope<span class="sm"> ft</span></th></tr></thead>
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
@@ -130,19 +130,20 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="wallWhere"></tbody>
 </table></div>
 
-<h2>Lowering the floor</h2>
-<p class="sub">How the floor level moves things, for one floor with a lowered court or with recessed docks: at the packhouse's north-edge grade, and 1 and 2 ft below it. Option 3 sits at 1.5 ft below. Lower floors fill
-  less on the west and south and dig more on the east; the north side then sits above the floor and has to drain away
-  from the packhouse.</p>
+<h2>How each floor was chosen</h2>
+<p class="sub" style="max-width:none">Rough cost of each option as its floor moves around the chosen level, counting only retaining wall at $60/ft² of
+  face, soil moved on site at $8/yd³ and soil brought in or hauled away at $30/yd³. For option 2 the fert floor moves; the
+  packhouse stays at its ground. * More than half a foot off its ground, no longer "at grade": left free, option 2's two floors close
+  up toward option 3's one.</p>
 <div class="tbl"><table>
-  <thead><tr><th>Floor</th><th class="n">Lowered court<span class="sm"> cut / fill, yd³</span></th><th class="n">Recessed docks<span class="sm"> cut / fill, yd³</span></th><th class="n">Deepest fill<span class="sm"> west side</span></th><th class="n">North side<span class="sm"> above the floor</span></th></tr></thead>
-  <tbody id="levels"></tbody>
+  <thead><tr><th>Option</th><th class="n">−0.5 ft</th><th class="n">−0.25 ft</th><th class="n">Chosen</th><th class="n">+0.25 ft</th><th class="n">+0.5 ft</th></tr></thead>
+  <tbody id="levels"><tr><td colspan="6">Working…</td></tr></tbody>
 </table></div>
 
 </div>
 
-<script src="packhouse-layouts.js?v=b92705a"></script>
-<script src="topo-site.js?v=b92705a"></script>
+<script src="packhouse-layouts.js?v=8d6c739"></script>
+<script src="topo-site.js?v=8d6c739"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -190,7 +191,14 @@ var AVG = (function(){ var o = {}; [["ph", PH], ["fe", FE]].forEach(function(b){
 /* floor of each building, relative to FF: one level for options 1 and 3, each at its own grade for option 2 */
 /* option 4 holds one floor 1.5 ft below the north-edge grade, halfway between the ground under the two buildings */
 var MID = 1.5;
-function floors(k){ return k === "split" ? { ph:AVG.ph - FF, fe:AVG.fe - FF } : k === "mid" ? { ph:LOWER - MID, fe:LOWER - MID } : { ph:0, fe:0 }; }
+/* Floors, each set to the cheapest of a sweep (rough cost below): option 1 a quarter foot under the north-edge grade,
+   option 2 the packhouse at its ground and the fert building half a foot above its (held within ±0.5 ft so it stays
+   "at grade"; left free it closes up to option 3's single floor), option 3 1.5 ft under the north-edge grade. */
+var OPT1 = 0.25, SPLIT = { ph:0, fe:0.5 };
+function floors(k){ return k === "split" ? { ph:AVG.ph + SPLIT.ph - FF, fe:AVG.fe + SPLIT.fe - FF } : k === "mid" ? { ph:LOWER - MID, fe:LOWER - MID } : { ph:0, fe:0 }; }
+/* a rough cost to weigh wall against earthwork: wall face, soil moved on site, soil brought in or hauled away */
+var COST = { wall:60, move:8, haul:30 };
+function costOf(m, k){ var t = m.tot, face = wallFace(wallsOf(k).concat(footingsOf(k))); return face * COST.wall + (t.cut + t.fill) * COST.move + Math.abs(t.cut - t.fill) * COST.haul; }
 function isRec(k){ return k === "recess" || k === "mid"; }
 /* the pad: both floors, the lane and bin wash (ramping between the floors if they differ), a 10 ft margin and the area
    north of the packhouse */
@@ -408,7 +416,7 @@ var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:
 function renderSummary(){
   $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
-    var all = ws.concat(ft), walls = fmt(wallLen(all)) + '</td><td class="n">' + fmt(wallFace(all));
+    var all = ws.concat(ft), walls = fmt(wallLen(all)) + '</td><td class="n">' + fmt(wallFace(all)) + '</td><td class="n">' + Math.round(costOf(m, k) / 1000);
     var floor = fl.ph === fl.fe ? (FF + fl.ph).toFixed(2) + " both" : (FF + fl.ph).toFixed(2) + " packhouse, " + (FF + fl.fe).toFixed(2) + " fert";
     var room = 724.4 - (FE.y + FE.h + 10);   /* margin's edge to Grow 1–3 */
     var ws2 = (wsd.w < 0.5 ? "0" : wsd.w.toFixed(1)) + '</td><td class="n">' + (wsd.s < 0.5 ? "0" : wsd.s.toFixed(1) + " / " + Math.round(2 * wsd.s));
@@ -428,19 +436,21 @@ function renderSummary(){
     return '<td class="n">' + (c ? fmt(c.len) + " ft, to " + c.h.toFixed(1) + " ft" : "—") + "</td>"; }).join("") + "</tr>"; }).join("");
 }
 /* the same two schemes with the floor 0, 1 and 2 ft below the north-edge grade */
+/* each option's rough cost with its floor half a foot either side of the chosen level, in $k */
 function renderLevels(){
-  var keep = LOWER, rows = [0, 1, 2].map(function(lv){
-    setFloor(lv); var mc = model(SCHEMES.court), mr = model(SCHEMES.recess), wf = westFill(), nc = northCut();
-    return "<tr" + (lv === keep ? ' class="on"' : "") + "><td>" + (lv ? lv + " ft lower, " : "At north-edge grade, ") + (FF0 - lv).toFixed(2) + "</td>" + cell(mc.tot) + cell(mr.tot) +
-      '<td class="n">' + ft1(wf) + '</td><td class="n">' + ft1(nc) + "</td></tr>";
-  });
-  setFloor(keep);
-  $("#levels").innerHTML = rows.join("");
+  var keepL = LOWER, keepM = MID, keepS = SPLIT.fe, steps = [-0.5, -0.25, 0, 0.25, 0.5];
+  var row = function(k, set, off){ return steps.map(function(d){ set(d); var c = costOf(model(SCHEMES[k]), k), o = off && off(d);
+    return '<td class="n"' + (d === 0 ? ' style="font-weight:700"' : o ? ' style="color:var(--ink-3)"' : "") + ">$" + Math.round(c / 1000) + "k" + (o ? "*" : "") + "</td>"; }).join(""); };
+  var html = "<tr><td>" + OPT.court + "</td>" + row("court", function(d){ setFloor(OPT1 - d); }) + "</tr>";
+  setFloor(keepL);
+  html += "<tr><td>" + OPT.split + "</td>" + row("split", function(d){ SPLIT.fe = keepS + d; }, function(d){ return Math.abs(keepS + d) > 0.5; }) + "</tr>"; SPLIT.fe = keepS;
+  html += "<tr><td>" + OPT.mid + "</td>" + row("mid", function(d){ MID = keepM - d; }) + "</tr>"; MID = keepM;
+  $("#levels").innerHTML = html;
 }
 
 var LEDE = {
-  court:"<b>Option 1, lowered court.</b> One floor at the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line.",
-  split:"<b>Option 2, buildings at grade.</b> Each building sits at the average ground under it. Between them a forklift ramp runs up the west side from fert R1; east of it the north 35 ft is at the packhouse floor, the south 15 ft at the fert floor. Dock wells with wing walls; yard at existing grade.",
+  court:"<b>Option 1, lowered court.</b> One floor, a quarter foot under the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line.",
+  split:"<b>Option 2, buildings at grade.</b> Each building sits about at the ground under it. Between them a forklift ramp runs up the west side from fert R1; east of it the north 35 ft is at the packhouse floor, the south 15 ft at the fert floor. Dock wells with wing walls; yard at existing grade.",
   mid:"<b>Option 3, one floor at mid-level: the middle ground.</b> One floor like option 1, set halfway between the ground under the two buildings; dock wells like option 2; yard at existing grade. The north side drains away from the packhouse.",
   recess:""
 };
@@ -652,7 +662,7 @@ function go(k){ ["iso","plan"].forEach(function(n){ $("#v-" + n).setAttribute("a
 ["iso","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
 
 function pickFloor(lv){
-  setFloor(lv); runModels(); buildSchemes(); renderLevels();
+  setFloor(lv); runModels(); buildSchemes();
 
   pickScheme(scheme);
 }
@@ -715,6 +725,6 @@ resize(); frame();
 
 /* the scheme and floor ride in the hash, e.g. #recess,lower1 */
 function saveHash(){ try { history.replaceState(null, "", "#" + [scheme].concat(LOWER ? ["lower" + LOWER] : []).join(",")); } catch(e){} }
-(function(){ var h = location.hash.slice(1).split(","); scheme = h.indexOf("recess") >= 0 ? "mid" : ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(h.indexOf("lower2") >= 0 ? 2 : h.indexOf("lower1") >= 0 ? 1 : 0); })();
+(function(){ var h = location.hash.slice(1).split(","); scheme = h.indexOf("recess") >= 0 ? "mid" : ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(OPT1); setTimeout(renderLevels, 50); })();
 })();
 </script>
