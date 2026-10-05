@@ -11,6 +11,8 @@
    once turned a quarter clockwise. Both sit 20 ft off the Lettuce Grow for the septic, and far enough south that the
    packhouse's angled dock apron clears the property line. Read by the site map, the 3D flows and the grades page. */
 window.PH_SITE = { ph80: { x: 505.2, y: 488, rot: 1 }, fert80: { x: 505.2, y: 618, rot: 1 } };
+/* the property line, site feet, traced from the CEAd sheet; its six corners are the Pattison survey's lot monuments */
+window.PH_PROP = [[69.6, 55.7], [608.7, 54.6], [609.2, 400.6], [1025.3, 1104.3], [237.7, 1570.3], [71.9, 1355.6]];
 
 window.PH_LAYOUTS = {
   /* docks on the 80 ft N face (east on the site map) */

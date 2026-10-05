@@ -44,7 +44,7 @@ h2{font:700 13px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;
 .card svg{display:block;width:100%;height:auto}
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--ink-2);margin-top:10px}
 .legend span{display:flex;align-items:center;gap:7px}
-.legend svg{width:22px;height:10px}
+.legend svg{width:22px;height:10px;color:var(--ink)}
 .tbl{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:13.5px}
 th{font:600 10.5px/1.3 "Archivo Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);text-align:left;border-bottom:1px solid var(--rule-2);padding:6px 10px 6px 0}
@@ -77,6 +77,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 .grp button:hover{color:var(--ink);background:var(--vellum-2)}
 .grp button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
 .grp button:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.swatch{display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px}
 .hint{position:absolute;left:12px;bottom:10px;margin:0;font-size:12px;color:var(--ink-3)}
 </style>
 
@@ -84,9 +85,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 <nav class="tabs" aria-label="Packhouse pages">
   <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d">3D models</a><a href="grades.html" aria-current="page">Grades</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
 </nav>
-<p class="lbl">Packhouse and fert building · relative to finished floor</p>
+<p class="lbl">Packhouse and fert building · relative to finished floor · on the Pattison topo</p>
 <h1>Grades</h1>
-
 
 <div class="viewer">
   <canvas id="stage"></canvas>
@@ -95,201 +95,283 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     <div class="grp">
       <button type="button" id="v-iso" aria-pressed="true">Iso</button>
       <button type="button" id="v-east" aria-pressed="false">From the east</button>
-      <button type="button" id="v-north" aria-pressed="false">From the north</button>
+      <button type="button" id="v-south" aria-pressed="false">From the south</button>
       <button type="button" id="v-plan" aria-pressed="false">Plan</button>
     </div>
     <div class="grp">
-      <button type="button" id="t-x" aria-pressed="false" title="Stretch everything vertically 3 times so a 4 ft step is easy to see">Exaggerate heights</button>
+      <button type="button" id="s-graded" aria-pressed="true">Graded</button>
+      <button type="button" id="s-existing" aria-pressed="false">Existing ground</button>
+    </div>
+    <div class="grp">
+      <button type="button" id="t-cf" aria-pressed="true">Cut and fill</button>
+      <button type="button" id="t-topo" aria-pressed="true">Contours</button>
+      <button type="button" id="t-x" aria-pressed="false" title="Stretch everything vertically 3 times so a few feet of grade are easy to see">Exaggerate heights</button>
       <button type="button" id="t-tags" aria-pressed="true">Labels</button>
     </div>
   </div>
   <p class="hint">Drag to orbit · shift-drag to pan · scroll to zoom</p>
 </div>
+<div class="legend">
+  <span><i class="swatch" style="background:#B8473A"></i>Cut, darker deeper</span>
+  <span><i class="swatch" style="background:#3F6E9C"></i>Fill, darker deeper</span>
+  <span><i class="swatch" style="background:#D9D4C4"></i>Within 2 in of existing</span>
+  <span><svg viewBox="0 0 22 10"><line x1="1" y1="5" x2="21" y2="5" stroke="currentColor" stroke-width="1.6"/></svg>Existing contour, 5 ft</span>
+  <span><svg viewBox="0 0 22 10"><line x1="1" y1="5" x2="21" y2="5" stroke="currentColor" stroke-width=".7" stroke-opacity=".6"/></svg>1 ft</span>
+</div>
+
+<h2>Cut and fill</h2>
+<p class="sub" id="cfLede"></p>
+<div class="tbl"><table>
+  <thead><tr><th>Area</th><th class="n">Cut<span class="sm"> yd³</span></th><th class="n">Fill<span class="sm"> yd³</span></th><th class="n">Deepest cut</th><th class="n">Deepest fill</th></tr></thead>
+  <tbody id="cf"></tbody>
+</table></div>
 
 <h2>Sections</h2>
-<p class="sub">Vertical scale exaggerated 3 times so the 4 ft reads.</p>
+<p class="sub">Finished grade solid, existing ground dashed. Vertical scale exaggerated 3 times.</p>
 <div id="sections"></div>
 
 <h2>Spot elevations</h2>
 <div class="tbl"><table>
-  <thead><tr><th>Where</th><th class="n">Elevation</th><th>Note</th></tr></thead>
+  <thead><tr><th>Where</th><th class="n">Relative</th><th class="n">Elevation</th><th>Note</th></tr></thead>
   <tbody id="spots"></tbody>
 </table></div>
 
 <h2>How it is set</h2>
 <ul class="notes">
-  <li><b>One floor level, one truck level.</b> The floors, the pad between the buildings (bin wash and lane) and the
-    ground west and north of them sit at 0.00. The truck court east of them sits at −4.00 at the wall, rising 1% to
-    the east so water runs back to a trench drain along the wall and a trailer sits tipped slightly toward its dock.
-    All four docks (packhouse D1 and D2, fert D1 for containers and D2 for the box truck) open onto it.</li>
-  <li><b>Retaining wall on the east wall line, 4 ft.</b> Along the buildings it is their foundation: the east wall's
-    footing goes 4 ft deeper. Freestanding wall is needed only across the gap between the buildings (38 ft, the forklift
-    ramp takes the rest), a few feet past each end, and along the forklift ramp's lane side, about 100 ft in all. It needs a guard rail on
-    top wherever people walk the pad above.</li>
-  <li><b>Ramp at the north end, 8%.</b> 50 ft from the pad down to the court, 30 ft wide, east of the packhouse's R2
-    box-truck apron so the two stay apart. The ramp and the court's east and south edges finish in 2:1 earth banks
-    (a foot down for every 2 ft across) rather than walls. Grade falls to the south, so the topo may show the court
-    meets existing ground there and trucks can come in level from the south or east, with no ramp at all.</li>
-  <li><b>Forklift ramp for ground-level trucks.</b> Flatbeds and other trucks that cannot use a dock park in the court
-    at its foot. The ramp runs 40 ft at 10% from the lane down to the court, 12 ft wide, along the fert building's
-    north wall, so a forklift can drive out of the fert room's R1, down, and unload from the side. A short wall holds
-    the lane beside it, rising from nothing to 4 ft, with a rail on top. Check the forklift maker's limit for a
-    loaded truck on a 10% grade.</li>
-  <li><b>No doors on the east walls.</b> Both buildings' east walls stand 4 ft above the court, so the packhouse
-    exits through P4 on the north wall and P3 onto the bin wash, and the fert building through P1 and P2 on its south
-    wall and C1 and P3 from the fert room.</li>
-  <li><b>At grade:</b> the packhouse's R1 and R2 and the staff door P4 on the north wall, R3 and P3 onto the bin wash,
-    the fert building's R1 on the lane, and its south-wall doors. Personnel sills sit 2–6 in above the paving
-    outside; roll-ups get a flush threshold with the paving falling away.</li>
+  <li><b>Datum.</b> Finished floor for both buildings is the average existing grade along the packhouse's north
+    edge, so R1, R2 and P4 on that wall open at grade. Everything else is relative to it.</li>
+  <li><b>Pad, floors and lane at 0.00.</b> The buildings, the lane and bin wash between them, a 10 ft margin round
+    them and the area north of the packhouse (its truck aprons and the north-wall parking) are level with the floor.
+    Grade falls to the south, so most of this is fill.</li>
+  <li><b>Truck court at −4.00 at the wall, rising 1% east</b>, so water runs back to a trench drain along the wall
+    and a trailer sits tipped slightly toward its dock. It stops 8 ft inside the property line and is held from the
+    pad by a 4 ft retaining wall on the east wall line: the buildings' foundations and the gap between them.</li>
+  <li><b>Trucks come in from the south.</b> The north ramp drawn before does not fit: between R2's truck apron and the
+    property line there is about 13 ft. The ground falls the other way, though: at the court's south end existing
+    grade is only about a foot above it, so trucks drive in up a short ramp at no more than 6% along the existing road
+    east of Grow 3.</li>
+  <li><b>Forklift ramp</b> from the lane down to the court, 10% over 40 ft, 12 ft wide, along the fert building's north
+    wall, for unloading flatbeds parked in the court. A short wall with a rail holds the lane beside it.</li>
+  <li><b>Everything else ties back to existing ground at 2:1</b> (a foot of height over 2 ft across), cut or fill as the
+    ground needs, with no other retaining walls. On the west side the pad stands up to 4 ft above the ground falling
+    toward the Lettuce Grow, so its fill slope takes about 8 ft of the 20 ft gap the septic sits in.</li>
+  <li><b>How the volumes are worked out.</b> Existing ground is a surface through every contour of the Pattison topo
+    (1 ft contours, 2025-12-03), fitted to the site map on the six lot corners to within 0.3 ft
+    (scripts/topo-site.py). Volumes are finished grade less existing on a 2 ft grid, to finished grade, with no
+    allowance for topsoil stripping, slab base, footings or shrinkage; expect the real numbers within about 20%.
+    The fill under the buildings is to the underside of the floor build-up, so it is a little high.</li>
   <li><b>Container beds sit high.</b> A container on a chassis can stand taller than a 48 in dock truck, and the
     edge-of-dock leveller only bridges about ±5 in. Confirm the 4 ft drop with the dock vendor (Dock detail).</li>
-  <li><b>Next: existing grade.</b> Fitting the Pattison topo (1 ft contours, 2025-12-03) to this plan gives existing
-    grade under every part of it, and from that the cut and fill, where the court daylights, and how long the ramp
-    and banks really are.</li>
 </ul>
 <footer>
-  <span>Layouts and set positions: packhouse-layouts.js?v=cff4603</span>
-  <span>Datum: FF 0.00 = existing grade at the packhouse's north edge</span>
+  <span>Layouts, positions and property line: packhouse-layouts.js?v=fddbf94</span>
+  <span>Existing ground: topo-site.js?v=fddbf94, from scripts/topo-site.py</span>
   <span>Drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=cff4603"></script>
+<script src="packhouse-layouts.js?v=fddbf94"></script>
+<script src="topo-site.js?v=fddbf94"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 "use strict";
-var L = window.PH_LAYOUTS, SITE = window.PH_SITE, $ = function(s){ return document.querySelector(s); };
-/* ---------- the grading, in site feet: x east, y south ---------- */
+var L = window.PH_LAYOUTS, SITE = window.PH_SITE, PROP = window.PH_PROP, T = window.TOPO.grid, $ = function(s){ return document.querySelector(s); };
 var PH = { x:SITE.ph80.x, y:SITE.ph80.y, w:L.ph80.D, h:L.ph80.W }, FE = { x:SITE.fert80.x, y:SITE.fert80.y, w:L.fert80.D, h:L.fert80.W };
-var WALL = PH.x + PH.w;                                  /* the east wall line */
-var DROP = 4, RISE = 0.01, BANK = 2;                     /* court depth at the wall, its fall back to the wall, bank run per ft */
-var COURT = { x0:WALL, x1:WALL + 115, y0:PH.y, y1:FE.y + FE.h + 10 };
-var RAMP = { x0:WALL + 12, x1:WALL + 42, y0:PH.y - DROP / 0.08, y1:PH.y, pct:8 };   /* clear of R2's truck apron, which ends 6 ft past the corner */
-/* forklift ramp from the lane down to the court, against the fert building's north wall, falling 10% to the east */
-var FRAMP = { x0:WALL - DROP / 0.10, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:10 };
-function framp(x, y){ return x >= FRAMP.x0 && x < FRAMP.x1 && y >= FRAMP.y0 && y <= FRAMP.y1; }
-function frampE(x){ return -(x - FRAMP.x0) * FRAMP.pct / 100; }
-function courtE(x){ return -DROP + RISE * Math.max(0, Math.min(x, COURT.x1) - WALL); }
-function rampE(y){ return -DROP + (PH.y - y) * RAMP.pct / 100; }
-/* finished grade: 0.00 west of the wall line; east of it the court and ramp, with 2:1 banks up to 0.00 around them */
-function E(x, y){
-  if (framp(x, y)) return frampE(x);
-  if (x < WALL) return 0;
-  if (x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1) return courtE(x);
-  if (x >= RAMP.x0 && x <= RAMP.x1 && y >= RAMP.y0 && y < RAMP.y1) return rampE(y);
-  var cx = Math.max(COURT.x0, Math.min(x, COURT.x1)), cy = Math.max(COURT.y0, Math.min(y, COURT.y1));
-  var e = courtE(cx) + Math.hypot(x - cx, y - cy) / BANK;
-  var rx = Math.max(RAMP.x0, Math.min(x, RAMP.x1)), ry = Math.max(RAMP.y0, Math.min(y, RAMP.y1));
-  e = Math.min(e, rampE(ry) + Math.hypot(x - rx, y - ry) / BANK);
-  return Math.min(0, e);
+var WALL = PH.x + PH.w, DROP = 4, RISE = 0.01, TIE = 0.5;   /* east wall line, court depth at the wall, its rise east, 2:1 tie-in */
+
+/* ---------- existing ground ---------- */
+var NX = T.nx, NY = T.ny, ST = T.step, EX = new Float64Array(NX * NY);
+for (var i = 0; i < EX.length; i++) EX[i] = T.z[i] === null ? NaN : 2500 + T.z[i] / 100;
+function bil(A, x, y){
+  var u = (x - T.x0) / ST, v = (y - T.y0) / ST, i0 = Math.floor(u), j0 = Math.floor(v);
+  if (i0 < 0 || j0 < 0 || i0 >= NX - 1 || j0 >= NY - 1) return NaN;
+  var fu = u - i0, fv = v - j0, k = j0 * NX + i0;
+  return A[k] * (1 - fu) * (1 - fv) + A[k + 1] * fu * (1 - fv) + A[k + NX] * (1 - fu) * fv + A[k + NX + 1] * fu * fv;
 }
-/* the retaining wall runs the wall line wherever the ground east of it is below the pad */
-var wallY0 = COURT.y0, wallY1 = COURT.y1;
-while (E(WALL + 0.5, wallY0 - 1) < -0.05) wallY0--;
-while (E(WALL + 0.5, wallY1 + 1) < -0.05) wallY1++;
+var FF = (function(){ var s = 0, n = 0; for (var x = PH.x; x <= WALL; x += 1){ var e = bil(EX, x, PH.y - 1); if (!isNaN(e)){ s += e; n++; } } return s / n; })();
+var FFlo = Infinity, FFhi = -Infinity; for (var xx = PH.x; xx <= WALL; xx++){ var ee = bil(EX, xx, PH.y - 1); FFlo = Math.min(FFlo, ee); FFhi = Math.max(FFhi, ee); }
+
+/* ---------- finished grade: zones held at design levels, the rest tied back to existing at 2:1 ---------- */
+function inPoly(p, poly){ var c = false; for (var i = 0, j = poly.length - 1; i < poly.length; j = i++){ var a = poly[i], b = poly[j];
+  if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
+function propGap(x, y){ var d = Infinity; for (var i = 0; i < PROP.length; i++){ var a = PROP[i], b = PROP[(i + 1) % PROP.length], dx = b[0] - a[0], dy = b[1] - a[1];
+  var t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy))); d = Math.min(d, Math.hypot(x - a[0] - t * dx, y - a[1] - t * dy)); } return inPoly([x, y], PROP) ? d : -d; }
+var COURT = { x1:WALL + 115, y0:PH.y, y1:FE.y + FE.h + 10, inset:8 };
+var FRAMP = { x0:WALL - DROP / 0.10, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:10 };
+var DRIVE = { x0:WALL + 50, x1:WALL + 90, y0:COURT.y1, y1:COURT.y1 + 90, pct:6 };   /* in from the south, along the road east of Grow 3 */
+function courtE(x){ return -DROP + RISE * Math.max(0, x - WALL); }
+function zone(x, y){
+  if (x >= FRAMP.x0 && x < FRAMP.x1 && y >= FRAMP.y0 && y <= FRAMP.y1) return { z:-(x - FRAMP.x0) * FRAMP.pct / 100, k:"pad" };
+  if (x < WALL && x >= PH.x - 10 && y >= PH.y - 50 && y <= FE.y + FE.h + 10) return { z:0, k:x >= PH.x && x <= WALL && ((y >= PH.y && y <= PH.y + PH.h) || (y >= FE.y && y <= FE.y + FE.h)) ? "bld" : "pad" };
+  if (x >= WALL && x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1 && propGap(x, y) >= COURT.inset) return { z:courtE(x), k:"court" };
+  if (x >= DRIVE.x0 && x <= DRIVE.x1 && y > DRIVE.y0 && y <= DRIVE.y1 && propGap(x, y) >= 2){
+    var up = courtE(x) + (y - DRIVE.y0) * DRIVE.pct / 100, ex = bil(EX, x, y) - FF;
+    return { z:isNaN(ex) ? up : Math.min(up, ex), k:"court" };
+  }
+  return null;
+}
+var G = new Float64Array(NX * NY), K = new Array(NX * NY), XR = new Float64Array(NX * NY);
+(function(){
+  var U = new Float64Array(NX * NY), Lo = new Float64Array(NX * NY);
+  for (var j = 0; j < NY; j++) for (var i = 0; i < NX; i++){
+    var k = j * NX + i, x = T.x0 + i * ST, y = T.y0 + j * ST, z = zone(x, y);
+    XR[k] = EX[k] - FF; K[k] = z ? z.k : null;
+    U[k] = z ? z.z : Infinity; Lo[k] = z ? z.z : -Infinity;
+  }
+  /* chamfer sweeps: the steepest a 2:1 slope allows above and below each zone */
+  var nb = [[-1, 0, ST], [0, -1, ST], [-1, -1, ST * Math.SQRT2], [1, -1, ST * Math.SQRT2]];
+  for (var pass = 0; pass < 2; pass++){
+    for (var j = 0; j < NY; j++) for (var i = 0; i < NX; i++){ var k = j * NX + i;
+      nb.forEach(function(n){ var ii = i + n[0], jj = j + n[1]; if (ii < 0 || jj < 0 || ii >= NX) return; var q = jj * NX + ii;
+        U[k] = Math.min(U[k], U[q] + n[2] * TIE); Lo[k] = Math.max(Lo[k], Lo[q] - n[2] * TIE); }); }
+    for (var j = NY - 1; j >= 0; j--) for (var i = NX - 1; i >= 0; i--){ var k = j * NX + i;
+      nb.forEach(function(n){ var ii = i - n[0], jj = j - n[1]; if (ii < 0 || jj >= NY || ii >= NX) return; var q = jj * NX + ii;
+        U[k] = Math.min(U[k], U[q] + n[2] * TIE); Lo[k] = Math.max(Lo[k], Lo[q] - n[2] * TIE); }); }
+  }
+  for (var k = 0; k < G.length; k++){
+    if (K[k]) G[k] = U[k];
+    else if (isNaN(XR[k])) G[k] = NaN;
+    else { G[k] = Math.min(U[k], Math.max(Lo[k], XR[k])); if (Math.abs(G[k] - XR[k]) > 0.01) K[k] = "slope"; }
+  }
+})();
+function gAt(x, y){ return bil(G, x, y); }
+function xAt(x, y){ return bil(XR, x, y); }
+
+/* ---------- volumes ---------- */
+var CF = {};
+["bld", "pad", "court", "slope"].forEach(function(k){ CF[k] = { cut:0, fill:0, maxC:0, maxF:0 }; });
+for (var k = 0; k < G.length; k++){
+  if (!K[k] || isNaN(G[k]) || isNaN(XR[k])) continue;
+  var dz = G[k] - XR[k], c = CF[K[k]], a = ST * ST / 27;
+  if (dz > 0){ c.fill += dz * a; c.maxF = Math.max(c.maxF, dz); } else { c.cut -= dz * a; c.maxC = Math.max(c.maxC, -dz); }
+}
+var NAMES = { bld:"Under the two buildings", pad:"Pad, lane and the area north of the packhouse", court:"Truck court and the drive in from the south", slope:"2:1 tie-in slopes" };
+var tot = { cut:0, fill:0 }; Object.keys(CF).forEach(function(k){ tot.cut += CF[k].cut; tot.fill += CF[k].fill; });
+var r0 = function(v){ return Math.round(v / 10) * 10; }, fmt = function(v){ return r0(v).toLocaleString("en-US"); }, ft1 = function(v){ return v ? v.toFixed(1) + " ft" : "—"; };
+$("#cf").innerHTML = Object.keys(CF).map(function(k){ var c = CF[k]; return "<tr><td>" + NAMES[k] + '</td><td class="n">' + fmt(c.cut) + '</td><td class="n">' + fmt(c.fill) + '</td><td class="n">' + ft1(c.maxC) + '</td><td class="n">' + ft1(c.maxF) + "</td></tr>"; }).join("") +
+  '<tr><td><b>Total</b></td><td class="n"><b>' + fmt(tot.cut) + '</b></td><td class="n"><b>' + fmt(tot.fill) + '</b></td><td></td><td></td></tr>';
+var net = tot.cut - tot.fill;
+$("#cfLede").innerHTML = "Finished floor <b>" + FF.toFixed(2) + "</b> (existing grade along the packhouse's north edge runs " + FFlo.toFixed(2) + " to " + FFhi.toFixed(2) + ", right on the 2597 contour). " +
+  "About <b>" + fmt(tot.cut) + " yd³ of cut and " + fmt(tot.fill) + " yd³ of fill</b>: the truck court comes out of the ground and the pad goes up on it as the land falls south, so the site " +
+  (Math.abs(net) < 0.15 * Math.max(tot.cut, tot.fill) ? "roughly balances" : net > 0 ? "has about " + fmt(net) + " yd³ to spare" : "is short about " + fmt(-net) + " yd³") + ", before topsoil and shrinkage.";
 
 /* ---------- three ---------- */
 var canvas = $("#stage"), renderer = new THREE.WebGLRenderer({ canvas:canvas, antialias:true });
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 var scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(34, 2, 1, 3000);
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a80, 0.66));
-var sun = new THREE.DirectionalLight(0xffffff, 0.62); sun.position.set(380, 260, 420); sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048); var sc = sun.shadow.camera; sc.left = -220; sc.right = 220; sc.top = 220; sc.bottom = -220; sc.near = 50; sc.far = 900;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a80, 0.68));
+var sun = new THREE.DirectionalLight(0xffffff, 0.6); sun.position.set(380, 260, 420); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); var sc = sun.shadow.camera; sc.left = -230; sc.right = 230; sc.top = 230; sc.bottom = -230; sc.near = 50; sc.far = 900;
 sun.target.position.set(600, 0, 590); scene.add(sun, sun.target);
 var root = new THREE.Group(); scene.add(root);
 function lam(c, o){ o = o || {}; return new THREE.MeshLambertMaterial({ color:c, transparent:o.op !== undefined, opacity:o.op === undefined ? 1 : o.op, side:o.side || THREE.FrontSide, depthWrite:o.dw !== false }); }
-var M = { pad:lam(0xE4E0D2), court:lam(0x9DA6AE), bank:lam(0xC9B48F), wall:lam(0x8E8A82), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }),
-  roof:lam(0xD3D6CE), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), wash:lam(0x43647F, { op:.35, dw:false }), step:lam(0xB9B5AA) };
+var M = { wall:lam(0x8E8A82), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
 function box(w, h, d, m, x, y, z, g){ var o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; (g || root).add(o); return o; }
 var edgeM = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.55 });
 function edges(o){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 20), edgeM); e.position.copy(o.position); e.rotation.copy(o.rotation); o.parent.add(e); }
-
-/* ground: a 1 ft heightfield, coloured pad, court and bank */
-(function(){
-  var X0 = 480, X1 = 760, Y0 = 420, Y1 = 735, nx = X1 - X0, ny = Y1 - Y0;
-  var geo = new THREE.PlaneGeometry(nx, ny, nx, ny); geo.rotateX(-Math.PI / 2);
-  var p = geo.attributes.position, col = new Float32Array(p.count * 3), c = new THREE.Color();
-  for (var i = 0; i < p.count; i++){
-    var x = p.getX(i) + X0 + nx / 2, y = p.getZ(i) + Y0 + ny / 2;
-    /* a vertex on the wall line takes the pad side, the next one the court, so the wall shows as a step */
-    var e = E(x, y); p.setX(i, x); p.setZ(i, y); p.setY(i, e);
-    var inC = framp(x, y) || x >= WALL && ((x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1) || (x >= RAMP.x0 && x <= RAMP.x1 && y >= RAMP.y0 && y <= RAMP.y1));
-    c.setHex(e > -0.02 ? 0xE4E0D2 : inC ? 0x9DA6AE : 0xC9B48F); col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
-  }
-  geo.setAttribute("color", new THREE.BufferAttribute(col, 3)); geo.computeVertexNormals();
-  var m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors:true })); m.receiveShadow = true; root.add(m);
-})();
-/* retaining wall, in short runs so its top steps with the ground beside it */
-for (var y = wallY0; y < wallY1; y += 2){
-  var lo = E(WALL + 0.6, y + 1), h = E(WALL - 0.6, y + 1) - lo; if (h < 0.05) continue;
-  box(0.8, h + 0.4, 2, M.wall, WALL + 0.4, lo + (h + 0.4) / 2, y + 1);
-}
-for (var x = FRAMP.x0; x < FRAMP.x1; x += 2){
-  var hf = -frampE(x + 1); if (hf < 0.05) continue;
-  box(2, hf + 0.4, 0.8, M.wall, x + 1, -hf / 2 + 0.2, FRAMP.y0 - 0.4);
-}
-/* buildings: shell, roof, docks and doors */
 var TAGS = [], host = $("#tags");
-function tag(html, x, y, z, cls){ var el = document.createElement("div"); el.className = "tag " + (cls || ""); el.innerHTML = html; host.append(el); TAGS.push({ el:el, p:new THREE.Vector3(x, y, z) }); }
+function tag(html, x, y, z, cls, group){ var el = document.createElement("div"); el.className = "tag " + (cls || ""); el.innerHTML = html; host.append(el); var t = { el:el, p:new THREE.Vector3(x, y, z), group:group }; TAGS.push(t); return t; }
+
+/* ground: the grid as a heightfield, graded or existing, coloured by cut and fill or plain */
+var showExisting = false, showCF = true, groundGeo = new THREE.BufferGeometry();
+(function(){
+  var pos = new Float32Array(NX * NY * 3), idx = [];
+  for (var j = 0; j < NY; j++) for (var i = 0; i < NX; i++){ var k = j * NX + i; pos[k * 3] = T.x0 + i * ST; pos[k * 3 + 2] = T.y0 + j * ST; }
+  for (var j = 0; j < NY - 1; j++) for (var i = 0; i < NX - 1; i++){ var k = j * NX + i;
+    if ([k, k + 1, k + NX, k + NX + 1].some(function(q){ return isNaN(G[q]); })) continue;   /* past the survey: left out */
+    idx.push(k, k + NX, k + 1, k + 1, k + NX, k + NX + 1); }
+  groundGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); groundGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(NX * NY * 3), 3)); groundGeo.setIndex(idx);
+  var m = new THREE.Mesh(groundGeo, new THREE.MeshLambertMaterial({ vertexColors:true })); m.receiveShadow = true; root.add(m);
+})();
+var cCut = new THREE.Color(0xB8473A), cFill = new THREE.Color(0x3F6E9C), cBase = new THREE.Color(0xD9D4C4), cPad = new THREE.Color(0xE4E0D2), cCourt = new THREE.Color(0x9DA6AE), cExist = new THREE.Color(0xCFC6AE), tmp = new THREE.Color();
+function paintGround(){
+  var p = groundGeo.attributes.position, col = groundGeo.attributes.color;
+  for (var k = 0; k < NX * NY; k++){
+    var g = G[k], x = XR[k], h = showExisting ? x : g; p.setY(k, isNaN(h) ? 0 : h);
+    if (showExisting || isNaN(g) || isNaN(x)) tmp.copy(cExist);
+    else if (showCF){ var dz = g - x, f = Math.min(1, Math.abs(dz) / 4); tmp.copy(cBase); if (dz > 0.17) tmp.lerp(cFill, 0.25 + 0.75 * f); else if (dz < -0.17) tmp.lerp(cCut, 0.25 + 0.75 * f); }
+    else tmp.copy(K[k] === "court" ? cCourt : K[k] === "slope" ? cExist : cPad);
+    col.setXYZ(k, tmp.r, tmp.g, tmp.b);
+  }
+  p.needsUpdate = col.needsUpdate = true; groundGeo.computeVertexNormals();
+}
+/* existing contours draped on whichever surface is showing, so their elevations read against the grading */
+var topoGrp = new THREE.Group(); root.add(topoGrp);
+var lineMaj = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.85 }), lineMin = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.35 });
+var topoTags = [];
+function drapeTopo(){
+  while (topoGrp.children.length){ var c = topoGrp.children.pop(); c.geometry.dispose(); }
+  topoTags.forEach(function(t){ t.el.remove(); TAGS.splice(TAGS.indexOf(t), 1); }); topoTags = [];
+  var maj = [], min = [], best = {};
+  window.TOPO.contours.forEach(function(c){
+    var P = c.p, out = c.e % 5 ? min : maj, len = 0;
+    for (var i = 2; i < P.length; i += 2){
+      var x0 = P[i - 2], y0 = P[i - 1], x1 = P[i], y1 = P[i + 1], n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 2)); len += Math.hypot(x1 - x0, y1 - y0);
+      for (var s = 0; s < n; s++){
+        var a = [x0 + (x1 - x0) * s / n, y0 + (y1 - y0) * s / n], b = [x0 + (x1 - x0) * (s + 1) / n, y0 + (y1 - y0) * (s + 1) / n];
+        var ha = (showExisting ? xAt : gAt)(a[0], a[1]), hb = (showExisting ? xAt : gAt)(b[0], b[1]); if (isNaN(ha) || isNaN(hb)) continue;
+        out.push(a[0], ha + 0.12, a[1], b[0], hb + 0.12, b[1]);
+      }
+    }
+    if (!(c.e % 5) && (!best[c.e] || len > best[c.e].len)) best[c.e] = { len:len, x:P[Math.floor(P.length / 4) * 2], y:P[Math.floor(P.length / 4) * 2 + 1] };
+  });
+  [[maj, lineMaj], [min, lineMin]].forEach(function(m){ var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(m[0], 3)); topoGrp.add(new THREE.LineSegments(g, m[1])); });
+  Object.keys(best).forEach(function(e){ var b = best[e], h = (showExisting ? xAt : gAt)(b.x, b.y); if (!isNaN(h)) topoTags.push(tag("<b>" + e + "</b>", b.x, h + 1, b.y, "topo")); });
+  topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; });
+}
+/* retaining wall on the east wall line, and beside the forklift ramp */
+for (var y = COURT.y0; y < COURT.y1; y += 2){
+  if (y + 1 >= FRAMP.y0 && y + 1 <= FRAMP.y1) continue;   /* the forklift ramp meets the court here */
+  box(0.8, DROP + 0.4, 2, M.wall, WALL + 0.4, -DROP / 2 + 0.2, y + 1);
+}
+for (var x = FRAMP.x0; x < FRAMP.x1; x += 2){ var hf = (x + 1 - FRAMP.x0) * FRAMP.pct / 100; if (hf < 0.05) continue; box(2, hf + 0.4, 0.8, M.wall, x + 1, -hf / 2 + 0.2, FRAMP.y0 - 0.4); }
+/* buildings, docks, doors, trucks */
 function toSite(id, x, z){ var P = SITE[id], b = L[id]; return [P.x + b.D - z, P.y + x]; }
 [["ph80", PH], ["fert80", FE]].forEach(function(bb){
   var id = bb[0], r = bb[1], b = L[id];
-  var shell = box(r.w, b.eave, r.h, M.bld, r.x + r.w / 2, b.eave / 2, r.y + r.h / 2); edges(shell);
+  edges(box(r.w, b.eave, r.h, M.bld, r.x + r.w / 2, b.eave / 2, r.y + r.h / 2));
   tag(b.name + " · FF <b>0.00</b>", r.x + r.w / 2, b.eave + 4, r.y + r.h / 2, "");
   b.openings.filter(function(o){ return o.face !== "I" && o.type !== "louvre"; }).forEach(function(o){
     var c = (o.a + o.b) / 2, w = o.b - o.a, p, along;
     if (o.face === "N"){ p = toSite(id, c, 0); along = "y"; } else if (o.face === "S"){ p = toSite(id, c, b.D); along = "y"; }
     else if (o.face === "W"){ p = toSite(id, 0, c); along = "x"; } else { p = toSite(id, b.W, c); along = "x"; }
-    var m = o.type === "dock" ? M.dock : o.type === "rollup" ? M.roll : M.dark;
-    box(along === "y" ? 0.4 : w, o.h, along === "y" ? w : 0.4, m, p[0], o.h / 2, p[1]);
+    box(along === "y" ? 0.4 : w, o.h, along === "y" ? w : 0.4, o.type === "dock" ? M.dock : o.type === "rollup" ? M.roll : M.dark, p[0], o.h / 2, p[1]);
     tag(o.mark, p[0] + (o.face === "N" ? 4 : o.face === "S" ? -4 : 0), o.h + 2, p[1] + (o.face === "W" ? -4 : o.face === "E" ? 4 : 0), "mark" + (o.type === "dock" ? " dock" : ""));
   });
 });
-/* bin wash */
-(function(){ var o = L.ph80.outdoor[0], a = toSite("ph80", o.x0, o.z1), c = toSite("ph80", o.x1, o.z0);
-  box(c[0] - a[0], 0.2, c[1] - a[1], M.wash, (a[0] + c[0]) / 2, 0.1, (a[1] + c[1]) / 2); tag("Bin wash · pad <b>0.00</b>", (a[0] + c[0]) / 2, 3, (a[1] + c[1]) / 2, ""); })();
-/* trucks: containers at the angled packhouse docks and the fert D1, a box truck at the fert D2 and at the packhouse's north roll-ups */
-function rig(x, y, ang, len, ground){
-  var g = new THREE.Group(); g.position.set(x, 0, y); g.rotation.y = -ang; root.add(g);
+function rig(x, y, ang, len){
+  var g = new THREE.Group(), ground = gAt(x + Math.cos(ang) * len / 2, y + Math.sin(ang) * len / 2); g.position.set(x, 0, y); g.rotation.y = -ang; root.add(g);
   var bodyH = len > 30 ? 8.6 : 7.5;
-  box(len, bodyH, 8.2, M.truck, 1 + len / 2, ground + 4 + bodyH / 2, 0, g);
-  box(len, 0.5, 8, M.dark, 1 + len / 2, ground + 3.7, 0, g);
+  box(len, bodyH, 8.2, M.truck, 1 + len / 2, ground + 4 + bodyH / 2, 0, g); box(len, 0.5, 8, M.dark, 1 + len / 2, ground + 3.7, 0, g);
   box(8, 7.6, 8, M.truck, len + 6, ground + 4.6, 0, g); box(8, 1.2, 8, M.dark, len + 6, ground + 0.8, 0, g);
 }
 [["ph80", L.ph80], ["fert80", L.fert80]].forEach(function(bb){
   var id = bb[0], b = bb[1];
-  b.openings.filter(function(o){ return o.type === "dock"; }).forEach(function(o){
-    var p = toSite(id, (o.a + o.b) / 2, 0), th = (o.angle || 0) * Math.PI / 180, len = o.truck === "box" ? 24 : 45;
-    rig(p[0] + (o.angle ? 2.3 : 0), p[1], th, len, courtE(p[0] + len / 2));
-  });
-  b.openings.filter(function(o){ return o.type === "rollup" && !o.forklift && o.face === "W"; }).forEach(function(o){
-    var p = toSite(id, 0, (o.a + o.b) / 2); rig(p[0], p[1], -Math.PI / 2, 24, 0);
-  });
+  b.openings.filter(function(o){ return o.type === "dock"; }).forEach(function(o){ var p = toSite(id, (o.a + o.b) / 2, 0); rig(p[0] + (o.angle ? 2.3 : 0), p[1], (o.angle || 0) * Math.PI / 180, o.truck === "box" ? 24 : 45); });
+  b.openings.filter(function(o){ return o.type === "rollup" && !o.forklift && o.face === "W"; }).forEach(function(o){ var p = toSite(id, 0, (o.a + o.b) / 2); rig(p[0], p[1], -Math.PI / 2, 24); });
 });
-/* a flatbed standing in the court at the foot of the forklift ramp, unloaded from the side */
-(function(){ var g = new THREE.Group(); g.position.set(WALL + 7, courtE(WALL + 7), FRAMP.y0 - 8); root.add(g);   /* runs east, clear of the dock trucks */
+(function(){ var g = new THREE.Group(), y0 = gAt(WALL + 30, FRAMP.y0 - 8); g.position.set(WALL + 7, y0, FRAMP.y0 - 8); root.add(g);
   box(40, 0.8, 8.2, M.dark, 20, 4, 0, g); box(8, 7.6, 8, M.truck, 45, 4.6, 0, g);
   for (var i = 0; i < 4; i++) box(3.6, 3.4, 3.6, M.step, 4 + i * 9, 6.1, 0, g); })();
-tag("Forklift ramp 10% · lane <b>0.00</b> to court <b>−4.00</b>", (FRAMP.x0 + FRAMP.x1) / 2, 3, (FRAMP.y0 + FRAMP.y1) / 2, "low");
-tag("Flatbed, unloaded at court level", WALL + 30, 9, FRAMP.y0 - 8, "");
-/* labels on the grading */
-var mid = (COURT.y0 + COURT.y1) / 2;
-tag("Truck court <b>−4.00</b> at the wall", WALL + 22, 2, mid - 10, "low");
-tag("Rises 1% east · <b>" + courtE(COURT.x1).toFixed(2).replace("-", "−") + "</b> at 115 ft", COURT.x1 - 18, 2, mid + 30, "low");
-tag("Ramp 8% · <b>0.00</b> to <b>−4.00</b> over " + (RAMP.y1 - RAMP.y0) + " ft", (RAMP.x0 + RAMP.x1) / 2, 3, (RAMP.y0 + RAMP.y1) / 2 - 8, "low");
-tag("Retaining wall, 4 ft", WALL + 1, 3, PH.y + PH.h + 12, "wall");
-tag("2:1 bank to <b>0.00</b>", COURT.x1 + 5, 0, mid - 40, "wall");
-tag("Pad <b>0.00</b>", PH.x + 30, 1, PH.y - 22, "");
-tag("Lane <b>0.00</b>", PH.x + 30, 1, FE.y - 8, "");
+var mid = (COURT.y0 + COURT.y1) / 2, rel = function(v){ return (v > 0.004 ? "+" : v < -0.004 ? "−" : "") + Math.abs(v).toFixed(2); };
+tag("Truck court <b>−4.00</b> at the wall", WALL + 22, 2 - 4, mid - 10, "low");
+tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low");
+tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x0 + DRIVE.x1) / 2, DRIVE.y0 + 30) + 2, DRIVE.y0 + 30, "low");
+tag("Retaining wall, 4 ft", WALL + 1, 1, PH.y + PH.h + 12, "wall");
 
 /* ---------- camera ---------- */
-var target = new THREE.Vector3(615, 0, 585), cam = { az:2.25, pol:0.95, r:430 }, goal = null, needs = true, ex = 1;
-var VIEWS = { iso:{ az:2.25, pol:0.95, r:430 }, east:{ az:Math.PI / 2, pol:1.3, r:380 }, north:{ az:Math.PI, pol:1.25, r:420 }, plan:{ az:Math.PI, pol:0.02, r:470 } };
+var target = new THREE.Vector3(620, -2, 600), cam = { az:2.25, pol:0.95, r:470 }, goal = null, needs = true, ex = 1;
+var VIEWS = { iso:{ az:2.25, pol:0.95, r:470 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI, pol:0.02, r:520 } };
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
-function go(k){ ["iso","east","north","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(615, 0, 585); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
-["iso","east","north","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
+function go(k){ ["iso","east","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.set(620, -2, 600); goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
+["iso","east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
+function surface(existing){ showExisting = existing; $("#s-graded").setAttribute("aria-pressed", String(!existing)); $("#s-existing").setAttribute("aria-pressed", String(existing)); paintGround(); drapeTopo(); needs = true; }
+$("#s-graded").addEventListener("click", function(){ surface(false); });
+$("#s-existing").addEventListener("click", function(){ surface(true); });
+$("#t-cf").addEventListener("click", function(){ showCF = !showCF; this.setAttribute("aria-pressed", String(showCF)); paintGround(); needs = true; });
+$("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
 $("#t-x").addEventListener("click", function(){ ex = ex === 1 ? 3 : 1; root.scale.y = ex; this.setAttribute("aria-pressed", String(ex === 3)); needs = true; });
 $("#t-tags").addEventListener("click", function(){ var on = host.style.display === "none"; host.style.display = on ? "" : "none"; this.setAttribute("aria-pressed", String(on)); needs = true; });
 var drag = null;
@@ -305,7 +387,8 @@ addEventListener("resize", resize);
 var v3 = new THREE.Vector3();
 function placeTags(){
   var b = canvas.getBoundingClientRect(), kept = [];
-  TAGS.forEach(function(t){
+  TAGS.slice().sort(function(a, c){ return (a.el.classList.contains("topo") ? 1 : 0) - (c.el.classList.contains("topo") ? 1 : 0); }).forEach(function(t){
+    if (t.el.hidden) return;
     v3.copy(t.p); v3.y *= ex; v3.project(camera);
     var x = (v3.x * .5 + .5) * b.width, y = (-v3.y * .5 + .5) * b.height, w = t.el.offsetWidth, h = t.el.offsetHeight;
     var r = { l:x - w / 2, r:x + w / 2, t:y - h / 2, b:y + h / 2 }, ok = v3.z < 1 && !kept.some(function(k){ return r.l < k.r && r.r > k.l && r.t < k.b && r.b > k.t; });
@@ -321,54 +404,50 @@ function frame(){
   if (!needs) return; needs = !!goal;
   applyCam(); renderer.setClearColor(0xEDEEE8, 1); renderer.render(scene, camera); placeTags();
 }
-resize(); frame();
+paintGround(); drapeTopo(); resize(); frame();
 
-/* ---------- sections and spot table ---------- */
+/* ---------- sections: finished grade and existing ground sampled along a line ---------- */
 var NS = "http://www.w3.org/2000/svg";
 function el(t, a, txt){ var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (txt !== undefined) e.textContent = txt; return e; }
-function f2(v){ return (v > 0.004 ? "+" : v < -0.004 ? "−" : "") + Math.abs(v).toFixed(2); }
-/* a section is a ground line [s, e] with the building or wall at s = 0 and a truck if any */
-function section(title, pts, opts){
-  var S0 = pts[0][0], S1 = pts[pts.length - 1][0], sx = 5, sy = 15, top = opts.truck || opts.building ? 14 : 5.5, bot = -5.5, pl = 8, pt = 24;
-  var W = (S1 - S0) * sx + pl * 2, H = (top - bot) * sy + pt + 18, X = function(s){ return pl + (s - S0) * sx; }, Y = function(e){ return pt + (top - e) * sy; };
-  var svg = el("svg", { viewBox:"0 0 " + W.toFixed(0) + " " + H.toFixed(0), role:"img", "aria-label":title }), add = function(e){ svg.append(e); return e; };
+function section(title, from, to, opts){
+  var len = Math.hypot(to[0] - from[0], to[1] - from[1]), at = function(s){ var t = s / len; return [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]; };
+  var S0 = 0, S1 = len, sx = 4.4, sy = sx * 3, top = opts.top || 6, bot = -7, pl = 8, pt = 24;
+  var Wd = (S1 - S0) * sx + pl * 2, H = (top - bot) * sy + pt + 18, X = function(s){ return pl + (s - S0) * sx; }, Y = function(e){ return pt + (top - e) * sy; };
+  var svg = el("svg", { viewBox:"0 0 " + Wd.toFixed(0) + " " + H.toFixed(0), role:"img", "aria-label":title }), add = function(e){ svg.append(e); return e; };
   add(el("text", { x:pl, y:16, "font-size":12, fill:"#15181C" }, title.toUpperCase()));
-  var d = "M" + pts.map(function(p){ return X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1); }).join("L");
-  add(el("path", { d:d + "L" + X(S1) + " " + Y(bot) + "L" + X(S0) + " " + Y(bot) + "Z", fill:"#E4E0D2" }));
-  add(el("path", { d:d, fill:"none", stroke:"#15181C", "stroke-width":1.6 }));
-  if (opts.building) add(el("path", { d:"M" + X(opts.building[0]) + " " + Y(top - 2) + "L" + X(opts.building[1]) + " " + Y(top - 2) + "L" + X(opts.building[1]) + " " + Y(0) + "M" + X(opts.building[0]) + " " + Y(0) + "L" + X(opts.building[1]) + " " + Y(0), fill:"none", stroke:"#15181C", "stroke-width":1.2 }));   /* wall, cut below the eave */
-  if (opts.wall !== undefined) add(el("rect", { x:X(opts.wall) - 3, y:Y(opts.wallTop || 0.6), width:6, height:Y(-DROP - 1) - Y(opts.wallTop || 0.6), fill:"#8E8A82" }));
-  if (opts.truck){ var tk = opts.truck, s0 = tk[0], len = tk[1], g = function(s){ var e = -9; pts.forEach(function(p, i){ if (i && s >= pts[i - 1][0] && s <= p[0]) e = pts[i - 1][1] + (p[1] - pts[i - 1][1]) * (s - pts[i - 1][0]) / (p[0] - pts[i - 1][0]); }); return e; };
-    var b0 = g(s0 + 3) + 4, b1 = g(s0 + len - 6) + 4;
-    add(el("path", { d:"M" + X(s0) + " " + Y(b0) + "L" + X(s0 + len) + " " + Y(b1) + "L" + X(s0 + len) + " " + Y(b1 + 8.6) + "L" + X(s0) + " " + Y(b0 + 8.6) + "Z", fill:"#fff", stroke:"#15181C" }));
-    [s0 + 3, s0 + 7, s0 + len - 6].forEach(function(s){ add(el("ellipse", { cx:X(s), cy:Y(g(s) + 1.65), rx:1.65 * sx, ry:1.65 * sy, fill:"#15181C" })); });
-  }
-  (opts.labels || []).forEach(function(l){ add(el("line", { x1:X(l[0]), y1:Y(l[1]), x2:X(l[0]), y2:Y(bot) + 2, stroke:"#848C92", "stroke-dasharray":"2 2" }));
-    add(el("text", { x:X(l[0]) + 3, y:Y(bot) - 2, class:"el", "font-size":11, fill:"#15181C" }, f2(l[1]) + (l[2] ? "  " + l[2] : ""))); });
+  var fin = [], exi = [];
+  for (var s = 0; s <= len; s += 1){ var p = at(s), g = (opts.design ? opts.design(p[0], p[1]) : null); if (g === null || g === undefined) g = gAt(p[0], p[1]); fin.push([s, g]); exi.push([s, xAt(p[0], p[1])]); }
+  var path = function(a){ return a.filter(function(q){ return !isNaN(q[1]); }).map(function(q, i){ return (i ? "L" : "M") + X(q[0]).toFixed(1) + " " + Y(q[1]).toFixed(1); }).join(""); };
+  add(el("path", { d:path(fin) + "L" + X(S1) + " " + Y(bot) + "L" + X(S0) + " " + Y(bot) + "Z", fill:"#E4E0D2" }));
+  add(el("path", { d:path(fin), fill:"none", stroke:"#15181C", "stroke-width":1.6 }));
+  add(el("path", { d:path(exi), fill:"none", stroke:"#A9702B", "stroke-width":1.4, "stroke-dasharray":"5 3" }));
+  (opts.marks || []).forEach(function(m){ var s = m[0], g = fin[Math.round(s)] ? fin[Math.round(s)][1] : 0, x = exi[Math.round(s)] ? exi[Math.round(s)][1] : NaN;
+    add(el("line", { x1:X(s), y1:Y(Math.max(g, isNaN(x) ? g : x)) - 4, x2:X(s), y2:Y(bot) + 2, stroke:"#848C92", "stroke-dasharray":"2 2" }));
+    add(el("text", { x:X(s) + 3, y:Y(bot) - 2, class:"el", "font-size":11, fill:"#15181C" }, rel(g) + (isNaN(x) ? "" : "  (existing " + rel(x) + ")") + (m[1] ? "  " + m[1] : ""))); });
   (opts.notes || []).forEach(function(n){ add(el("text", { x:X(n[0]), y:Y(n[1]), "text-anchor":"middle", "font-size":11, fill:n[2] || "#43647F" }, n[3])); });
-  svg.style.width = W.toFixed(0) + "px"; svg.style.maxWidth = "100%";   /* every section at the same scale */
+  if (opts.wallAt !== undefined) add(el("rect", { x:X(opts.wallAt) - 3, y:Y(opts.wallTop === undefined ? 0.6 : opts.wallTop), width:6, height:Y(-DROP - 1) - Y(opts.wallTop === undefined ? 0.6 : opts.wallTop), fill:"#8E8A82" }));
+  svg.style.width = Wd.toFixed(0) + "px"; svg.style.maxWidth = "100%";
   var card = document.createElement("div"); card.className = "card"; card.append(svg); $("#sections").append(card);
 }
-section("Across the east wall at the fert building's D1 dock, 45 ft container", [[-30, 0], [0, 0], [0, -DROP], [115, courtE(WALL + 115)], [123, 0], [140, 0]],
-  { building:[-30, 0], truck:[0.6, 45], labels:[[0, -DROP, "at the wall"], [115, courtE(WALL + 115), "115 ft out"]], notes:[[60, -3.2, "#43647F", "COURT RISES 1% EAST"], [-15, 1.2, "#15181C", "FLOOR 0.00"], [131, 0.6, "#15181C", "2:1 BANK"]] });
-section("Across the gap between the buildings: lane, retaining wall, court", [[-50, 0], [0, 0], [0, -DROP], [70, courtE(WALL + 70)]],
-  { wall:0, wallTop:3.5, labels:[[0, -DROP, "foot of the wall"]], notes:[[-25, 1.2, "#15181C", "LANE AND BIN WASH 0.00"], [3, 4.3, "#B23A2B", "GUARD RAIL"], [40, -3.0, "#43647F", "COURT"]] });
-section("Down the forklift ramp, lane to court, along the fert building", [[-20, 0], [0, 0], [FRAMP.x1 - FRAMP.x0, -DROP], [FRAMP.x1 - FRAMP.x0 + 40, courtE(WALL + 40)]],
-  { labels:[[0, 0, "lane"], [FRAMP.x1 - FRAMP.x0, -DROP, "court"]], notes:[[(FRAMP.x1 - FRAMP.x0) / 2, -1.6, "#43647F", "10% FORKLIFT RAMP"], [-10, 0.8, "#15181C", "LANE"]] });
-section("Down the truck ramp at the north end", [[-20, 0], [0, 0], [RAMP.y1 - RAMP.y0, -DROP], [RAMP.y1 - RAMP.y0 + 40, -DROP]],
-  { labels:[[0, 0, "top of the ramp"], [RAMP.y1 - RAMP.y0, -DROP, "court"]], notes:[[(RAMP.y1 - RAMP.y0) / 2, -1.3, "#43647F", "8% RAMP"], [-10, 0.8, "#15181C", "PAD"]] });
+var yD1 = FE.y + 67.5;
+section("West to east through the fert building's D1 dock", [FE.x - 30, yD1], [WALL + 150, yD1],
+  { wallAt:FE.w + 30, marks:[[30, "fert floor, west wall"], [FE.w + 30, "dock face"], [FE.w + 30 + 112, ""]], notes:[[30 + FE.w / 2, 1.2, "#15181C", "FERT BUILDING, FF 0.00"]] });
+section("North to south down the court, 30 ft out from the wall", [WALL + 30, PH.y - 60], [WALL + 30, DRIVE.y1],
+  { marks:[[60, "court starts"], [60 + (COURT.y1 - COURT.y0), "court ends, drive begins"]], notes:[[60 + (COURT.y1 - COURT.y0) / 2, -2.6, "#43647F", "TRUCK COURT"]] });
+section("North to south along the buildings, through both floors", [PH.x + 50, PH.y - 60], [PH.x + 50, FE.y + FE.h + 60],
+  { marks:[[60, "packhouse north wall"], [60 + FE.y + FE.h - PH.y, "fert south wall"]], notes:[[60 + (FE.y + FE.h - PH.y) / 2, 1.2, "#15181C", "FLOORS AND LANE 0.00"]] });
 
+/* ---------- spot table ---------- */
 var spots = [
-  ["Floors, both buildings", 0, "FF, the datum"],
-  ["Packhouse north edge, outside", 0, "Existing grade here sets the floor"],
-  ["Pad, lane and bin wash between the buildings", 0, "Falls gently to a trench drain on the bin wash's outer edge"],
-  ["Truck court at the east wall, every dock face", -DROP, "Trench drain along the wall"],
-  ["Truck court, 115 ft east of the wall", courtE(WALL + 115), "Rises 1% from the wall"],
-  ["Top of the ramp, north end", 0, "Ramp 8% over " + (RAMP.y1 - RAMP.y0) + " ft"],
-  ["Retaining wall", 0, "4 ft, on the east wall line from about " + Math.round(wallY0 - PH.y) + " ft north of the packhouse to " + Math.round(wallY1 - FE.y - FE.h) + " ft past the fert building"],
-  ["Forklift ramp, top at the lane", 0, "10% over " + (FRAMP.x1 - FRAMP.x0) + " ft, 12 ft wide, against the fert building's north wall"],
-  ["Forklift ramp, foot at the court", -DROP, "Flatbeds park alongside and unload from the side"]
+  ["Floors, both buildings", 0, "The datum"],
+  ["Packhouse north edge, outside, existing", 0, "Ranges " + rel(FFlo - FF) + " to " + rel(FFhi - FF) + " along the wall"],
+  ["Fert building south-west corner, existing ground", xAt(FE.x, FE.y + FE.h), "Fill to the floor here"],
+  ["Truck court at the wall, every dock face", -DROP, "Trench drain along the wall"],
+  ["Truck court, existing ground at the fert D1 dock", xAt(WALL + 10, yD1), "Cut to the court here"],
+  ["Truck court at its south end, existing ground", xAt(WALL + 70, COURT.y1), "Where the drive starts up"],
+  ["Forklift ramp, top at the lane", 0, "10% over 40 ft"],
+  ["Forklift ramp, foot at the court", -DROP, "Flatbeds park alongside"]
 ];
-$("#spots").innerHTML = spots.map(function(s){ return "<tr><td>" + s[0] + '</td><td class="n">' + f2(s[1]) + "</td><td>" + s[2] + "</td></tr>"; }).join("");
+$("#spots").innerHTML = spots.map(function(s){ return "<tr><td>" + s[0] + '</td><td class="n">' + rel(s[1]) + '</td><td class="n">' + (FF + s[1]).toFixed(2) + "</td><td>" + s[2] + "</td></tr>"; }).join("");
 })();
 </script>
