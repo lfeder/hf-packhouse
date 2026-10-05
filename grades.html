@@ -142,8 +142,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=8d6c739"></script>
-<script src="topo-site.js?v=8d6c739"></script>
+<script src="packhouse-layouts.js?v=c707edf"></script>
+<script src="topo-site.js?v=c707edf"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -551,6 +551,24 @@ function drapeTopo(){
 /* buildings, docks, doors, trucks */
 function toSite(id, x, z){ var P = SITE[id], b = L[id]; return [P.x + b.D - z, P.y + x]; }
 var BG = {}, BT = { ph80:[], fert80:[] };   /* each building's group, and its tags, raised or lowered to its floor */
+/* The angled docks' seal wedges: a concrete triangle on the wall turning each dock 22.5° toward the truck path, from
+   the bottom of the well up past the door head. Drawn on their own so they show with the buildings switched off. */
+var WEDGE = { ph80:new THREE.Group(), fert80:new THREE.Group() }; root.add(WEDGE.ph80, WEDGE.fert80);
+(function(){
+  var conc = lam(0xA8A49B);
+  [["ph80", L.ph80], ["fert80", L.fert80]].forEach(function(bb){
+    var id = bb[0], b = bb[1], P = SITE[id];
+    b.openings.filter(function(o){ return o.type === "dock" && o.angle; }).forEach(function(o){
+      var th = o.angle * Math.PI / 180, seal = o.seal || 1.5, face = (o.b - o.a) * Math.cos(th) + 2 * seal;
+      var tip = face * Math.cos(th), depth = face * Math.sin(th);
+      /* local [x across the wall, z out from it], z < 0 outside the N face, to site */
+      var tri = [[o.a, 0], [o.a + tip, 0], [o.a, -depth]].map(function(q){ return [P.x + b.D - q[1], P.y + q[0]]; });
+      var lo = -DROP, hi = o.h + 3, shape = new THREE.Shape(tri.map(function(q){ return new THREE.Vector2(q[0], -q[1]); }));
+      var m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth:hi - lo, bevelEnabled:false }), conc);
+      m.rotation.x = -Math.PI / 2; m.position.y = lo; m.castShadow = m.receiveShadow = true; WEDGE[id].add(m); edges(m);
+    });
+  });
+})();
 [["ph80", PH], ["fert80", FE]].forEach(function(bb){
   var id = bb[0], r = bb[1], b = L[id], grp = BG[id] = new THREE.Group(); root.add(grp);
   var tag2 = function(){ var t = tag.apply(null, arguments); BT[id].push({ t:t, y:t.p.y }); return t; };
@@ -673,7 +691,7 @@ function pickScheme(k){
   TG.recess.visible = SG.recess.visible = false;
   var fl = floors(k);
   [["ph80", fl.ph], ["fert80", fl.fe]].forEach(function(b){
-    BG[b[0]].position.y = b[1];
+    BG[b[0]].position.y = WEDGE[b[0]].position.y = b[1];
     BT[b[0]].forEach(function(q){ q.t.p.y = q.y + b[1]; });
     BT[b[0]].name.el.innerHTML = L[b[0]].name + " · FF <b>" + (FF + b[1]).toFixed(2) + "</b>" + (b[1] ? " (" + rel(b[1]) + ")" : "");
   });
