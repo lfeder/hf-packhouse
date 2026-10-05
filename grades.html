@@ -107,13 +107,11 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     </div>
     <div class="grp">
       <button type="button" id="s-existing" aria-pressed="false">Existing</button>
-      <button type="button" id="s-graded" aria-pressed="false">Graded</button>
       <button type="button" id="s-cf" aria-pressed="true">Cut and fill</button>
     </div>
     <div class="grp">
       <button type="button" id="t-topo" aria-pressed="true">Contours</button>
-      <button type="button" id="t-bld" aria-pressed="true">Buildings</button>
-      <button type="button" id="t-trk" aria-pressed="true">Trucks and walls</button>
+      <button type="button" id="t-bld" aria-pressed="true">Buildings and trucks</button>
       <button type="button" id="t-tags" aria-pressed="true">Labels</button>
     </div>
   </div>
@@ -147,8 +145,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=e487780"></script>
-<script src="topo-site.js?v=e487780"></script>
+<script src="packhouse-layouts.js?v=58f5a00"></script>
+<script src="topo-site.js?v=58f5a00"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -606,8 +604,8 @@ function go(k){ ["iso","east","south","plan"].forEach(function(n){ $("#v-" + n).
 ["iso","east","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ go(k); }); });
 /* what the ground shows: existing, graded plain, or graded coloured by cut and fill */
 function surface(mode){ showExisting = mode === "existing"; showCF = mode === "cf";
-  ["existing", "graded", "cf"].forEach(function(m){ $("#s-" + m).setAttribute("aria-pressed", String(m === mode)); }); paintGround(); drapeTopo(); needs = true; }
-["existing", "graded", "cf"].forEach(function(m){ $("#s-" + m).addEventListener("click", function(){ surface(m); }); });
+  ["existing", "cf"].forEach(function(m){ $("#s-" + m).setAttribute("aria-pressed", String(m === mode)); }); paintGround(); drapeTopo(); needs = true; }
+["existing", "cf"].forEach(function(m){ $("#s-" + m).addEventListener("click", function(){ surface(m); }); });
 function pickFloor(lv){
   setFloor(lv); runModels(); buildSchemes(); renderLevels();
 
@@ -633,9 +631,10 @@ $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 $("#k-split").addEventListener("click", function(){ pickScheme("split"); });
 $("#t-topo").addEventListener("click", function(){ topoGrp.visible = !topoGrp.visible; topoTags.forEach(function(t){ t.el.hidden = !topoGrp.visible; }); this.setAttribute("aria-pressed", String(topoGrp.visible)); needs = true; });
-$("#t-bld").addEventListener("click", function(){ showBld = !showBld; this.setAttribute("aria-pressed", String(showBld));
-  ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; }); needs = true; });
-$("#t-trk").addEventListener("click", function(){ showTrucks = !showTrucks; this.setAttribute("aria-pressed", String(showTrucks)); TG[scheme].visible = SG[scheme].visible = showTrucks; needs = true; });
+/* buildings, trucks and walls switch off together, leaving the ground and its cut and fill */
+$("#t-bld").addEventListener("click", function(){ showBld = showTrucks = !showBld; this.setAttribute("aria-pressed", String(showBld));
+  ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
+  TG[scheme].visible = SG[scheme].visible = showTrucks; needs = true; });
 $("#t-tags").addEventListener("click", function(){ var on = host.style.display === "none"; host.style.display = on ? "" : "none"; this.setAttribute("aria-pressed", String(on)); needs = true; });
 var drag = null;
 canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
