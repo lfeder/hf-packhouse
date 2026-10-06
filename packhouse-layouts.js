@@ -58,13 +58,13 @@ window.PH_LAYOUTS = {
         detail: "At grade on the north wall (site map), at the east end of the pack room by the cooler door. Box trucks bringing cucumbers in from the grows. Auto" },
       { mark: "P3", type: "door", face: "E", a: 50, b: 53, h: 7, size: "3 × 7 ft", room: "Pack room",
         detail: "Pack room door on the south wall, straight onto the covered bin wash" },
-      { mark: "R3", type: "rollup", face: "E", a: 58, b: 68, h: 10, forklift: true, size: "10 × 10 ft", room: "Pack room",
-        detail: "Forklift roll-up on the south wall (site map), just west of P3, clear of the pallet wrapper inside and the bin washer outside: boxes and bags come in from the fert building across the lane and the bin wash pad to the box store. No trucks" }
+      { mark: "R3", type: "rollup", face: "E", a: 31, b: 41, h: 10, forklift: true, size: "10 × 10 ft", room: "Pack room",
+        detail: "Forklift roll-up on the south wall (site map) at the east end of the pack room, by the cooler wall: boxes and bags come in from the fert building across the lane and the bin wash pad to the box store. No trucks" }
     ],
     /* outdoor areas, local coords; x > W is outside the E face (south wall on the site map) */
     outdoor: [
-      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 16, z1: 82, roof: 14,
-        note: "Covered bin wash, 66 ft along the south wall × 30 ft out (1,980 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked outside here for the harvest trucks." }
+      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 34, z1: 100, roof: 14,
+        note: "Covered bin wash, 66 ft along the west end of the south wall × 30 ft out (1,980 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
     ],
     /* fit-out: the J/E wrapper turned end for end (infeed at the cooler end, fed straight from harvest staging) and
        the Keiki tables in one row beside it, as [centre x, centre z, size along x, size along z] */
