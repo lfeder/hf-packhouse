@@ -56,16 +56,16 @@ footer{margin-top:36px;padding-top:12px;border-top:1px solid var(--rule-2);color
 
 <h1>Pallet space after the expansion</h1>
 <p class="lede">Pallet positions each room will have against what the farm needs once Lalamilo adds 5.5 acres. Supplies
-hold three months of burn; the cooler needs one full round of outbound shipments staged at once.</p>
+hold three months of burn; the cooler needs room for its busiest day, measured from what was packed and not yet shipped.</p>
 
 <div class="tbl"><table>
   <thead><tr><th>Room</th><th>Holds</th><th class="n">Have<span class="sm">pallets</span></th><th class="n">Need<span class="sm">pallets</span></th><th class="n">Spare / short</th><th class="n">Burn<span class="sm">pallets/month</span></th><th class="n">Months of storage<span class="sm">room full</span></th></tr></thead>
   <tbody id="summary"></tbody>
 </table></div>
 
-<h2>Cold storage: outbound pallets</h2>
+<h2>Cold storage: cucumbers in the cooler</h2>
 <div class="tbl"><table>
-  <thead><tr><th>Shipment</th><th class="n">Pallets today</th><th class="n">After expansion</th></tr></thead>
+  <thead><tr><th>Day</th><th class="n">2025<span class="sm">cases</span></th><th class="n">2026<span class="sm">cases</span></th><th class="n">2026<span class="sm">positions</span></th><th class="n">After expansion<span class="sm">positions</span></th></tr></thead>
   <tbody id="ship"></tbody>
 </table></div>
 
@@ -77,14 +77,19 @@ hold three months of burn; the cooler needs one full round of outbound shipments
 
 <h2>How these are worked out</h2>
 <ul class="notes">
-  <li><b>The expansion</b> is 5.5 acres at Lalamilo on top of today's 12 (JTL 8, BIP 4). Cucumber burn and shipments
+  <li><b>The expansion</b> is 5.5 acres at Lalamilo on top of today's 12 (JTL 8, BIP 4). Cucumber burn and cooler cases
     scale by 17.5 ÷ 12. Today's fertiliser burn already covers the nurseries (taken as 0.25 acre) and lettuce (taken
     as 1 acre), 13.25 acres in all, so fertiliser scales by 18.75 ÷ 13.25.</li>
   <li><b>Supplies need</b> is three months of burn after the expansion. Containers are unloaded a pallet at a time
     straight into storage, so no room is set aside to stage a whole container.</li>
-  <li><b>Cold storage need</b> is every regular shipment staged in the cooler at once: one 40 ft container of
-    cucumbers at 20 pallets (single-stacked 40 × 48 in pallets), a few pallets in the lettuce container (taken as 3),
-    8 pallets to Costco Kona and 5 in the box truck to Kawaihae. If it is two containers, need rises to 82.</li>
+  <li><b>Cold storage need</b> is the cooler on its worst day after the expansion. Each order's cases are in the
+    cooler from their pack date to the order's invoice date, when they leave by container, truck or customer pickup,
+    so pickups free space the day they go. A day's count takes everything packed that day and everything leaving it
+    together, its worst moment. Cases are stored in bulk stacks by product and built into pallets as orders go, so
+    positions are cases ÷ 78, a full stack with its top layer. Partial stacks, a few per day, are not counted.</li>
+  <li><b>Cooler cases</b> come from the pack records (sales_po_fulfillment) for 2025 on, which reconcile with
+    invoices at 99%; earlier years do not. Records packed after their invoice date, or more than a week before it,
+    are left out as entry errors. Query in scripts/cooler-occupancy.sql, run 2026-10-05.</li>
   <li><b>Lettuce boxes, trays and film stay at the lettuce packhouse</b> and are not counted here.</li>
   <li><b>Burn and on-hand</b> come from the inventory system (weekly burn per item, last counts dated 2026-08-23 to
     2026-09-14). A month is 4.345 weeks. Calcium nitrate's burn runs about 65% above what was received over the last
@@ -120,13 +125,15 @@ const ITEMS = [
   ["Bags", "Bags Keiki, 2 lb", 15000, 64000, "64,000", 450 / 64],
 ];
 const CAP = { cold: 60, fert: 88, dry: 300 };
-/* one round of outbound shipments, staged in the cooler at once */
-const SHIP = [
-  ["40 ft container of cucumbers", 20],
-  ["Cucumber pallets in the lettuce container", 3],
-  ["Costco Kona", 8],
-  ["Box truck to Kawaihae", 5],
+/* cucumber cases in the cooler, from scripts/cooler-occupancy.sql (2025-01-06 to 2026-10-04): [day, 2025, 2026] */
+const COOLER = [
+  ["Average day", 1492, 1643],
+  ["90th percentile day", 2025, 2326],
+  ["99th percentile day", 2295, 2664],
+  ["Worst day (2026-06-15)", 2451, 2716],
+  ["Worst day, after that day's orders left", 1837, 2126],
 ];
+const CASES_PER_POS = 78, NEED_ROW = 3;   /* need is the worst day */
 const per = r => r[2] / r[3] * WEEKS * SCALE[r[0]];          /* pallets/month after the expansion */
 const f1 = v => v.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const sum = (groups, fn) => ITEMS.filter(r => groups.includes(r[0])).reduce((t, r) => t + fn(r), 0);
@@ -135,13 +142,13 @@ const cls = m => m < 2 ? "low" : m < 3 ? "mid" : "good";
 (function render(){
   const c = CAP;
   const gap = (have, need) => { const d = Math.round(have - need); return `<td class="n big ${d < 0 ? "low" : "good"}">${d < 0 ? "short " + (-d) : "spare " + d}</td>`; };
-  const shipNeed = SHIP.reduce((t, s) => t + s[1], 0) * SHIP_SCALE;
+  const shipNeed = COOLER[NEED_ROW][2] / CASES_PER_POS * SHIP_SCALE;
   const rows = [
     ["Fert room", "Fertiliser", ["Fertiliser"], c.fert],
     ["Dry storage", "Cucumber boxes and bags", ["Boxes", "Bags"], c.dry],
   ];
   document.getElementById("summary").innerHTML =
-    `<tr><td>Cold storage</td><td>Finished pallets, one round of shipments</td><td class="n">${c.cold}</td><td class="n">${Math.round(shipNeed)}</td>${gap(c.cold, shipNeed)}<td class="n">—</td><td class="n">—</td></tr>` +
+    `<tr><td>Cold storage</td><td>Cucumbers, worst day</td><td class="n">${c.cold}</td><td class="n">${Math.round(shipNeed)}</td>${gap(c.cold, shipNeed)}<td class="n">—</td><td class="n">—</td></tr>` +
     rows.map(([room, holds, g, cap]) => {
       const burn = sum(g, per), m = cap / burn, need = burn * MONTHS;
       return `<tr><td>${room}</td><td>${holds}</td><td class="n">${cap}</td><td class="n">${Math.round(need)}</td>${gap(cap, need)}` +
@@ -150,9 +157,9 @@ const cls = m => m < 2 ? "low" : m < 3 ? "mid" : "good";
 })();
 
 (function ship(){
-  const t = SHIP.reduce((a, s) => a + s[1], 0);
-  document.getElementById("ship").innerHTML = SHIP.map(s => `<tr><td>${s[0]}</td><td class="n">${s[1]}</td><td class="n">${f1(s[1] * SHIP_SCALE)}</td></tr>`).join("") +
-    `<tr class="sub"><td>Staged at once</td><td class="n">${t}</td><td class="n">${f1(t * SHIP_SCALE)}</td></tr>`;
+  const n = v => Math.round(v).toLocaleString("en-US");
+  document.getElementById("ship").innerHTML = COOLER.map((r, i) => `<tr${i === NEED_ROW ? ' class="sub"' : ""}><td>${r[0]}</td><td class="n">${n(r[1])}</td><td class="n">${n(r[2])}</td>` +
+    `<td class="n">${n(r[2] / CASES_PER_POS)}</td><td class="n">${n(r[2] / CASES_PER_POS * SHIP_SCALE)}</td></tr>`).join("");
 })();
 
 (function items(){
