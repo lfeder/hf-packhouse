@@ -47,7 +47,7 @@ window.PH_LAYOUTS = {
     ],
     openings: [
       { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
-        detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal, on the low end of the dock face. Auto" },
+        detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal. Auto" },
       { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal. 40 ft containers out. Auto" },
       { mark: "P4", type: "door", face: "W", a: 95.5, b: 98.5, h: 7, size: "3 × 7 ft", room: "Break room",
