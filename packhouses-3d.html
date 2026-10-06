@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=63f6d1e</span>
+  <span>Layouts: packhouse-layouts.js?v=a0fcb4b</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=63f6d1e"></script>
+<script src="packhouse-layouts.js?v=a0fcb4b"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -693,7 +693,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=63f6d1e), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=a0fcb4b), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
@@ -1302,15 +1302,16 @@ function roomDims(r){
   selTags = [];
   if (!r) return;
   var ft = function(v){ return +v.toFixed(1) + " ft"; };
-  var tag = function(text, x, z){ var el = document.createElement("div"); el.className = "tag seldim"; el.textContent = text;
+  var tag = function(text, x, z, cls){ var el = document.createElement("div"); el.className = "tag seldim" + (cls || ""); el.textContent = text;
     seltagHost.appendChild(el); TAGS.push({ el:el, p:new THREE.Vector3(x, 0.5, z) }); selTags.push(el); };
   partsOf(r).forEach(function(q){
     line([[q[0], 0.2, q[1]], [q[2], 0.2, q[1]], [q[2], 0.2, q[1]], [q[2], 0.2, q[3]], [q[2], 0.2, q[3]], [q[0], 0.2, q[3]], [q[0], 0.2, q[3]], [q[0], 0.2, q[1]]], M.mark, G.sel);
     tag(ft(q[2] - q[0]), (q[0] + q[2]) / 2, q[1] + 1.3);
     tag(ft(q[3] - q[1]), q[0] + 1.3, (q[1] + q[3]) / 2);
   });
-  var q0 = partsOf(r)[0];
-  tag((r.short || r.name) + " · " + fmt(areaOf(r)) + " ft²", (q0[0] + q0[2]) / 2, (q0[1] + q0[3]) / 2);
+  /* the area goes in the room's biggest part, placed before the wall lengths so they make way for it */
+  var q0 = partsOf(r).slice().sort(function(a, c){ return (c[2] - c[0]) * (c[3] - c[1]) - (a[2] - a[0]) * (a[3] - a[1]); })[0];
+  tag((r.short || r.name) + " · " + fmt(areaOf(r)) + " ft²", (q0[0] + q0[2]) / 2, (q0[1] + q0[3]) / 2, " selarea");
 }
 function selectRoom(rid, quiet){
   var again = rid === selected && selTags.length;
@@ -1420,7 +1421,7 @@ addEventListener("resize", resize);
 /* Labels never sit on top of each other: they are placed in priority order (door marks, rooms, equipment,
    dimensions), a label that would overlap one already placed tries just above or below, and if neither is clear it
    hides until the view changes and there is room. */
-function tagPri(el){ var c = el.className; return /seldim/.test(c) ? -1 : /mark/.test(c) ? 0 : /room/.test(c) ? 1 : /dim/.test(c) ? 3 : 2; }
+function tagPri(el){ var c = el.className; return /selarea/.test(c) ? -2 : /seldim/.test(c) ? -1 : /mark/.test(c) ? 0 : /room/.test(c) ? 1 : /dim/.test(c) ? 3 : 2; }
 function placeTags(){
   var b = canvas.getBoundingClientRect(), items = [], kept = [];
   TAGS.forEach(function(tg){
