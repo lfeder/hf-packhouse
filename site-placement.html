@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=b0f7b94" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=bce32b6" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="halos"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
@@ -164,8 +164,8 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     this angle. <b>The fert dock is square</b>: it sits far enough south that a straight 115 ft apron fits. Box-truck
     roll-ups get a 50 ft apron.</li>
   <li><b>Parking.</b> 20 staff stalls, 9 × 18 ft on a 24 ft aisle, with three suggested spots to jump between:
-    one row of 20 backed onto the east property line (180 × 42 ft), or two rows of ten (90 × 60 ft) square to the grid
-    east of Grow 3 or south of the Lettuce Grow. The north end of the property is out because a big transformer stands there. Five more stalls
+    one row of 20 (180 × 42 ft with its aisle) backed onto the east property line, along Grow 3's east side, or south of
+    the Lettuce Grow. The north end of the property is out because a big transformer stands there. Five more stalls
     sit flush on the packhouse's north wall between the staff door P4 at its west end and R1's truck apron. Both
     blocks drag anywhere and rotate. A block turns red if it leaves the property or lands on a building, a truck
     apron, the bin wash, the septic or the other block.</li>
@@ -174,7 +174,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=b0f7b94). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=bce32b6). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
     forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
     forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
@@ -192,15 +192,15 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=b0f7b94 · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=bce32b6 · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=b0f7b94"></script>
+<script src="packhouse-layouts.js?v=bce32b6"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=b0f7b94 */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=bce32b6 */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
@@ -216,7 +216,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=b0f7b94; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=bce32b6; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -227,8 +227,8 @@ const STALL = 9, STALL_D = 18, AISLE = 24, SEPTIC_GAP = 5;   /* septic to any bu
    transformer stands there. */
 const PARK_SPOTS = [
   {k:"East property line", x:872.3, y:888.7, ang:59.4, rows:1},
-  {k:"East of Grow 3", x:698, y:835, ang:90, rows:2},          /* square to the grid, between Grow 1–3 and the property line */
-  {k:"South of Lettuce Grow", x:433, y:680, ang:0, rows:2},    /* in the 88 ft gap between the Lettuce Grow and Grow 1–3 */
+  {k:"East of Grow 3", x:680, y:850, ang:90, rows:1},          /* one row running north–south along Grow 1–3's east side */
+  {k:"South of Lettuce Grow", x:300, y:680, ang:0, rows:1},    /* one row in the 88 ft gap between the Lettuce Grow and Grow 1–3 */
 ];
 const ITEM_HOME = [
   {id:"park", kind:"park", name:"Staff parking", stalls:20, aisle:true, ...PARK_SPOTS[0]},
