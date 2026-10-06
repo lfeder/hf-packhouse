@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=03b2c8b" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=2a328d7" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="grading"></g>
       <g id="halos"></g>
@@ -175,7 +175,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=03b2c8b). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=2a328d7). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
     forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
     forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
@@ -193,19 +193,19 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=03b2c8b · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=2a328d7 · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=03b2c8b"></script>
+<script src="packhouse-layouts.js?v=2a328d7"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=03b2c8b */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=2a328d7 */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
-  {name:"Lettuce Grow",x:112.1,y:461.0,w:353.6,h:175.0},   /* moved 19.5 ft west of the CEAd sheet, its west edge in line with the Existing Facility's */
+  {name:"Lettuce Grow",x:112.1,y:461.0,w:348,h:168},   /* 4 bays of 42 ft × 29 sections of 12 ft (58,464 ft²), its west edge in line with the Existing Facility's */
   {name:"North shed",x:531.9,y:151.3,w:49.5,h:47.0},
   {name:"Middle shed",x:544.8,y:221.0,w:38.3,h:45.3},
   {name:"South shed",x:541.7,y:309.2,w:30.9,h:60.9},
@@ -217,7 +217,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=03b2c8b; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=2a328d7; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -601,10 +601,16 @@ function cards(){
   for(const k of ["x","y"]) $("#support").setAttribute(k,SUPPORT[k]);
   $("#support").setAttribute("width",SUPPORT.w); $("#support").setAttribute("height",SUPPORT.h);
   /* the Lettuce Grow sits 19.5 ft west of where the CEAd sheet draws it: cover the strip it leaves and draw it anew */
-  const mv=$("#moved"), LG=BLDG.find(b=>b.name==="Lettuce Grow"), OLD_X=131.6;
-  mv.append(el("rect",{x:LG.x+LG.w,y:LG.y,width:OLD_X-LG.x,height:LG.h,fill:"#B9AD8F","fill-opacity":".9"}));   /* ground where the grow used to reach */
-  mv.append(el("rect",{x:LG.x,y:LG.y,width:LG.w,height:LG.h,fill:"#F7F7F4","fill-opacity":".94",stroke:"#7A5BC0","stroke-width":1.4,"vector-effect":"non-scaling-stroke"}));
-  const lt=el("text",{x:LG.x+LG.w/2,y:LG.y+LG.h/2,"text-anchor":"middle","font-size":16,fill:"#15181C"}); lt.textContent="LETTUCE GROW · MOVED 19.5 FT WEST"; mv.append(lt);
+  /* The Lettuce Grow is redrawn at 4 bays × 29 sections, west edge in line with the Existing Facility: cover what the
+     CEAd sheet drew beyond it as ground, then draw it with its gutter lines every 42 ft */
+  const mv=$("#moved"), LG=BLDG.find(b=>b.name==="Lettuce Grow"), OLD={x:131.6,y:461,w:353.6,h:175}, ground={fill:"#B9AD8F","fill-opacity":".9"};
+  if(OLD.x+OLD.w>LG.x+LG.w) mv.append(el("rect",{x:LG.x+LG.w,y:OLD.y,width:OLD.x+OLD.w-LG.x-LG.w,height:OLD.h,...ground}));
+  if(OLD.y+OLD.h>LG.y+LG.h) mv.append(el("rect",{x:OLD.x,y:LG.y+LG.h,width:LG.x+LG.w-OLD.x,height:OLD.y+OLD.h-LG.y-LG.h,...ground}));
+  mv.append(el("rect",{x:LG.x,y:LG.y,width:LG.w,height:LG.h,fill:"#F7F7F4","fill-opacity":".96",stroke:"#7A5BC0","stroke-width":1.4,"vector-effect":"non-scaling-stroke"}));
+  for(let b=1;b<4;b++) mv.append(el("line",{x1:LG.x,y1:LG.y+42*b,x2:LG.x+LG.w,y2:LG.y+42*b,stroke:"#848C92","stroke-width":.8,"stroke-dasharray":"4 3","vector-effect":"non-scaling-stroke"}));
+  for(let c=1;c<29;c++) mv.append(el("line",{x1:LG.x+12*c,y1:LG.y,x2:LG.x+12*c,y2:LG.y+3,stroke:"#848C92","stroke-width":.6,"vector-effect":"non-scaling-stroke"}));
+  const lt=el("text",{x:LG.x+LG.w/2,y:LG.y+LG.h/2-6,"text-anchor":"middle","font-size":14,fill:"#15181C"}); lt.textContent="LETTUCE GROW"; mv.append(lt);
+  const ls=el("text",{x:LG.x+LG.w/2,y:LG.y+LG.h/2+10,"text-anchor":"middle","font-size":9,fill:"#565D64"}); ls.textContent="4 BAYS × 29 SECTIONS · 348 × 168 FT · 58,464 FT²"; mv.append(ls);
   const h=$("#halos");
   for(const b of BLDG) h.append(el("rect",{x:b.x-GAP,y:b.y-GAP,width:b.w+2*GAP,height:b.h+2*GAP,rx:GAP,
     fill:"#43647F","fill-opacity":".06",stroke:"#43647F","stroke-width":1.2,"stroke-dasharray":"5 3","vector-effect":"non-scaling-stroke"}));
