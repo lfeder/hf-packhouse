@@ -53,7 +53,7 @@ window.PH_LAYOUTS = {
       { mark: "P4", type: "door", face: "W", a: 95.5, b: 98.5, h: 7, size: "3 × 7 ft", room: "Break room",
         detail: "Staff entry at the west end of the north wall, beside the parking along it, into the break room by the mini lockers" },
       { mark: "R2", type: "rollup", face: "W", a: 1, b: 13, h: 14, size: "12 × 14 ft", room: "Cold storage",
-        detail: "At grade on the north wall (site map), the high side, straight into the cooler's dock aisle. Box trucks going out. Auto" },
+        detail: "At grade on the north wall (site map), straight into the cooler's dock aisle. Box trucks going out. Auto" },
       { mark: "R1", type: "rollup", face: "W", a: 30.5, b: 42.5, h: 14, size: "12 × 14 ft", room: "Pack room",
         detail: "At grade on the north wall (site map), at the east end of the pack room by the cooler door. Box trucks bringing cucumbers in from the grows. Auto" },
       { mark: "P3", type: "door", face: "E", a: 50, b: 53, h: 7, size: "3 × 7 ft", room: "Pack room",
