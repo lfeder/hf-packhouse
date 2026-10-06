@@ -142,8 +142,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=0f9fa41"></script>
-<script src="topo-site.js?v=0f9fa41"></script>
+<script src="packhouse-layouts.js?v=212b357"></script>
+<script src="topo-site.js?v=212b357"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -176,7 +176,7 @@ function setFloor(lower){ LOWER = lower; FF = FF0 - lower; for (var q0 = 0; q0 <
 setFloor(0);
 function xAt(x, y){ return bil(XR, x, y); }
 var COURT = { x1:WALL + 115, y0:PH.y, y1:FE.y + FE.h + 10, inset:8 };
-var FRAMP = { x0:WALL - DROP / 0.10, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:10 };
+var FRAMP = { x0:WALL - DROP / 0.08, x1:WALL, y0:FE.y - 12, y1:FE.y, pct:8 };   /* 8%: it is also the fert building's way out from P3 */
 var DRIVE = { x0:WALL + 50, x1:WALL + 90, y0:COURT.y1, y1:COURT.y1 + 90, pct:6 };   /* in from the south, along the road east of Grow 3 */
 /* the court slopes from 0.00 at the packhouse's north edge down to −4.00 before the first dock, D2, 52 ft along */
 var RAMPN = 50;
@@ -241,7 +241,7 @@ function wellsYard(x, y, fl){
 }
 function recessed(x, y, fl){
   var exW = xAt(WALL + 2, y), f = fl.fe;
-  if (y >= FRAMP.y0 && y <= FRAMP.y1 && exW < f && x < WALL && x >= WALL - (f - exW) / 0.10) return { z:(WALL - x) * 0.10 + exW, k:"pad" };   /* forklift ramp down to the yard */
+  if (y >= FRAMP.y0 && y <= FRAMP.y1 && exW < f && x < WALL && x >= WALL - (f - exW) / (FRAMP.pct / 100)) return { z:(WALL - x) * FRAMP.pct / 100 + exW, k:"pad" };   /* forklift ramp down to the yard */
   var pz = padZone(x, y, fl); if (pz) return pz;
   return x < WALL ? null : wellsYard(x, y, fl);
 }
@@ -378,7 +378,7 @@ function wallsOf(k){
   }
   where = "Forklift ramp, lane side";
   if (isRec(k)){ var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2), f3 = fl.fe;
-    if (e3 < f3) for (var x3 = WALL - (f3 - e3) / 0.10; x3 < WALL; x3 += 2) add(x3, FRAMP.y0 - 0.4, x3 + 2, FRAMP.y0 - 0.4, (WALL - x3 - 1) * 0.10 + e3, f3); }
+    if (e3 < f3) for (var x3 = WALL - (f3 - e3) / (FRAMP.pct / 100); x3 < WALL; x3 += 2) add(x3, FRAMP.y0 - 0.4, x3 + 2, FRAMP.y0 - 0.4, (WALL - x3 - 1) * FRAMP.pct / 100 + e3, f3); }
   return out;
 }
 /* building footings that hold back grade: walk both perimeters, comparing the floor with finished grade 1.5 ft outside */
@@ -630,7 +630,7 @@ tag("Court climbs 8% past the trailers", WALL + STAND + 25, 0, PH.y + 120, "low"
 tag("Ramp 8% · <b>0.00</b> at the north edge to <b>−4.00</b> before D2", WALL + 30, -1, PH.y + RAMPN / 2, "low", "court");
 tag("In from the north at grade", WALL + 30, 1, PH.y - 25, "low", "court");
 tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x0 + DRIVE.x1) / 2, DRIVE.y0 + 30) + 2, DRIVE.y0 + 30, "low", "court");
-tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", "court");
+tag("Forklift ramp " + FRAMP.pct + "%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", "court");
 /* recessed docks: wing walls down each well's sides where the yard stands above it, a wall across the lane's east end,
    and the forklift ramp's side wall */
 ["mid"].forEach(function(k){
@@ -638,7 +638,7 @@ tag("Forklift ramp 10%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2
   drawWalls(k);
   WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
     tag("Dock well " + w.marks + " · <b>" + rel(f - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, f - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", k); });
-  var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2); if (e3 < f) tag("Forklift ramp 10% down to the yard", WALL - (f - e3) / 0.2, f + 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", k);
+  var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2); if (e3 < f) tag("Forklift ramp " + FRAMP.pct + "% down to the yard", WALL - (f - e3) / (FRAMP.pct / 50), f + 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", k);
   trucks(k);
   tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", k);
   var lw = f - xAt(WALL + 2, FRAMP.y0 - 2); if (lw > 0.5) tag("Wall across the lane's east end, up to " + lw.toFixed(1) + " ft", WALL + 1, f + 1, PH.y + PH.h + 18, "wall", k);
