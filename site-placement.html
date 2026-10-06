@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=cc47d7a" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=970c625" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="grading"></g>
       <g id="halos"></g>
@@ -175,7 +175,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=cc47d7a). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=970c625). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
     forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
     forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
@@ -193,15 +193,15 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=cc47d7a · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=970c625 · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=cc47d7a"></script>
+<script src="packhouse-layouts.js?v=970c625"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=cc47d7a */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=970c625 */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
@@ -217,7 +217,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=cc47d7a; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=970c625; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -441,6 +441,9 @@ function drawGrading(){
   g.append(el("rect",{x:ph.x,y:ph.y+ph.h,width:ph.w,height:fe.y-ph.y-ph.h,fill:"#CFCFC9"}));
   /* forklift ramp along the fert building's north wall, down to the court */
   g.append(el("rect",{x:wall-40,y:fe.y-12,width:40,height:12,fill:"url(#rampHatch)",stroke:"#15181C","stroke-width":.6,"vector-effect":"non-scaling-stroke"}));
+  /* a 5 x 5 ft concrete landing outside the staff door P4, at the west end of the packhouse's north wall */
+  { const P=phs.find(p=>p.id==="ph"), Lp=lay(P), o=Lp.openings.find(q=>q.mark==="P4"), c=toSite(P,0,(o.a+o.b)/2);
+    g.append(el("rect",{x:c[0]-2.5,y:c[1]-5,width:5,height:5,fill:"#CFCFC9",stroke:"#15181C","stroke-width":.6,"vector-effect":"non-scaling-stroke"})); }
   /* retaining wall: the gap between the buildings and past the fert building's corner (the building walls hold the rest) */
   g.append(el("line",{x1:wall+0.6,y1:ph.y+ph.h,x2:wall+0.6,y2:fe.y-12,stroke:"#2E2C29","stroke-width":2.6,"vector-effect":"non-scaling-stroke"}));
   g.append(el("line",{x1:wall+0.6,y1:fe.y+fe.h,x2:wall+0.6,y2:fe.y+fe.h+10,stroke:"#2E2C29","stroke-width":2.6,"vector-effect":"non-scaling-stroke"}));
