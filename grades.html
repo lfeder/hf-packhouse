@@ -104,8 +104,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     </div>
     <div class="grp">
       <button type="button" id="k-court" aria-pressed="true">1 · Lowered court</button>
-      <button type="button" id="k-split" aria-pressed="false">2 · Buildings at grade</button>
-      <button type="button" id="k-mid" aria-pressed="false">3 · One floor, mid-level</button>
+      <button type="button" id="k-mid" aria-pressed="false">2 · One floor, mid-level</button>
     </div>
         <div class="grp">
       <button type="button" id="t-bld" aria-pressed="false">Buildings and trucks</button>
@@ -126,15 +125,13 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
-  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · Buildings at grade</th><th class="n">3 · One floor, mid-level</th></tr></thead>
+  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · One floor, mid-level</th></tr></thead>
   <tbody id="wallWhere"></tbody>
 </table></div>
 
 <h2>How each floor was chosen</h2>
 <p class="sub" style="max-width:none">Rough cost of each option as its floor moves around the chosen level, counting only retaining wall at $60/ft² of
-  face, soil moved on site at $8/yd³ and soil brought in or hauled away at $30/yd³. For option 2 the fert floor moves; the
-  packhouse stays at its ground. * More than half a foot off its ground, no longer "at grade": left free, option 2's two floors close
-  up toward option 3's one.</p>
+  face, soil moved on site at $8/yd³ and soil brought in or hauled away at $30/yd³.</p>
 <div class="tbl"><table>
   <thead><tr><th>Option</th><th class="n">−0.5 ft</th><th class="n">−0.25 ft</th><th class="n">Chosen</th><th class="n">+0.25 ft</th><th class="n">+0.5 ft</th></tr></thead>
   <tbody id="levels"><tr><td colspan="6">Working…</td></tr></tbody>
@@ -142,8 +139,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=212b357"></script>
-<script src="topo-site.js?v=212b357"></script>
+<script src="packhouse-layouts.js?v=03b2c8b"></script>
+<script src="topo-site.js?v=03b2c8b"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -329,7 +326,7 @@ function model(zoneFn){
   return { G:G, K:K, cf:cf, tot:tot, over:over };
 }
 var MODELS, scheme = "court", G, K;
-function runModels(){ MODELS = { court:model(SCHEMES.court), split:model(SCHEMES.split), mid:model(SCHEMES.mid) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
+function runModels(){ MODELS = { court:model(SCHEMES.court), mid:model(SCHEMES.mid) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
 function gAt(x, y){ return bil(G, x, y); }
 
 /* ---------- volumes, both schemes ---------- */
@@ -412,7 +409,7 @@ function westSouth(k){
   for (var x = PH.x; x < WALL; x += 2) so = Math.max(so, fl.fe - xAt(x, FE.y + FE.h + 10));
   return { w:w, s:so };
 }
-var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"3 · One floor, mid-level" }, ALL = ["court", "split", "mid"];
+var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"2 · One floor, mid-level" }, ALL = ["court", "mid"];
 function renderSummary(){
   $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
@@ -443,7 +440,6 @@ function renderLevels(){
     return '<td class="n"' + (d === 0 ? ' style="font-weight:700"' : o ? ' style="color:var(--ink-3)"' : "") + ">$" + Math.round(c / 1000) + "k" + (o ? "*" : "") + "</td>"; }).join(""); };
   var html = "<tr><td>" + OPT.court + "</td>" + row("court", function(d){ setFloor(OPT1 - d); }) + "</tr>";
   setFloor(keepL);
-  html += "<tr><td>" + OPT.split + "</td>" + row("split", function(d){ SPLIT.fe = keepS + d; }, function(d){ return Math.abs(keepS + d) > 0.5; }) + "</tr>"; SPLIT.fe = keepS;
   html += "<tr><td>" + OPT.mid + "</td>" + row("mid", function(d){ MID = keepM - d; }) + "</tr>"; MID = keepM;
   $("#levels").innerHTML = html;
 }
@@ -451,7 +447,7 @@ function renderLevels(){
 var LEDE = {
   court:"<b>Option 1, lowered court.</b> One floor, a quarter foot under the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line.",
   split:"<b>Option 2, buildings at grade.</b> Each building sits about at the ground under it. Between them a forklift ramp runs up the west side from fert R1; east of it the north 35 ft is at the packhouse floor, the south 15 ft at the fert floor. Dock wells with wing walls; yard at existing grade.",
-  mid:"<b>Option 3, one floor at mid-level: the middle ground.</b> One floor like option 1, set halfway between the ground under the two buildings; dock wells like option 2; yard at existing grade. The north side drains away from the packhouse.",
+  mid:"<b>Option 2, one floor at mid-level.</b> One floor, set halfway between the ground under the two buildings; a recessed well at each dock; yard at existing grade. The north side drains away from the packhouse.",
   recess:""
 };
 
@@ -643,18 +639,6 @@ tag("Forklift ramp " + FRAMP.pct + "%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 
   tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", k);
   var lw = f - xAt(WALL + 2, FRAMP.y0 - 2); if (lw > 0.5) tag("Wall across the lane's east end, up to " + lw.toFixed(1) + " ft", WALL + 1, f + 1, PH.y + PH.h + 18, "wall", k);
 });
-/* option 2 */
-G = MODELS.split.G;
-(function(){ var fl = floors("split");
-  drawWalls("split");
-  WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
-    tag("Dock well " + w.marks + " · <b>" + rel(wellBase(w, fl) - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, wellBase(w, fl) - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", "split"); });
-  trucks("split");
-  tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", "split");
-  tag("Forklift ramp " + Math.abs((fl.fe - fl.ph) / (LANE.y1 - LANE.y0) * 100).toFixed(1) + "%, fert R1 up to the packhouse", (PH.x + LANE.rx) / 2, (fl.ph + fl.fe) / 2 + 1, (LANE.y0 + LANE.y1) / 2, "low", "split");
-  tag("Upper 35 ft at the packhouse floor", (LANE.rx + WALL) / 2, fl.ph + 1, (LANE.y0 + LANE.step) / 2, "low", "split");
-  tag("Lower 15 ft at the fert floor", (LANE.rx + WALL) / 2, fl.fe + 1, (LANE.step + LANE.y1) / 2, "low", "split");
-})();
 G = MODELS.court.G;
 /* property line, on existing ground so it reads the same in both schemes */
 (function(){
@@ -703,7 +687,6 @@ function pickScheme(k){
 }
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 $("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
-$("#k-split").addEventListener("click", function(){ pickScheme("split"); });
 /* buildings, trucks and walls switch off together, leaving the ground and its cut and fill */
 function applyBld(){ $("#t-bld").setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
