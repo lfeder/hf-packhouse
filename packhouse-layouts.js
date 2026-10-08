@@ -68,7 +68,7 @@ window.PH_LAYOUTS = {
     ],
     /* drains, local coords as [x0, z0, x1, z1]: trench drains are long strips, floor drains 1.5 ft squares */
     drains: [
-      { name: "Trench drain", x0: 43, z0: 33, x1: 44, z1: 73 },      /* pack room washdown, just outside the machine cell */
+      { name: "Trench drain", x0: 2, z0: 38.5, x1: 78, z1: 39.5 },    /* pack room washdown, the full width, between harvest staging and the machine cell */
       { name: "Floor drain", x0: 62.75, z0: 20.25, x1: 64.25, z1: 21.75 },   /* cooler, in the route to the pack room door */
       { name: "Floor drain", x0: 34.25, z0: 96.25, x1: 35.75, z1: 97.75 },   /* cleaning store, at the mop sink */
       { name: "Bin wash trench", x0: 107.5, z0: 31, x1: 108.5, z1: 99 }      /* outer edge of the bin wash pad, which slopes to it */
@@ -100,7 +100,7 @@ window.PH_LAYOUTS = {
     lightBand: [14, 16.5],   /* translucent light panels round the top of all four walls, under the eave */
     roofVents: 4,
     drains: [
-      { name: "Trench drain", x0: 3, z0: 90.6, x1: 54, z1: 91.4 },   /* along the front of the tanks and skid */
+      { name: "Trench drain, forklift grade", x0: 2, z0: 90.5, x1: 78, z1: 91.5 },   /* the full width, along the front of the tanks and skid */
       { name: "Sump", x0: 54.5, z0: 92.5, x1: 57.5, z1: 95.5 }      /* fert rinse to a sump, not the septic */
     ],            /* along the ridge; the packhouse has none, its roof and walls are insulated */
     rooms: [
