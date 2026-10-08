@@ -52,18 +52,18 @@ window.PH_LAYOUTS = {
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, manual leveller and dock shelter. 40 ft containers out. Auto" },
       { mark: "P4", type: "door", face: "W", a: 95.5, b: 98.5, h: 7, size: "3 × 7 ft", room: "Break room",
         detail: "Staff entry at the west end of the north wall, beside the parking along it, into the break room by the mini lockers" },
-      { mark: "R2", type: "rollup", face: "W", a: 1, b: 13, h: 14, size: "12 × 14 ft", room: "Cold storage",
+      { mark: "R2", type: "rollup", face: "W", a: 2, b: 12, h: 10, size: "10 × 10 ft", room: "Cold storage",
         detail: "At grade on the north wall (site map), straight into the cooler's dock aisle. Box trucks going out. Auto" },
-      { mark: "R1", type: "rollup", face: "W", a: 30.5, b: 42.5, h: 14, size: "12 × 14 ft", room: "Pack room",
+      { mark: "R1", type: "rollup", face: "W", a: 31.5, b: 41.5, h: 10, size: "10 × 10 ft", room: "Pack room",
         detail: "At grade on the north wall (site map), at the east end of the pack room by the cooler door. Box trucks bringing cucumbers in from the grows. Auto" },
       { mark: "P3", type: "door", face: "E", a: 50, b: 53, h: 7, size: "3 × 7 ft", room: "Pack room",
         detail: "Pack room door on the south wall, straight onto the covered bin wash" },
-      { mark: "R3", type: "rollup", face: "E", a: 31, b: 41, h: 10, forklift: true, size: "10 × 10 ft", room: "Pack room",
+      { mark: "R3", type: "rollup", face: "E", a: 32, b: 40, h: 10, forklift: true, size: "8 × 10 ft", room: "Pack room",
         detail: "Forklift roll-up on the south wall (site map) at the east end of the pack room, by the cooler wall: boxes and bags come in from the fert building across the lane and the bin wash pad to the box store. No trucks" }
     ],
     /* outdoor areas, local coords; x > W is outside the E face (south wall on the site map) */
     outdoor: [
-      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 30, z1: 100, roof: 14,   /* z0 just east of R3 (31–41), so its post clears the opening */
+      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 30, z1: 100, roof: 14,   /* z0 just east of R3 (32–40), so its post clears the opening */
         note: "Covered bin wash, 70 ft along the west end of the south wall × 30 ft out (2,100 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Its east posts stand just east of R3, clear of the opening. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
     ],
     /* drains, local coords as [x0, z0, x1, z1]: trench drains are long strips, floor drains 1.5 ft squares */
@@ -110,16 +110,16 @@ window.PH_LAYOUTS = {
         note: "The fertigator skid at the west end of the south wall, the six tanks east of it. Block-stacked lanes two-high, 88 positions against 71 needed. Partition to the roof, no curb." }
     ],
     partitions: [
-      { axis: "z", at: 70, from: 0, to: 80, h: "eave", holes: [[2, 12, 0, 10]] }
+      { axis: "z", at: 70, from: 0, to: 80, h: "eave", holes: [[3, 11, 0, 10]] }
     ],
     openings: [
-      { mark: "D1", type: "dock", face: "N", a: 63, b: 72, h: 10, size: "9 × 10 ft", room: "Dry storage",
+      { mark: "D1", type: "dock", face: "N", a: 63.5, b: 71.5, h: 9, size: "8 × 9 ft", room: "Dry storage",
         detail: "48 in dock square to the wall, manual leveller and dock shelter, on the south part of the east wall (site map), where grade is lowest, its apron 4 ft below the floor. This one does not need the packhouse's angle: its 115 ft apron fits straight out, so the container backs in square and the forklift runs straight into dry storage. Container drops of packaging and fertiliser. Auto" },
-      { mark: "D2", type: "dock", truck: "box", face: "N", a: 7.5, b: 16.5, h: 10, size: "9 × 10 ft", room: "Dry storage",
+      { mark: "D2", type: "dock", truck: "box", face: "N", a: 8, b: 16, h: 9, size: "8 × 9 ft", room: "Dry storage",
         detail: "Box-truck dock on the north part of the east wall (site map), its apron 4 ft below the floor like D1, manual leveller and dock shelter. The weekly box truck backs in and is loaded straight off the dock. Auto" },
       { mark: "P1", type: "door", face: "E", a: 2, b: 5, h: 7, size: "3 × 7 ft", room: "Dry storage",
         detail: "Egress on the south wall (site map) at its east end, out of the dock staging area" },
-      { mark: "R1", type: "rollup", forklift: true, face: "W", a: 73, b: 83, h: 10, size: "10 × 10 ft", room: "Fert room",
+      { mark: "R1", type: "rollup", forklift: true, face: "W", a: 74, b: 82, h: 10, size: "8 × 10 ft", room: "Fert room",
         detail: "Forklift roll-up at grade on the fert room's north wall (site map), facing the packhouse across the lane. Boxes come out of dry storage through I1 and leave here for the packhouse's R3. No trucks" },
       { mark: "P3", type: "door", face: "W", a: 85, b: 88, h: 7, size: "3 × 7 ft", room: "Fert room",
         detail: "Second exit from the fert room, beside R1 on the north wall: swings out, panic bar" },
@@ -135,7 +135,7 @@ window.PH_LAYOUTS = {
         detail: "Exhaust fan high in dry storage's gable end (east wall on the site map, over the truck court), between the docks, under the light band. About 10,000 cfm" },
       { mark: "F4", type: "louvre", fan: true, face: "N", a: 46, b: 49.5, h: 13.5, sill: 10, size: "36 in fan", room: "Dry storage",
         detail: "Second exhaust fan in dry storage's gable end, between the docks. With F3, about 4 air changes an hour in dry storage" },
-      { mark: "I1", type: "internal", face: "I", a: 2, b: 12, h: 10, size: "10 × 10 ft", room: "Partition",
+      { mark: "I1", type: "internal", face: "I", a: 3, b: 11, h: 10, size: "8 × 10 ft", room: "Partition",
         detail: "Store to fert room, forklift route. Flagged pending the separation rating" }
     ]
   }
@@ -157,8 +157,8 @@ window.PH_LAYOUTS = {
     "I1 moves to the east end of the partition, in line with the D1 aisle, so fertiliser runs straight down from the dock. " +
     "The pick and build area moves with it. The lane along the partition shortens to stay clear of I1: 84 positions instead of 88.",
     function(v){
-      v.partitions[0].holes = [[63, 73, 0, 10]];
-      v.openings.forEach(function(o){ if (o.mark === "I1"){ o.a = 63; o.b = 73; } });
+      v.partitions[0].holes = [[64, 72, 0, 10]];
+      v.openings.forEach(function(o){ if (o.mark === "I1"){ o.a = 64; o.b = 72; } });
       v.rooms[1].note = v.rooms[1].note.replace("88 positions", "84 positions");
       v.fit = { lanes: [{ x0: 2, z0: 70.5, nx: 15, nz: 2, face: "+z" }, { x0: 54, z0: 90.5, nx: 6, nz: 2, face: "-z" }] };
       v.flowSpots = { pick: { x: 67, z: 84 } };
