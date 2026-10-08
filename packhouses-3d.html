@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=f6a286d</span>
+  <span>Layouts: packhouse-layouts.js?v=5171a31</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=f6a286d"></script>
+<script src="packhouse-layouts.js?v=5171a31"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -627,8 +627,8 @@ function fitSpec(b){
     lines: [[2, 0.5, 8], 17.5, 21, 36.5, 40, 55.5, 59, 74.5], z0: 16, bays: 6,   /* eight rack lines on 12 ft aisles, 8.5 ft bays; the north-wall line runs on to the east wall */
     lanes: [{ x0:14, z0:70.5, nx:16, nz:2, face:"+z" },                 /* 2 deep along the partition, clear of I1 */
             { x0:54, z0:90.5, nx:6, nz:2, face:"-z" }],                 /* 2 deep, south-east */
-    tanks: [[7, 95.5], [13, 95.5], [19, 95.5], [25, 95.5], [31, 95.5], [37, 95.5]],
-    skid: [47, 95.5, 10, 7]                                              /* centre x, z, size along x, z */
+    tanks: [[17, 95.5], [23, 95.5], [29, 95.5], [35, 95.5], [41, 95.5], [47, 95.5]],
+    skid: [7, 95.5, 10, 7]                                                /* centre x, z, size along x, z */
   }, b.fit || {});
 }
 function fitFert80(){
@@ -721,7 +721,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=f6a286d), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=5171a31), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
@@ -740,7 +740,7 @@ var FLOWS = {
     period: "month",   /* deliveries are weekly or rarer, so a month reads best */
     spots: {
       pick:   { x:7,  z:88,   name:"Pick and build", assumed:true },
-      tanks:  { x:22, z:89.5, name:"Fertigator tanks" },
+      tanks:  { x:32, z:89.5, name:"Fertigator tanks" },
       boxstage:{ bldg:"ph80", x:44, z:43.5, name:"Packhouse box staging" }
     },
     sets: { rack:"Rack bay", fert:"Fert stack" },

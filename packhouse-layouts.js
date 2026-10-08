@@ -68,7 +68,7 @@ window.PH_LAYOUTS = {
     ],
     /* drains, local coords as [x0, z0, x1, z1]: trench drains are long strips, floor drains 1.5 ft squares */
     drains: [
-      { name: "Trench drain", x0: 2, z0: 38.5, x1: 78, z1: 39.5 },    /* pack room washdown, the full width, between harvest staging and the machine cell */
+      { name: "Trench drain", x0: 2, z0: 52, x1: 78, z1: 53 },        /* pack room washdown, the full width through the centre of the room */
       { name: "Floor drain", x0: 62.75, z0: 20.25, x1: 64.25, z1: 21.75 },   /* cooler, in the route to the pack room door */
       { name: "Floor drain", x0: 34.25, z0: 96.25, x1: 35.75, z1: 97.75 },   /* cleaning store, at the mop sink */
       { name: "Bin wash trench", x0: 107.5, z0: 31, x1: 108.5, z1: 99 }      /* outer edge of the bin wash pad, which slopes to it */
@@ -100,14 +100,14 @@ window.PH_LAYOUTS = {
     lightBand: [14, 16.5],   /* translucent light panels round the top of all four walls, under the eave */
     roofVents: 4,
     drains: [
-      { name: "Trench drain, forklift grade", x0: 2, z0: 90.5, x1: 78, z1: 91.5 },   /* the full width, along the front of the tanks and skid */
-      { name: "Sump", x0: 54.5, z0: 92.5, x1: 57.5, z1: 95.5 }      /* fert rinse to a sump, not the septic */
+      { name: "Trench drain, forklift grade", x0: 2, z0: 89.5, x1: 51, z1: 90.5 },   /* along the front of the skid and tanks, stopping just past the last tank */
+      { name: "Sump", x0: 51, z0: 88.5, x1: 54, z1: 91.5 }      /* fert rinse to a sump, not the septic */
     ],            /* along the ridge; the packhouse has none, its roof and walls are insulated */
     rooms: [
       { id: "dry", name: "Dry storage", tone: "--flow-box", x0: 0, x1: 80, z0: 0, z1: 70,
         note: "Eight rack lines run east–west on 12 ft counterbalance aisles, 6 bays each, two high on the floor plus one shelf, and the line on the north wall runs on to the east wall, 8 bays: 300 positions against 204 needed (three months after the expansion). 16 ft staging behind the docks." },
       { id: "fert", name: "Fertigator and fert storage", short: "Fert room", tone: "--survey", x0: 0, x1: 80, z0: 70, z1: 100,
-        note: "Six tanks and the skid along the south wall. Block-stacked lanes two-high, 88 positions against 71 needed. Partition to the roof, no curb." }
+        note: "The fertigator skid at the west end of the south wall, the six tanks east of it. Block-stacked lanes two-high, 88 positions against 71 needed. Partition to the roof, no curb." }
     ],
     partitions: [
       { axis: "z", at: 70, from: 0, to: 80, h: "eave", holes: [[2, 12, 0, 10]] }
@@ -130,7 +130,7 @@ window.PH_LAYOUTS = {
       { mark: "F1", type: "louvre", fan: true, face: "S", a: 22, b: 25.5, h: 13.5, sill: 10, size: "36 in fan", room: "Fert room",
         detail: "Exhaust fan high in the fert room's gable end (west wall on the site map), about 10,000 cfm, under the light band. Air comes in low through V1 and the doors" },
       { mark: "F2", type: "louvre", fan: true, face: "S", a: 56, b: 59.5, h: 13.5, sill: 10, size: "36 in fan", room: "Fert room",
-        detail: "Second exhaust fan in the fert room's gable end, beside the skid. With F1, about 8 air changes an hour" },
+        detail: "Second exhaust fan in the fert room's gable end, beside the last tank. With F1, about 8 air changes an hour" },
       { mark: "F3", type: "louvre", fan: true, face: "N", a: 30, b: 33.5, h: 13.5, sill: 10, size: "36 in fan", room: "Dry storage",
         detail: "Exhaust fan high in dry storage's gable end (east wall on the site map, over the truck court), between the docks, under the light band. About 10,000 cfm" },
       { mark: "F4", type: "louvre", fan: true, face: "N", a: 46, b: 49.5, h: 13.5, sill: 10, size: "36 in fan", room: "Dry storage",
