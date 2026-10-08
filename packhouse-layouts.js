@@ -131,6 +131,10 @@ window.PH_LAYOUTS = {
         detail: "Exhaust fan high in the fert room's gable end (west wall on the site map), about 10,000 cfm, under the light band. Air comes in low through V1 and the doors" },
       { mark: "F2", type: "louvre", fan: true, face: "S", a: 56, b: 59.5, h: 13.5, sill: 10, size: "36 in fan", room: "Fert room",
         detail: "Second exhaust fan in the fert room's gable end, beside the skid. With F1, about 8 air changes an hour" },
+      { mark: "F3", type: "louvre", fan: true, face: "N", a: 30, b: 33.5, h: 13.5, sill: 10, size: "36 in fan", room: "Dry storage",
+        detail: "Exhaust fan high in dry storage's gable end (east wall on the site map, over the truck court), between the docks, under the light band. About 10,000 cfm" },
+      { mark: "F4", type: "louvre", fan: true, face: "N", a: 46, b: 49.5, h: 13.5, sill: 10, size: "36 in fan", room: "Dry storage",
+        detail: "Second exhaust fan in dry storage's gable end, between the docks. With F3, about 4 air changes an hour in dry storage" },
       { mark: "I1", type: "internal", face: "I", a: 2, b: 12, h: 10, size: "10 × 10 ft", room: "Partition",
         detail: "Store to fert room, forklift route. Flagged pending the separation rating" }
     ]
