@@ -63,8 +63,8 @@ window.PH_LAYOUTS = {
     ],
     /* outdoor areas, local coords; x > W is outside the E face (south wall on the site map) */
     outdoor: [
-      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 34, z1: 100, roof: 14,
-        note: "Covered bin wash, 66 ft along the west end of the south wall × 30 ft out (1,980 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
+      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 30, z1: 100, roof: 14,   /* z0 just east of R3 (31–41), so its post clears the opening */
+        note: "Covered bin wash, 70 ft along the west end of the south wall × 30 ft out (2,100 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Its east posts stand just east of R3, clear of the opening. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
     ],
     /* fit-out: the J/E wrapper turned end for end (infeed at the cooler end, fed straight from harvest staging) and
        the Keiki tables in one row beside it, as [centre x, centre z, size along x, size along z] */
@@ -90,6 +90,8 @@ window.PH_LAYOUTS = {
 
   fert80: {
     id: "fert80", building: "fert", shape: "A", name: "Fert Room & Storage", W: 80, D: 100, eave: 17, color: "#A9702B",
+    lightBand: [14, 16.5],   /* translucent light panels round the top of all four walls, under the eave */
+    roofVents: 4,            /* along the ridge; the packhouse has none, its roof and walls are insulated */
     rooms: [
       { id: "dry", name: "Dry storage", tone: "--flow-box", x0: 0, x1: 80, z0: 0, z1: 70,
         note: "Eight rack lines run east–west on 12 ft counterbalance aisles, 6 bays each, two high on the floor plus one shelf, and the line on the north wall runs on to the east wall, 8 bays: 300 positions against 204 needed (three months after the expansion). 16 ft staging behind the docks." },

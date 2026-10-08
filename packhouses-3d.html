@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=ac3df56</span>
+  <span>Layouts: packhouse-layouts.js?v=02c6e55</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=ac3df56"></script>
+<script src="packhouse-layouts.js?v=02c6e55"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -297,6 +297,7 @@ mat("bin","--flow-crop"); mat("empty","--empty");   /* colour code: green unpack
 mat("table","--rule-2"); mat("conv","--flow-box");
 mat("canopy","--rule-2",{opacity:0.45, side:THREE.DoubleSide, depthWrite:false});
 mat("glass","--flow-box",{opacity:0.3, side:THREE.DoubleSide, depthWrite:false});
+mat("daylight","--empty",{opacity:0.5, side:THREE.DoubleSide, depthWrite:false});   /* translucent light panels */
 lmat("edge","--ink-2",0.55); lmat("soft","--ink-3",0.3); lmat("mark","--survey",0.95); lmat("dim","--ink-3",0.6);
 ["--flow-box","--flow-crop","--flow-dry","--ink-3","--survey"].forEach(function(t){
   mat("floor" + t, t, { opacity:0.3 }); mat("skirt" + t, t, { opacity:0.9 });
@@ -490,6 +491,22 @@ function build(id){
     var p2 = box(run, 0.5, D + 2, M.roof, W * 3 / 4, (E + R) / 2 + 0.3, D / 2, G.roof); p2.rotation.z = -a;
     edges(p1, M.edge, G.roof); edges(p2, M.edge, G.roof);
   })();
+  /* translucent light panels: a band round the top of the walls, under the eave */
+  if (B.lightBand){
+    var lb0 = B.lightBand[0], lbh = B.lightBand[1] - lb0, ly = lb0 + lbh / 2;
+    [[W, lbh, 0.3, W / 2, -0.2], [W, lbh, 0.3, W / 2, D + 0.2], [0.3, lbh, D, -0.2, D / 2], [0.3, lbh, D, W + 0.2, D / 2]].forEach(function(q){
+      edges(box(q[0], q[1], q[2], M.daylight, q[3], ly, q[4], G.shell, false), M.edge, G.shell);
+    });
+    addTag("Light panels", W + 0.5, ly, D / 2, "equip");
+  }
+  /* roof vents along the ridge, shown even with the roof off */
+  if (B.roofVents){
+    for (var rv = 0; rv < B.roofVents; rv++){
+      var rz = D * (rv + 0.5) / B.roofVents;
+      edges(box(3, 2, 4, M.steel, W / 2, R + 1.4, rz, G.shell), M.edge, G.shell);
+    }
+    addTag("Roof vents", W / 2, R + 4, D / 2, "equip");
+  }
   /* partitions */
   B.partitions.forEach(function(p){
     var h = p.h === "eave" ? E : p.h, len = p.to - p.from;
@@ -693,7 +710,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=ac3df56), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=02c6e55), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
