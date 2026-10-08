@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=1d9374a</span>
+  <span>Layouts: packhouse-layouts.js?v=9d10c7d</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=1d9374a"></script>
+<script src="packhouse-layouts.js?v=9d10c7d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -539,6 +539,12 @@ function build(id){
       return;
     }
     markRect(o.face, o.a, o.b, o.sill || 0, o.h, B);
+    if (o.fan){   /* exhaust fan: a housing set in the wall, its hub showing */
+      var fq = faceXZ(o.face, cx, -0.6, B), fw = o.b - o.a, fh = o.h - o.sill, along = o.face === "N" || o.face === "S";
+      edges(box(along ? fw : 1.2, fh, along ? 1.2 : fw, M.part, fq[0], o.sill + fh / 2, fq[1], G.shell, false), M.edge, G.shell);
+      var hub = faceXZ(o.face, cx, 0.1, B);
+      box(along ? 0.8 : 0.3, 0.8, along ? 0.3 : 0.8, M.steel, hub[0], o.sill + fh / 2, hub[1], G.shell);
+    }
     if (o.hideTag) return;
     var q = faceXZ(o.face, cx, 1.2, B);
     addTag(o.mark, q[0], o.h + 1.6, q[1], "mark" + (o.type === "dock" ? " dock" : ""));
@@ -715,7 +721,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=1d9374a), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=9d10c7d), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
@@ -1291,7 +1297,7 @@ function renderTables(id){
   $("#grossNote").textContent = gross === 8000 ? "Matches the spec's 8,000 ft²" : "Spec is 8,000 ft²";
   $("#opens").innerHTML = B.openings.filter(function(o){ return !o.hideTag; }).map(function(o){
     var fl = o.type === "internal";
-    return "<tr><td class='mk'" + (fl ? " style='color:var(--survey)'" : "") + ">" + o.mark + "</td><td" + (fl ? " class='flag'" : "") + ">" + TYPE[o.type] +
+    return "<tr><td class='mk'" + (fl ? " style='color:var(--survey)'" : "") + ">" + o.mark + "</td><td" + (fl ? " class='flag'" : "") + ">" + (o.fan ? "Exhaust fan" : TYPE[o.type]) +
       "</td><td class='n'>" + o.size + "</td><td>" + FACE_SITE[o.face] + "</td><td>" + o.room + "</td><td>" + o.detail + "</td></tr>";
   }).join("");
   /* pallet positions this layout holds, against what three months after the expansion needs (storage.html) */

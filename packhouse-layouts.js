@@ -127,6 +127,10 @@ window.PH_LAYOUTS = {
         detail: "Low intake. High exhaust above it at 10–13 ft" },
       { mark: "V2", type: "louvre", face: "E", a: 90, b: 94, h: 13, sill: 10, size: "4 × 3 ft", room: "Fert room",
         detail: "High exhaust fan", hideTag: true },
+      { mark: "F1", type: "louvre", fan: true, face: "S", a: 22, b: 25.5, h: 13.5, sill: 10, size: "36 in fan", room: "Fert room",
+        detail: "Exhaust fan high in the fert room's gable end (west wall on the site map), about 10,000 cfm, under the light band. Air comes in low through V1 and the doors" },
+      { mark: "F2", type: "louvre", fan: true, face: "S", a: 56, b: 59.5, h: 13.5, sill: 10, size: "36 in fan", room: "Fert room",
+        detail: "Second exhaust fan in the fert room's gable end, beside the skid. With F1, about 8 air changes an hour" },
       { mark: "I1", type: "internal", face: "I", a: 2, b: 12, h: 10, size: "10 × 10 ft", room: "Partition",
         detail: "Store to fert room, forklift route. Flagged pending the separation rating" }
     ]
