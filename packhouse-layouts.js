@@ -66,6 +66,13 @@ window.PH_LAYOUTS = {
       { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 30, z1: 100, roof: 14,   /* z0 just east of R3 (31–41), so its post clears the opening */
         note: "Covered bin wash, 70 ft along the west end of the south wall × 30 ft out (2,100 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Its east posts stand just east of R3, clear of the opening. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
     ],
+    /* drains, local coords as [x0, z0, x1, z1]: trench drains are long strips, floor drains 1.5 ft squares */
+    drains: [
+      { name: "Trench drain", x0: 43, z0: 33, x1: 44, z1: 73 },      /* pack room washdown, just outside the machine cell */
+      { name: "Floor drain", x0: 62.75, z0: 20.25, x1: 64.25, z1: 21.75 },   /* cooler, in the route to the pack room door */
+      { name: "Floor drain", x0: 34.25, z0: 96.25, x1: 35.75, z1: 97.75 },   /* cleaning store, at the mop sink */
+      { name: "Bin wash trench", x0: 107.5, z0: 31, x1: 108.5, z1: 99 }      /* outer edge of the bin wash pad, which slopes to it */
+    ],
     /* fit-out: the J/E wrapper turned end for end (infeed at the cooler end, fed straight from harvest staging) and
        the Keiki tables in one row beside it, as [centre x, centre z, size along x, size along z] */
     lineFlip: true,
@@ -91,7 +98,11 @@ window.PH_LAYOUTS = {
   fert80: {
     id: "fert80", building: "fert", shape: "A", name: "Fert Room & Storage", W: 80, D: 100, eave: 17, color: "#A9702B",
     lightBand: [14, 16.5],   /* translucent light panels round the top of all four walls, under the eave */
-    roofVents: 4,            /* along the ridge; the packhouse has none, its roof and walls are insulated */
+    roofVents: 4,
+    drains: [
+      { name: "Trench drain", x0: 3, z0: 90.6, x1: 54, z1: 91.4 },   /* along the front of the tanks and skid */
+      { name: "Sump", x0: 54.5, z0: 92.5, x1: 57.5, z1: 95.5 }      /* fert rinse to a sump, not the septic */
+    ],            /* along the ridge; the packhouse has none, its roof and walls are insulated */
     rooms: [
       { id: "dry", name: "Dry storage", tone: "--flow-box", x0: 0, x1: 80, z0: 0, z1: 70,
         note: "Eight rack lines run east–west on 12 ft counterbalance aisles, 6 bays each, two high on the floor plus one shelf, and the line on the north wall runs on to the east wall, 8 bays: 300 positions against 204 needed (three months after the expansion). 16 ft staging behind the docks." },

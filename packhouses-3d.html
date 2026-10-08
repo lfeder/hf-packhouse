@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=02c6e55</span>
+  <span>Layouts: packhouse-layouts.js?v=1d9374a</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=02c6e55"></script>
+<script src="packhouse-layouts.js?v=1d9374a"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -499,6 +499,11 @@ function build(id){
     });
     addTag("Light panels", W + 0.5, ly, D / 2, "equip");
   }
+  /* drains: dark grates set in the floor, the outdoor ones in the bin wash pad */
+  (B.drains || []).forEach(function(d){
+    pad(d.x0, d.z0, d.x1, d.z1, 0.16, 0.05, M.truckd, G.shell);
+    if (d.x1 - d.x0 > 3 || d.z1 - d.z0 > 3 || d.name === "Sump") addTag(d.name, (d.x0 + d.x1) / 2, 1.5, (d.z0 + d.z1) / 2, "equip");
+  });
   /* roof vents along the ridge, shown even with the roof off */
   if (B.roofVents){
     for (var rv = 0; rv < B.roofVents; rv++){
@@ -710,7 +715,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=02c6e55), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=1d9374a), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
