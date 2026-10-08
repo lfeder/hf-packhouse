@@ -47,9 +47,9 @@ window.PH_LAYOUTS = {
     ],
     openings: [
       { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
-        detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal. Auto" },
+        detail: "48 in dock in an insulated dock house angled about 22° toward the south, manual leveller and dock shelter. Auto" },
       { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
-        detail: "48 in dock in an insulated dock house angled about 22° toward the south, leveller and seal. 40 ft containers out. Auto" },
+        detail: "48 in dock in an insulated dock house angled about 22° toward the south, manual leveller and dock shelter. 40 ft containers out. Auto" },
       { mark: "P4", type: "door", face: "W", a: 95.5, b: 98.5, h: 7, size: "3 × 7 ft", room: "Break room",
         detail: "Staff entry at the west end of the north wall, beside the parking along it, into the break room by the mini lockers" },
       { mark: "R2", type: "rollup", face: "W", a: 1, b: 13, h: 14, size: "12 × 14 ft", room: "Cold storage",
@@ -114,9 +114,9 @@ window.PH_LAYOUTS = {
     ],
     openings: [
       { mark: "D1", type: "dock", face: "N", a: 63, b: 72, h: 10, size: "9 × 10 ft", room: "Dry storage",
-        detail: "48 in dock square to the wall, leveller and seal, on the south part of the east wall (site map), where grade is lowest, its apron 4 ft below the floor. This one does not need the packhouse's angle: its 115 ft apron fits straight out, so the container backs in square and the forklift runs straight into dry storage. Container drops of packaging and fertiliser. Auto" },
+        detail: "48 in dock square to the wall, manual leveller and dock shelter, on the south part of the east wall (site map), where grade is lowest, its apron 4 ft below the floor. This one does not need the packhouse's angle: its 115 ft apron fits straight out, so the container backs in square and the forklift runs straight into dry storage. Container drops of packaging and fertiliser. Auto" },
       { mark: "D2", type: "dock", truck: "box", face: "N", a: 7.5, b: 16.5, h: 10, size: "9 × 10 ft", room: "Dry storage",
-        detail: "Box-truck dock on the north part of the east wall (site map), its apron 4 ft below the floor like D1, leveller and seal. The weekly box truck backs in and is loaded straight off the dock. Auto" },
+        detail: "Box-truck dock on the north part of the east wall (site map), its apron 4 ft below the floor like D1, manual leveller and dock shelter. The weekly box truck backs in and is loaded straight off the dock. Auto" },
       { mark: "P1", type: "door", face: "E", a: 2, b: 5, h: 7, size: "3 × 7 ft", room: "Dry storage",
         detail: "Egress on the south wall (site map) at its east end, out of the dock staging area" },
       { mark: "R1", type: "rollup", forklift: true, face: "W", a: 73, b: 83, h: 10, size: "10 × 10 ft", room: "Fert room",
