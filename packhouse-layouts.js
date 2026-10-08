@@ -46,9 +46,9 @@ window.PH_LAYOUTS = {
       { axis: "x", at: 48, from: 75, to: 100, h: 12, holes: [] }
     ],
     openings: [
-      { mark: "D2", type: "dock", face: "N", a: 52, b: 61, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
+      { mark: "D2", type: "dock", face: "N", a: 52.5, b: 60.5, h: 9, angle: 22.5, seal: 1.5, rig: 40, size: "8 × 9 ft", room: "Cold storage",
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, manual leveller and dock shelter. Auto" },
-      { mark: "D1", type: "dock", face: "N", a: 65, b: 74, h: 10, angle: 22.5, seal: 1.5, rig: 40, size: "9 × 10 ft", room: "Cold storage",
+      { mark: "D1", type: "dock", face: "N", a: 65.5, b: 73.5, h: 9, angle: 22.5, seal: 1.5, rig: 40, size: "8 × 9 ft", room: "Cold storage",
         detail: "48 in dock in an insulated dock house angled about 22° toward the south, manual leveller and dock shelter. 40 ft containers out. Auto" },
       { mark: "P4", type: "door", face: "W", a: 95.5, b: 98.5, h: 7, size: "3 × 7 ft", room: "Break room",
         detail: "Staff entry at the west end of the north wall, beside the parking along it, into the break room by the mini lockers" },
