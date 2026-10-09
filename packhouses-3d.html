@@ -210,7 +210,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 
 </div>
 
-<script src="packhouse-layouts.js?v=cddd9b8"></script>
+<script src="packhouse-layouts.js?v=fdfc915"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -529,11 +529,13 @@ function build(id){
     [[o.x0, o.z0], [o.x0, o.z1], [o.x1 - 1, o.z0], [o.x1 - 1, o.z1]].forEach(function(c){ box(0.6, o.roof, 0.6, M.steel, c[0] + 0.3, o.roof / 2, c[1], G.shell); });
     var cover = box(o.x1 - o.x0 + 2, 0.4, o.z1 - o.z0 + 2, M.canopy, (o.x0 + o.x1) / 2, o.roof + 0.2, (o.z0 + o.z1) / 2, G.shell, false);
     edges(cover, M.edge, G.shell);
-    box(8, 3.5, 3, M.steel, o.x0 + 10, 1.75, (o.z0 + o.z1) / 2);   /* bin washer */
+    box(8, 3.5, 3, M.steel, o.x0 + 6.5, 1.75, o.z1 - 26);   /* bin washer, just east of the bin stacks */
     for (var bx = 0; bx < 3; bx++) for (var bz = 0; bz < 4; bz++) for (var bl = 0; bl < 3; bl++){
-      box(3.8, 2.3, 3.8, M.empty, o.x1 - 8 - bx * 4.3, 1.2 + bl * 2.4, o.z1 - 6 - bz * 4.3);   /* clean bins stacked at the west end */
+      box(3.8, 2.3, 3.8, M.empty, o.x0 + 2.5 + bx * 4.3, 1.2 + bl * 2.4, o.z1 - 6 - bz * 4.3);   /* clean bins stacked against the wall at the west end */
     }
-    if (o.id === "binwash"){ for (var ep = 0; ep < 8; ep++) box(4, 0.4, 4, M.pallet, o.x1 - 6, 0.2 + ep * 0.45, o.z0 + 6); addTag("Empty pallets", o.x1 - 6, 5.5, o.z0 + 6, "equip"); }
+    if (o.id === "binwash"){   /* empty pallets in two piles against the wall, between R3 and the pack room door */
+      [o.z0 + 12.5, o.z0 + 17].forEach(function(z){ for (var ep = 0; ep < 8; ep++) box(4, 0.4, 4, M.pallet, o.x0 + 2.5, 0.2 + ep * 0.45, z); });
+      addTag("Empty pallets", o.x0 + 2.5, 5.5, o.z0 + 15, "equip"); }
     addTag(o.name, (o.x0 + o.x1) / 2, o.roof + 2, (o.z0 + o.z1) / 2, "room", "--flow-box");
   });
 
@@ -715,7 +717,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=cddd9b8), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=fdfc915), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
