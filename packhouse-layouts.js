@@ -17,7 +17,7 @@ window.PH_PROP = [[69.6, 55.7], [608.7, 54.6], [609.2, 400.6], [1025.3, 1104.3],
 /* Ecoblock wall facing the shop on Lot 9: its face `off` ft inside the east property line (PH_PROP[2] to [3]), between
    y0 and y1 measured on the line, `h` ft above the court. A 2 ft step one block long (`step`) finishes each end, where
    the court or road turns off the line and an ordinary 2:1 slope takes over. Read by the site map and the grades page. */
-window.PH_ECO = { off: 3, y0: 440, y1: 575, h: 4, step: 6 };
+window.PH_ECO = { off: 2.5, y0: 440, y1: 575, h: 4, step: 6 };   /* blocks 2.5 ft deep: the back sits on the property line, against the shop's concrete */
 /* electrical pull boxes, site feet. PB1 halfway between the Existing Facility's SE corner (485.6, 461) and the NW corner of
    the packhouse's north-wall stalls (491.1, 470); PB2 in Grow 3 on the post column at x 567.3 (where the sheet's dashed
    lines fan out), four posts south of the north edge. The buried line between them is drawn straight: its real route is

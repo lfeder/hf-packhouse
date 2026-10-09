@@ -135,8 +135,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=a22c3f9"></script>
-<script src="topo-site.js?v=a22c3f9"></script>
+<script src="packhouse-layouts.js?v=185d3aa"></script>
+<script src="topo-site.js?v=185d3aa"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -182,7 +182,7 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
    meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  var E = window.PH_ECO;   /* packhouse-layouts.js?v=a22c3f9, shared with the site map */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=185d3aa, shared with the site map */
   return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
@@ -471,7 +471,7 @@ function renderLevels(){
 }
 
 var LEDE = {
-  court:"<b>Option 1, lowered court.</b> One floor, a quarter foot under the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line. Along the shop on Lot 9 the court runs out to a 4 ft Ecoblock wall 3 ft inside the property line, and past the trailers it climbs only as much as keeps that wall to 4 ft, easing back to 8% over the 40 ft south of it.",
+  court:"<b>Option 1, lowered court.</b> One floor, a quarter foot under the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line. Along the shop on Lot 9 the court runs out to a 4 ft Ecoblock wall, its back on the property line, and past the trailers it climbs only as much as keeps that wall to 4 ft, easing back to 8% over the 40 ft south of it.",
   split:"<b>Option 2, buildings at grade.</b> Each building sits about at the ground under it. Between them a forklift ramp runs up the west side from fert R1; east of it the north 35 ft is at the packhouse floor, the south 15 ft at the fert floor. Dock wells with wing walls; yard at existing grade.",
   mid:"<b>Option 2, one floor at mid-level.</b> One floor, set halfway between the ground under the two buildings; a recessed well at each dock; yard at existing grade. The north side drains away from the packhouse.",
   recess:""
