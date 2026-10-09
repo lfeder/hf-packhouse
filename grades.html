@@ -102,9 +102,6 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
       <button type="button" id="v-iso" aria-pressed="true">Iso</button>
       <button type="button" id="v-plan" aria-pressed="false">Plan</button>
     </div>
-    <div class="grp">
-      <button type="button" id="k-court" aria-pressed="true">1 · Lowered court</button>
-    </div>
         <div class="grp">
       <button type="button" id="t-bld" aria-pressed="false">Buildings and trucks</button>
     </div>
@@ -138,8 +135,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=9f16386"></script>
-<script src="topo-site.js?v=9f16386"></script>
+<script src="packhouse-layouts.js?v=4d7fe8d"></script>
+<script src="topo-site.js?v=4d7fe8d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -185,7 +182,7 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
    meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  var E = window.PH_ECO;   /* packhouse-layouts.js?v=9f16386, shared with the site map */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=4d7fe8d, shared with the site map */
   return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
@@ -738,7 +735,7 @@ function pickFloor(lv){
 
 function pickScheme(k){
   scheme = k; G = MODELS[k].G; K = MODELS[k].K;
-  ALL.forEach(function(n){ $("#k-" + n).setAttribute("aria-pressed", String(n === k)); SG[n].visible = n === k; TG[n].visible = n === k && showTrucks; });   /* walls stay: they are part of the grading */
+  ALL.forEach(function(n){ SG[n].visible = n === k; TG[n].visible = n === k && showTrucks; });   /* walls stay: they are part of the grading */
   TG.recess.visible = SG.recess.visible = false;
   var fl = floors(k);
   [["ph80", fl.ph], ["fert80", fl.fe]].forEach(function(b){
@@ -751,7 +748,6 @@ function pickScheme(k){
   $("#schemeLede").innerHTML = LEDE[k];
   paintGround(); drapeTopo(); saveHash(); if (typeof applyBld === "function") applyBld(); needs = true;
 }
-$("#k-court").addEventListener("click", function(){ pickScheme("court"); });
 /* buildings, trucks and walls switch off together, leaving the ground and its cut and fill */
 function applyBld(){ $("#t-bld").setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
