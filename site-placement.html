@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=9074772" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=2eb885e" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="grading"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
@@ -150,6 +150,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
   <span><svg viewBox="0 0 22 10"><line x1="0" y1="5" x2="22" y2="5" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="7 3"/></svg>20 ft setback from property line</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#848C92" fill-opacity=".3" stroke="#15181C" stroke-width="1"/><path d="M6 1V9M11 1V9M16 1V9" stroke="#15181C" stroke-width=".8"/></svg>Parking, 9 × 18 ft stalls (drag it)</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#A9702B" fill-opacity=".28" stroke="#A9702B" stroke-width="1.4"/></svg>Septic, 100 × 15 ft (drag it)</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#4F555B" fill-opacity=".55" stroke="#2E2C29" stroke-width="1"/></svg>Upper road, at grade</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="3" width="14" height="4" fill="#C22CC7" stroke="#5E0F61" stroke-width=".8"/><rect x="15" y="3" width="6" height="4" fill="#E7A6E9" stroke="#5E0F61" stroke-width=".8"/></svg>Ecoblock wall, 4 ft, 2 ft end steps (proposed)</span>
   <span><svg viewBox="0 0 22 10"><rect x="8" y="2" width="6" height="6" fill="#F2C230" stroke="#15181C" stroke-width="1"/></svg>Electrical pull box</span>
   <span><svg viewBox="0 0 22 10"><line x1="0" y1="5" x2="22" y2="5" stroke="#000" stroke-width="2.4"/></svg>Buried electrical between the pull boxes, route unknown</span>
@@ -175,7 +176,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=9074772). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=2eb885e). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
     forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
     forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
@@ -204,15 +205,15 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=9074772 · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=2eb885e · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=9074772"></script>
+<script src="packhouse-layouts.js?v=2eb885e"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=9074772 */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=2eb885e */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
@@ -227,7 +228,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=9074772; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=2eb885e; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -459,6 +460,9 @@ function drawGrading(){
   g.append(el("line",{x1:wall+0.6,y1:fe.y+fe.h,x2:wall+0.6,y2:fe.y+fe.h+10,stroke:"#2E2C29","stroke-width":2.6,"vector-effect":"non-scaling-stroke"}));
   g.append(el("line",{x1:wall-50,y1:fe.y-12.6,x2:wall,y2:fe.y-12.6,stroke:"#2E2C29","stroke-width":2,"vector-effect":"non-scaling-stroke"}));
   const vw=$("#map").viewBox.baseVal.width, fs=vw>700?12:vw/58;
+  /* the upper road from the north (PH_ROAD), in at existing grade, about a foot above the floor */
+  g.append(el("path",{d:pathOf(PH_ROAD),fill:"#4F555B","fill-opacity":.55,stroke:"#2E2C29","stroke-width":1.2,"vector-effect":"non-scaling-stroke"}));
+  if(vw<=700){ const t=el("text",{x:556,y:436,"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.6,fill:"#fff",stroke:"#2E2C29","stroke-width":fs*.2,"paint-order":"stroke"}); t.textContent="UPPER ROAD · AT GRADE"; g.append(t); }
   /* Ecoblock wall facing the shop on Lot 9 (PH_ECO): blocks 2.5 ft deep, the face PH_ECO.off ft inside the line, with
      a 2 ft step one block long past each end */
   { const E=PH_ECO, a=PROP[2], b=PROP[3], L=Math.hypot(b[0]-a[0],b[1]-a[1]), u=[(b[0]-a[0])/L,(b[1]-a[1])/L], n=[-u[1],u[0]];   /* n points into the property */
