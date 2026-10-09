@@ -135,8 +135,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=dd26dae"></script>
-<script src="topo-site.js?v=dd26dae"></script>
+<script src="packhouse-layouts.js?v=d0b4c66"></script>
+<script src="topo-site.js?v=d0b4c66"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -182,7 +182,7 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
    meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  var E = window.PH_ECO;   /* packhouse-layouts.js?v=dd26dae, shared with the site map */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=d0b4c66, shared with the site map */
   return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
@@ -262,7 +262,9 @@ var SCHEMES = {
     var pz = padZone(x, y); if (pz) return pz;
     if (x >= WALL && y >= COURT.y0 && y <= COURT.y1 && x <= edgeX(y)){
       var cz = flatE(x, y) + climbAt(y) * Math.max(0, x - WALL - STAND), ez = xAt(x, y);
-      return { z:x - WALL > STAND && !isNaN(ez) ? Math.min(cz, ez) : cz, k:"truck" };   /* the climb stops where it meets the ground */
+      var tz = x - WALL > STAND && !isNaN(ez) ? Math.min(cz, ez) : cz, xe = edgeX(y);   /* the climb stops where it meets the ground */
+      if (onEco(y) && x > xe - 6) for (var dy = -4; dy <= 4; dy += 1){ var xb = edgeX(y + dy), bz = xAt(xb - ECO.n[0] * 1.5, y + dy - ECO.n[1] * 1.5); if (!isNaN(bz)) tz = Math.max(tz, bz - ECO.h); }   /* a little fill at the wall's foot holds it to two 2 ft blocks */
+      return { z:tz, k:"truck" };
     }
     if (x >= WALL && y >= PH.y - 50 && y < COURT.y0 && x <= edgeX(y)) return { z:RISE * (x - WALL), k:"truck" };   /* in from the north at grade */
     if (x >= DRIVE.x0 && x <= DRIVE.x1 && y > DRIVE.y0 && y <= DRIVE.y1 && propGap(x, y) >= 2){
