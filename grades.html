@@ -139,8 +139,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=0e88021"></script>
-<script src="topo-site.js?v=0e88021"></script>
+<script src="packhouse-layouts.js?v=d663b40"></script>
+<script src="topo-site.js?v=d663b40"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -182,11 +182,12 @@ var RAMPN = 50;
 var STAND = 50, CLIMB = 0.08;   /* containers are 45 ft at most: even at the packhouse's 22.5° the trailer sits within 45 ft of the wall */
 function courtE(x, y){ var dx = Math.max(0, x - WALL);
   return -DROP + RISE * Math.min(dx, STAND) + CLIMB * Math.max(0, dx - STAND) + (y === undefined ? 0 : DROP * Math.max(0, 1 - (y - PH.y) / RAMPN)); }
-/* Ecoblock wall facing the shop on Lot 9: its face ECO.off ft inside the east property line, from the shop's north end
-   to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
+/* Ecoblock wall facing the shop on Lot 9: its face ECO.off ft inside the east property line, from where the upper road
+   meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  return { a:a, u:u, n:[-u[1], u[0]], off:3, h:4, t0:(483 - a[1]) / u[1], t1:(575 - a[1]) / u[1] }; })();   /* n points into the property */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=d663b40, shared with the site map */
+  return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
 function edgeX(y){ return onEco(y) ? lineX(y, ECO.off).x : Math.min(COURT.x1, lineX(y, COURT.inset).x); }
@@ -267,7 +268,7 @@ var SCHEMES = {
       var cz = flatE(x, y) + climbAt(y) * Math.max(0, x - WALL - STAND), ez = xAt(x, y);
       return { z:x - WALL > STAND && !isNaN(ez) ? Math.min(cz, ez) : cz, k:"truck" };   /* the climb stops where it meets the ground */
     }
-    if (x >= WALL && x <= COURT.x1 && y >= PH.y - 50 && y < COURT.y0 && propGap(x, y) >= COURT.inset) return { z:RISE * (x - WALL), k:"truck" };   /* in from the north at grade */
+    if (x >= WALL && y >= PH.y - 50 && y < COURT.y0 && x <= edgeX(y)) return { z:RISE * (x - WALL), k:"truck" };   /* in from the north at grade */
     if (x >= DRIVE.x0 && x <= DRIVE.x1 && y > DRIVE.y0 && y <= DRIVE.y1 && propGap(x, y) >= 2){
       var up = courtE(x, y) + (y - DRIVE.y0) * DRIVE.pct / 100, ex = xAt(x, y);
       return { z:isNaN(ex) ? up : Math.min(up, ex), k:"truck" };
@@ -368,6 +369,12 @@ function wallsOf(k){
       var mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2, cz = SCHEMES.court(mx + ECO.n[0], my + ECO.n[1]);
       if (cz) add(p0[0], p0[1], p1[0], p1[1], cz.z, xAt(mx - ECO.n[0] * 1.5, my - ECO.n[1] * 1.5));
     }
+    where = "Ecoblock wall, 2 ft end steps";   /* one block past each end, 2 ft above the ground in front of it; the 2:1 slope wraps round */
+    [[ECO.t0 - ECO.step, ECO.t0], [ECO.t1, ECO.t1 + ECO.step]].forEach(function(r){
+      var q0 = [ECO.a[0] + ECO.u[0] * r[0] + ECO.n[0] * ECO.off, ECO.a[1] + ECO.u[1] * r[0] + ECO.n[1] * ECO.off], q1 = [q0[0] + ECO.u[0] * ECO.step, q0[1] + ECO.u[1] * ECO.step];
+      var lo = Math.min(bil(MODELS ? MODELS.court.G : XR, (q0[0] + q1[0]) / 2 + ECO.n[0], (q0[1] + q1[1]) / 2 + ECO.n[1]), xAt((q0[0] + q1[0]) / 2, (q0[1] + q1[1]) / 2));
+      add(q0[0], q0[1], q1[0], q1[1], lo, lo + 2);
+    });
     where = "Forklift ramp, lane side";
     for (var x = FRAMP.x0; x < FRAMP.x1; x += 2) add(x, FRAMP.y0 - 0.4, x + 2, FRAMP.y0 - 0.4, -(x + 1 - FRAMP.x0) * FRAMP.pct / 100, 0);
     return out;
@@ -691,6 +698,28 @@ G = MODELS.court.G;
   PL.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color:0xB23A2B })));
   tag("Property line · Lot 9 beyond (Hawaii Farming)", 700, 2, 600, "wall");
 })();
+/* the upper road from the north, traced from the CEAd sheet: in at existing grade, about a foot above the floor, past
+   the packhouse's north side and into the court's north entry */
+var ROAD = [[516, 397], [522, 412], [532, 420], [580, 420.5], [598, 426], [612, 438], [622, 452], [632, 470], [608, 478], [606, 466], [598, 455], [584, 448], [516, 448]];
+var roadM = lam(0x6E7378), pullM = lam(0xF2C230), lineM = lam(0x000000);
+["court", "mid"].forEach(function(k){
+  G = MODELS[k].G;
+  var pos = [], idx = [];
+  for (var j = 0; j < NY - 1; j++) for (var i = 0; i < NX - 1; i++){
+    var x = T.x0 + i * ST, y = T.y0 + j * ST; if (!inPoly([x + ST / 2, y + ST / 2], ROAD)) continue;
+    var b = pos.length / 3; [[0, 0], [ST, 0], [ST, ST], [0, ST]].forEach(function(d){ pos.push(x + d[0], gAt(x + d[0], y + d[1]) + 0.12, y + d[1]); });
+    idx.push(b, b + 2, b + 1, b, b + 3, b + 2);
+  }
+  var rg = new THREE.BufferGeometry(); rg.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); rg.setIndex(idx); rg.computeVertexNormals();
+  var rm = new THREE.Mesh(rg, roadM); rm.receiveShadow = true; SG[k].add(rm);
+  tag("Upper road, in at grade", 555, gAt(555, 434) + 2, 434, "", k);
+  /* the pull boxes and the buried line between them, drawn straight, a warning: its route is unknown */
+  var P = window.PH_PULL, a = P[0], c = P[1], pts = [];
+  for (var t = 0; t <= 1.0001; t += 0.01){ var x = a.x + (c.x - a.x) * t, y = a.y + (c.y - a.y) * t; pts.push(new THREE.Vector3(x, gAt(x, y) + 0.5, y)); }
+  var tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 0.7, 6, false), lineM); SG[k].add(tube);
+  P.forEach(function(p){ var z = gAt(p.x, p.y); box(3, 2, 3, pullM, p.x, z + 1, p.y, SG[k]); tag(p.mark + " pull box", p.x, z + 5, p.y, "wall", k); });
+  tag("Buried electrical, route unknown · locate before digging", (a.x + c.x) / 2, gAt((a.x + c.x) / 2, (a.y + c.y) / 2) + 3, (a.y + c.y) / 2, "wall", k);
+});
 tag = tag0;
 G = MODELS[scheme].G;
 }
