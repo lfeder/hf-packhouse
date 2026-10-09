@@ -170,7 +170,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 </div>
 <div class="legend" id="legend"></div>
 
-<section>
+<section style="display:none">
   <h2>Room schedule</h2>
   <p class="lede" id="roomLede"></p>
   <div class="tbl"><table>
@@ -181,7 +181,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
   <p class="lede" id="capacity" style="margin-top:12px"></p>
 </section>
 
-<section>
+<section style="display:none">
   <h2>Doors and openings</h2>
   <p class="lede" id="openLede"></p>
   <div class="tbl"><table>
@@ -191,7 +191,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
   <div class="note" id="note"></div>
 </section>
 
-<section id="flows" hidden>
+<section style="display:none" id="flows" hidden>
   <h2>Flows</h2>
   <p class="lede">Every trip in and out of this building after the 5.5 acre expansion, routed door to door along the
     aisles, around the racks and stacks: per day for the packhouse, per month for the fert building. The Layout menu
@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=e6492ca</span>
+  <span>Layouts: packhouse-layouts.js?v=48968cc</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=e6492ca"></script>
+<script src="packhouse-layouts.js?v=48968cc"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -721,7 +721,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=e6492ca), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=48968cc), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
