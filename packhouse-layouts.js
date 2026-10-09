@@ -18,10 +18,11 @@ window.PH_PROP = [[69.6, 55.7], [608.7, 54.6], [609.2, 400.6], [1025.3, 1104.3],
    y0 and y1 measured on the line, `h` ft above the court. A 2 ft step one block long (`step`) finishes each end, where
    the court or road turns off the line and an ordinary 2:1 slope takes over. Read by the site map and the grades page. */
 window.PH_ECO = { off: 3, y0: 440, y1: 575, h: 4, step: 6 };
-/* electrical pull boxes, site feet. PB1 halfway between the NW corner of the packhouse's north-wall stalls (491.1, 470)
-   and the Lettuce Grow's SE corner (460.1, 629); PB2 on Grow 1–3's north edge at the foot of the fert building's
-   dimension to Grow 3. The buried line between them is drawn straight: its real route is unknown. */
-window.PH_PULL = [{ mark: "PB1", x: 475.6, y: 549.5 }, { mark: "PB2", x: 557.7, y: 724.4 }];
+/* electrical pull boxes, site feet. PB1 halfway between the Existing Facility's SE corner (485.6, 461) and the NW corner of
+   the packhouse's north-wall stalls (491.1, 470); PB2 in Grow 3 on the post column at x 567.3 (where the sheet's dashed
+   lines fan out), four posts south of the north edge. The buried line between them is drawn straight: its real route is
+   unknown. */
+window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 567.3, y: 782.1 }];
 
 window.PH_LAYOUTS = {
   /* docks on the 80 ft N face (east on the site map) */

@@ -139,8 +139,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=d663b40"></script>
-<script src="topo-site.js?v=d663b40"></script>
+<script src="packhouse-layouts.js?v=9074772"></script>
+<script src="topo-site.js?v=9074772"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -186,7 +186,7 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
    meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  var E = window.PH_ECO;   /* packhouse-layouts.js?v=d663b40, shared with the site map */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=9074772, shared with the site map */
   return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
@@ -714,11 +714,12 @@ var roadM = lam(0x6E7378), pullM = lam(0xF2C230), lineM = lam(0x000000);
   var rm = new THREE.Mesh(rg, roadM); rm.receiveShadow = true; SG[k].add(rm);
   tag("Upper road, in at grade", 555, gAt(555, 434) + 2, 434, "", k);
   /* the pull boxes and the buried line between them, drawn straight, a warning: its route is unknown */
-  var P = window.PH_PULL, a = P[0], c = P[1], pts = [];
-  for (var t = 0; t <= 1.0001; t += 0.01){ var x = a.x + (c.x - a.x) * t, y = a.y + (c.y - a.y) * t; pts.push(new THREE.Vector3(x, gAt(x, y) + 0.5, y)); }
+  var P = window.PH_PULL, a = P[0], c = P[1], pts = [], YMAX = T.y0 + (NY - 1) * ST;
+  var gz = function(x, y){ return gAt(x, Math.min(y, YMAX)); };   /* PB2 sits just past the topo's south edge */
+  for (var t = 0; t <= 1.0001; t += 0.01){ var x = a.x + (c.x - a.x) * t, y = a.y + (c.y - a.y) * t; pts.push(new THREE.Vector3(x, gz(x, y) + 0.5, y)); }
   var tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 0.7, 6, false), lineM); SG[k].add(tube);
-  P.forEach(function(p){ var z = gAt(p.x, p.y); box(3, 2, 3, pullM, p.x, z + 1, p.y, SG[k]); tag(p.mark + " pull box", p.x, z + 5, p.y, "wall", k); });
-  tag("Buried electrical, route unknown · locate before digging", (a.x + c.x) / 2, gAt((a.x + c.x) / 2, (a.y + c.y) / 2) + 3, (a.y + c.y) / 2, "wall", k);
+  P.forEach(function(p){ var z = gz(p.x, p.y); box(3, 2, 3, pullM, p.x, z + 1, p.y, SG[k]); tag(p.mark + " pull box", p.x, z + 5, p.y, "wall", k); });
+  tag("Buried electrical, route unknown · locate before digging", (a.x + c.x) / 2, gz((a.x + c.x) / 2, (a.y + c.y) / 2) + 3, (a.y + c.y) / 2, "wall", k);
 });
 tag = tag0;
 G = MODELS[scheme].G;
