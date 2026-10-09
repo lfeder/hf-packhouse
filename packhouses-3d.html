@@ -61,7 +61,7 @@ h1 em{font-style:normal;color:var(--survey)}
 .switch button:focus-visible,.grp button:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
 
 .viewer{position:relative;margin-top:14px;border:1px solid var(--rule-2);background:var(--vellum-2);overflow:hidden}
-#stage{display:block;width:100%;height:clamp(440px,66vh,740px);touch-action:none;cursor:grab}
+#stage{display:block;width:100%;height:max(480px,calc(100vh - 160px));touch-action:none;cursor:grab}
 #stage.drag{cursor:grabbing}
 .viewer.big #stage{height:calc(100vh - 24px)}
 .overlay{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -131,7 +131,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <nav class="tabs" aria-label="Packhouse pages">
   <a href="site-placement.html" id="nav-site">Site map</a><a href="packhouses-3d.html" id="nav-3d" aria-current="page">3D models</a><a href="grades.html">Grades</a><a href="spec.html" id="nav-spec">Spec</a><a href="storage.html">Storage</a>
 </nav>
-<header>
+<header style="display:none">
   <div class="stamp" id="stamp"></div>
 </header>
 
@@ -210,7 +210,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 
 </div>
 
-<script src="packhouse-layouts.js?v=091357a"></script>
+<script src="packhouse-layouts.js?v=cddd9b8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -715,7 +715,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=091357a), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=cddd9b8), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
