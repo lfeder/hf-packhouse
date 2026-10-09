@@ -151,7 +151,7 @@ window.PH_LAYOUTS = {
       { mark: "F2", type: "louvre", fan: true, face: "N", a: 38.25, b: 41.75, h: 18, sill: 15, size: "36 in fan", room: "Dry storage",
         detail: "One exhaust fan centred high in dry storage's gable end (east wall on the site map, over the truck court), above the light band, about 10,000 cfm. Air comes in through the docks and doors" },
       { mark: "I1", type: "internal", face: "I", a: 3, b: 11, h: 10, size: "8 × 10 ft", room: "Partition",
-        detail: "Store to fert room, forklift route. Flagged pending the separation rating" }
+        detail: "Store to fert room, forklift route" }
     ]
   }
 };
