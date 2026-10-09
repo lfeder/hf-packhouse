@@ -82,7 +82,9 @@ window.PH_LAYOUTS = {
       { mark: "P3", type: "door", face: "E", a: 50, b: 53, h: 7, size: "3 × 7 ft", room: "Pack room",
         detail: "Pack room door on the south wall, straight onto the covered bin wash" },
       { mark: "R3", type: "rollup", face: "E", a: 32, b: 40, h: 10, forklift: true, size: "8 × 10 ft", room: "Pack room",
-        detail: "Forklift roll-up on the south wall (site map) at the east end of the pack room, by the cooler wall: boxes and bags come in from the fert building across the lane and the bin wash pad to the box store. No trucks" }
+        detail: "Forklift roll-up on the south wall (site map) at the east end of the pack room, by the cooler wall: boxes and bags come in from the fert building across the lane and the bin wash pad to the box store. No trucks" },
+      { mark: "I1", type: "internal", face: "I", a: 59, b: 67, h: 9, size: "8 × 9 ft", room: "Cold storage",
+        detail: "Cooler door, pack room to cold storage, just south of the pallet wrapper. Insulated high-speed door" }
     ],
     /* outdoor areas, local coords; x > W is outside the E face (south wall on the site map) */
     outdoor: [
