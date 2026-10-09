@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=adb55a0" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=0e88021" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="grading"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
@@ -149,6 +149,8 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
   <span><svg viewBox="0 0 22 10"><line x1="0" y1="5" x2="22" y2="5" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="7 3"/></svg>20 ft setback from property line</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#848C92" fill-opacity=".3" stroke="#15181C" stroke-width="1"/><path d="M6 1V9M11 1V9M16 1V9" stroke="#15181C" stroke-width=".8"/></svg>Parking, 9 × 18 ft stalls (drag it)</span>
   <span><svg viewBox="0 0 22 10"><rect x="1" y="1" width="20" height="8" fill="#A9702B" fill-opacity=".28" stroke="#A9702B" stroke-width="1.4"/></svg>Septic, 100 × 15 ft (drag it)</span>
+  <span><svg viewBox="0 0 22 10"><rect x="1" y="3" width="20" height="4" fill="#C22CC7" stroke="#5E0F61" stroke-width=".8"/></svg>Ecoblock wall, 4 ft (proposed)</span>
+  <span><svg viewBox="0 0 22 10"><rect x="8" y="2" width="6" height="6" fill="#F2C230" stroke="#15181C" stroke-width="1"/></svg>Electrical pull box</span>
 </div>
 
 <ul class="notes">
@@ -171,7 +173,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=adb55a0). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=0e88021). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
     forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
     forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
@@ -183,21 +185,29 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
   <li><b>The background is the CEAd sheet with the old SUPPORT block, its docks and trucks erased</b>
     (scripts/site-plan-image.py). The "average flattened area" elevation label east of Grow 3 is erased too, with the road
     carried through where it crossed. Nothing else on the sheet is changed.</li>
+  <li><b>Ecoblock wall (proposed)</b>, 4 ft above the truck court, its face 3 ft inside the east property line so the
+    blocks and their gravel stay on our lot. It runs from the shop's north end on Lot 9 to where the court's east edge
+    pulls away from the line, about 107 ft. It replaces the 2:1 cut slope that ran onto Lot 9 and lets the court's
+    turning room climb at most about 7% instead of 8%. Needs a guard on top and a curb on the shop pad.</li>
+  <li><b>Two electrical pull boxes</b> on the run from the Lettuce Grow's SE corner toward the solar field. PB1 sits
+    halfway between the NW corner of the packhouse's north-wall stalls and the Lettuce Grow's SE corner, which puts it
+    on the septic, about 5 ft in from its east edge: one of the two has to move. PB2 is on Grow 1–3's north edge, at the
+    foot of the fert building's dimension to Grow 3.</li>
   <li><b>The three existing sheds are assumed to stay</b> and get the 15 ft rule like everything else.</li>
 </ul>
 
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=adb55a0 · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=0e88021 · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=adb55a0"></script>
+<script src="packhouse-layouts.js?v=0e88021"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=adb55a0 */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=0e88021 */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
@@ -212,7 +222,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=adb55a0; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=0e88021; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -444,6 +454,24 @@ function drawGrading(){
   g.append(el("line",{x1:wall+0.6,y1:fe.y+fe.h,x2:wall+0.6,y2:fe.y+fe.h+10,stroke:"#2E2C29","stroke-width":2.6,"vector-effect":"non-scaling-stroke"}));
   g.append(el("line",{x1:wall-50,y1:fe.y-12.6,x2:wall,y2:fe.y-12.6,stroke:"#2E2C29","stroke-width":2,"vector-effect":"non-scaling-stroke"}));
   const vw=$("#map").viewBox.baseVal.width, fs=vw>700?12:vw/58;
+  /* Ecoblock wall, 4 ft above the court, 3 ft inside the east property line facing the shop on Lot 9: from the shop's
+     north end (y 483 on the line) to where the court's east edge, 115 ft out, pulls away from the line (y 575) */
+  { const a=PROP[2], b=PROP[3], L=Math.hypot(b[0]-a[0],b[1]-a[1]), u=[(b[0]-a[0])/L,(b[1]-a[1])/L], n=[-u[1],u[0]];
+    const at=(y,o)=>{ const t=(y-a[1])/u[1]; return [a[0]+u[0]*t+n[0]*o, a[1]+u[1]*t+n[1]*o]; };   /* n points into the property */
+    const band=[at(483,3),at(575,3),at(575,5.5),at(483,5.5)];   /* blocks 2.5 ft deep, the face 3 ft in */
+    g.append(el("path",{d:"M"+band.map(c=>c.join(" ")).join("L")+"Z",fill:"#C22CC7",stroke:"#5E0F61","stroke-width":1,"vector-effect":"non-scaling-stroke"}));
+    if(vw<=700){ const m=at(529,12), len=Math.round(Math.hypot(band[1][0]-band[0][0],band[1][1]-band[0][1]));
+      const t=el("text",{x:m[0],y:m[1],"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.55,fill:"#5E0F61",stroke:"#fff","stroke-width":fs*.2,"paint-order":"stroke",
+        transform:`rotate(${(Math.atan2(u[1],u[0])*180/Math.PI).toFixed(1)} ${m[0]} ${m[1]})`});
+      t.textContent="ECOBLOCK WALL 4 FT · "+len+" FT"; g.append(t); } }
+  /* electrical pull boxes on the run from the Lettuce Grow's SE corner toward the solar field. PB1 halfway between the
+     north-wall stalls' NW corner and the Lettuce Grow's SE corner, which lands on the septic; PB2 on Grow 1–3's north
+     edge, at the foot of the fert building's "to Grow 3" dimension. Both from the set positions. */
+  { const pk=ITEM_HOME.find(i=>i.id==="parkN"), LG=BLDG.find(b=>b.name==="Lettuce Grow"), G3=BLDG.find(b=>b.name==="Grow 1–3"), fh=HOME.find(h=>h.id==="fert");
+    const nw=[pk.x-pk.stalls*STALL/2, pk.y-STALL_D/2], se=[LG.x+LG.w, LG.y+LG.h];
+    [["PB1",(nw[0]+se[0])/2,(nw[1]+se[1])/2],["PB2",fh.x+lay(fh).D*0.72,G3.y]].forEach(([m,x,y])=>{
+      g.append(el("rect",{x:x-2,y:y-2,width:4,height:4,fill:"#F2C230",stroke:"#15181C","stroke-width":1,"vector-effect":"non-scaling-stroke"}));
+      const t=el("text",{x:x-4,y:y+1,"text-anchor":"end","dominant-baseline":"middle","font-size":fs*.6,fill:"#15181C",stroke:"#fff","stroke-width":fs*.2,"paint-order":"stroke"}); t.textContent=m; g.append(t); }); }
   if(vw<=700){
     const t1=el("text",{x:wall+60,y:(ph.y+fe.y+fe.h)/2,"text-anchor":"middle","font-size":fs*.75,fill:"#15181C",stroke:"#fff","stroke-width":fs*.2,"paint-order":"stroke"}); t1.textContent="TRUCK COURT −4 FT"; g.append(t1);
     const t2=el("text",{x:wall+30,y:ph.y+28,"text-anchor":"middle","font-size":fs*.6,fill:"#15181C",stroke:"#fff","stroke-width":fs*.2,"paint-order":"stroke"}); t2.textContent="RAMP 8% DOWN"; g.append(t2);

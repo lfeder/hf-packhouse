@@ -139,8 +139,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=adb55a0"></script>
-<script src="topo-site.js?v=adb55a0"></script>
+<script src="packhouse-layouts.js?v=0e88021"></script>
+<script src="topo-site.js?v=0e88021"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -182,6 +182,22 @@ var RAMPN = 50;
 var STAND = 50, CLIMB = 0.08;   /* containers are 45 ft at most: even at the packhouse's 22.5° the trailer sits within 45 ft of the wall */
 function courtE(x, y){ var dx = Math.max(0, x - WALL);
   return -DROP + RISE * Math.min(dx, STAND) + CLIMB * Math.max(0, dx - STAND) + (y === undefined ? 0 : DROP * Math.max(0, 1 - (y - PH.y) / RAMPN)); }
+/* Ecoblock wall facing the shop on Lot 9: its face ECO.off ft inside the east property line, from the shop's north end
+   to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
+   room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
+var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
+  return { a:a, u:u, n:[-u[1], u[0]], off:3, h:4, t0:(483 - a[1]) / u[1], t1:(575 - a[1]) / u[1] }; })();   /* n points into the property */
+function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
+function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
+function edgeX(y){ return onEco(y) ? lineX(y, ECO.off).x : Math.min(COURT.x1, lineX(y, COURT.inset).x); }
+function flatE(x, y){ return courtE(x, y) - CLIMB * Math.max(0, x - WALL - STAND); }
+/* the steepest within 4 ft: the topo steps sharply at the shop's middle. South of the wall the court's edge keeps its 2:1
+   cut slope, so the climb eases back to the full 8% over BLEND ft rather than flattening the whole court */
+var BLEND = 40, ECO_YS = ECO.a[1] + ECO.u[1] * ECO.t1 + ECO.n[1] * ECO.off;
+function climbAt(y){ var c = 0; for (var d = -4; d <= 4; d += 2) c = Math.max(c, climbRaw(Math.min(y, ECO_YS) + d));
+  return y <= ECO_YS ? c : c + (CLIMB - c) * Math.min(1, (y - ECO_YS) / BLEND); }
+function climbRaw(y){ var xe = edgeX(y), run = xe - WALL - STAND, ez = Math.max(xAt(xe, y), onEco(y) ? xAt(xe - ECO.n[0] * 1.5, y - ECO.n[1] * 1.5) : -Infinity);   /* along the wall, the ground behind it */
+  return isNaN(ez) || run <= 0 ? CLIMB : Math.min(CLIMB, Math.max(0, (ez - ECO.h - flatE(xe, y)) / run)); }
 /* average existing ground under each footprint, for option 2 */
 var AVG = (function(){ var o = {}; [["ph", PH], ["fe", FE]].forEach(function(b){ var s = 0, n = 0, r = b[1];
   for (var x = r.x; x <= r.x + r.w; x += 2) for (var y = r.y; y <= r.y + r.h; y += 2){ var e = bil(EX, x, y); if (!isNaN(e)){ s += e; n++; } } o[b[0]] = s / n; }); return o; })();
@@ -247,8 +263,8 @@ var SCHEMES = {
   court: function(x, y){
     if (x >= FRAMP.x0 && x < FRAMP.x1 && y >= FRAMP.y0 && y <= FRAMP.y1) return { z:-(x - FRAMP.x0) * FRAMP.pct / 100, k:"pad" };
     var pz = padZone(x, y); if (pz) return pz;
-    if (x >= WALL && x <= COURT.x1 && y >= COURT.y0 && y <= COURT.y1 && propGap(x, y) >= COURT.inset){
-      var cz = courtE(x, y), ez = xAt(x, y);
+    if (x >= WALL && y >= COURT.y0 && y <= COURT.y1 && x <= edgeX(y)){
+      var cz = flatE(x, y) + climbAt(y) * Math.max(0, x - WALL - STAND), ez = xAt(x, y);
       return { z:x - WALL > STAND && !isNaN(ez) ? Math.min(cz, ez) : cz, k:"truck" };   /* the climb stops where it meets the ground */
     }
     if (x >= WALL && x <= COURT.x1 && y >= PH.y - 50 && y < COURT.y0 && propGap(x, y) >= COURT.inset) return { z:RISE * (x - WALL), k:"truck" };   /* in from the north at grade */
@@ -313,7 +329,7 @@ function model(zoneFn){
   var over = { len:0, depth:0, maxH:0 };
   for (var k = 0; k < G.length; k++){
     if (K[k] !== "truck" || isNaN(XR[k]) || zoneFn !== SCHEMES.court) continue;   /* the wells are walled, not sloped */
-    var gp = propGap(T.x0 + (k % NX) * ST, T.y0 + Math.floor(k / NX) * ST); if (gp > COURT.inset + ST) continue;
+    var yk = T.y0 + Math.floor(k / NX) * ST, gp = propGap(T.x0 + (k % NX) * ST, yk); if (gp > COURT.inset + ST || onEco(yk)) continue;   /* walled along the shop */
     var h = XR[k] - G[k], run = 2 * h - gp; if (run > 0){ over.len += ST; over.depth = Math.max(over.depth, run); over.maxH = Math.max(over.maxH, h); }
   }
   var cf = {}; ["bld", "pad", "truck", "yard", "slope"].forEach(function(k){ cf[k] = { cut:0, fill:0, maxC:0, maxF:0 }; });
@@ -346,6 +362,12 @@ function wallsOf(k){
   if (k === "court"){
     for (var y = COURT.y0; y < COURT.y1; y += 2){ if ((y + 1 >= FRAMP.y0 && y + 1 <= FRAMP.y1) || onBuilding(y + 1)) continue;
       where = y > FE.y ? "Past the fert building's south-east corner" : "Lane, east end"; add(WALL + 0.4, y, WALL + 0.4, y + 2, courtE(WALL, y + 1), 0); }
+    where = "Ecoblock wall facing the shop";
+    for (var t = ECO.t0; t < ECO.t1; t += 2){
+      var p0 = [ECO.a[0] + ECO.u[0] * t + ECO.n[0] * ECO.off, ECO.a[1] + ECO.u[1] * t + ECO.n[1] * ECO.off], p1 = [p0[0] + ECO.u[0] * 2, p0[1] + ECO.u[1] * 2];
+      var mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2, cz = SCHEMES.court(mx + ECO.n[0], my + ECO.n[1]);
+      if (cz) add(p0[0], p0[1], p1[0], p1[1], cz.z, xAt(mx - ECO.n[0] * 1.5, my - ECO.n[1] * 1.5));
+    }
     where = "Forklift ramp, lane side";
     for (var x = FRAMP.x0; x < FRAMP.x1; x += 2) add(x, FRAMP.y0 - 0.4, x + 2, FRAMP.y0 - 0.4, -(x + 1 - FRAMP.x0) * FRAMP.pct / 100, 0);
     return out;
@@ -445,7 +467,7 @@ function renderLevels(){
 }
 
 var LEDE = {
-  court:"<b>Option 1, lowered court.</b> One floor, a quarter foot under the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line.",
+  court:"<b>Option 1, lowered court.</b> One floor, a quarter foot under the packhouse's north-edge grade. The whole truck area east of the buildings sits 4 ft below it, ramping in from the north, held by a retaining wall on the east wall line. Along the shop on Lot 9 the court runs out to a 4 ft Ecoblock wall 3 ft inside the property line, and past the trailers it climbs only as much as keeps that wall to 4 ft, easing back to 8% over the 40 ft south of it.",
   split:"<b>Option 2, buildings at grade.</b> Each building sits about at the ground under it. Between them a forklift ramp runs up the west side from fert R1; east of it the north 35 ft is at the packhouse floor, the south 15 ft at the fert floor. Dock wells with wing walls; yard at existing grade.",
   mid:"<b>Option 2, one floor at mid-level.</b> One floor, set halfway between the ground under the two buildings; a recessed well at each dock; yard at existing grade. The north side drains away from the packhouse.",
   recess:""
@@ -464,7 +486,7 @@ sun.shadow.mapSize.set(2048, 2048); var sc = sun.shadow.camera; sc.left = -230; 
 sun.target.position.set(600, 0, 590); scene.add(sun, sun.target);
 var root = new THREE.Group(); scene.add(root);
 function lam(c, o){ o = o || {}; return new THREE.MeshLambertMaterial({ color:c, transparent:o.op !== undefined, opacity:o.op === undefined ? 1 : o.op, side:o.side || THREE.FrontSide, depthWrite:o.dw !== false }); }
-var M = { wall:lam(0x2E2C29), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
+var M = { wall:lam(0x2E2C29), eco:lam(0xC22CC7), bld:lam(0xFFFFFF, { op:.55, dw:false, side:THREE.DoubleSide }), truck:lam(0xF4F4F0), dark:lam(0x3A3F45), dock:lam(0xB23A2B), roll:lam(0xF0F0F0), step:lam(0xB9B5AA) };
 function box(w, h, d, m, x, y, z, g){ var o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; (g || root).add(o); return o; }
 var edgeM = new THREE.LineBasicMaterial({ color:0x15181C, transparent:true, opacity:.55 });
 function edges(o){ var e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 20), edgeM); e.position.copy(o.position); e.rotation.copy(o.rotation); o.parent.add(e); }
@@ -586,6 +608,22 @@ function rig(x, y, ang, len, parent){
   box(8, 7.6, 8, M.truck, len + 6, ground + 4.6, 0, g); box(8, 1.2, 8, M.dark, len + 6, ground + 0.8, 0, g);
 }
 /* what differs between the schemes: walls, where the trucks stand, labels */
+/* Lot 9 next door, traced from the CEAd sheet (±3 ft): the shop facing the court and the near end of the Existing
+   Facility behind it. The topo stops at the property line, so each one sits on the ground at the line beside its middle;
+   its pad level is a guess until it is surveyed. Heights are massing only. */
+var NEIGH = [
+  { name:"Shop (Lot 9)", sw:[683.3, 485.9], len:175, dep:41, h:14 },
+  { name:"Existing Facility (Lot 9)", sw:[712.2, 406.5], len:250, dep:170, h:14 }
+];
+(function(){
+  var u = ECO.u, out = [u[1], -u[0]], mN = lam(0xC9C2B4, { op:.8 });   /* out: away from the property, toward Lot 9 */
+  NEIGH.forEach(function(n){
+    var c = [n.sw[0] + u[0] * n.len / 2 + out[0] * n.dep / 2, n.sw[1] + u[1] * n.len / 2 + out[1] * n.dep / 2];
+    var tl = (c[0] - ECO.a[0]) * u[0] + (c[1] - ECO.a[1]) * u[1], base = xAt(ECO.a[0] + u[0] * tl + ECO.n[0], ECO.a[1] + u[1] * tl + ECO.n[1]);
+    var o = box(n.len, n.h, n.dep, mN, c[0], base + n.h / 2, c[1]); o.rotation.y = -Math.atan2(u[1], u[0]); edges(o);
+    tag(n.name + " · pad about <b>" + (FF + base).toFixed(1) + "</b>, assumed", c[0], base + n.h + 3, c[1], "");
+  });
+})();
 var SG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, PL = new THREE.Group(); root.add(SG.court, SG.split, SG.recess, SG.mid, PL);
 var TG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, showTrucks = false, showBld = false;   /* the page opens on the ground alone */   /* trucks on their own, to switch off */
 root.add(TG.court, TG.split, TG.recess, TG.mid);
@@ -605,10 +643,10 @@ function trucks(k){
 /* every wall the table counts, footings that retain included, drawn 2 ft thick so they read */
 /* footings are drawn just outside the building line, not half inside the translucent building, so both sides read alike */
 function drawWalls(k){ wallsOf(k).concat(footingsOf(k)).filter(counts).forEach(function(w){ var d = w.footing ? 1.3 : 0;
-  wallRun(k, w.x0 + (w.ox || 0) * d, w.y0 + (w.oy || 0) * d, w.x1 + (w.ox || 0) * d, w.y1 + (w.oy || 0) * d, w.lo, w.hi); }); }
-function wallRun(k, x0, y0, x1, y1, lo, hi){
+  wallRun(k, w.x0 + (w.ox || 0) * d, w.y0 + (w.oy || 0) * d, w.x1 + (w.ox || 0) * d, w.y1 + (w.oy || 0) * d, w.lo, w.hi, /Ecoblock/.test(w.where) ? M.eco : M.wall); }); }
+function wallRun(k, x0, y0, x1, y1, lo, hi, m){
   var h = hi - lo; if (!(h > 0.1)) return;
-  var o = box(Math.hypot(x1 - x0, y1 - y0) + 0.2, h + 0.6, 2.5, M.wall, (x0 + x1) / 2, lo + (h + 0.4) / 2, (y0 + y1) / 2, SG[k]); o.rotation.y = -Math.atan2(y1 - y0, x1 - x0);
+  var o = box(Math.hypot(x1 - x0, y1 - y0) + 0.2, h + 0.6, 2.5, m || M.wall, (x0 + x1) / 2, lo + (h + 0.4) / 2, (y0 + y1) / 2, SG[k]); o.rotation.y = -Math.atan2(y1 - y0, x1 - x0);
 }
 var dynTags = [];
 function buildSchemes(){
@@ -622,7 +660,10 @@ trucks("court");
 var mid = (COURT.y0 + COURT.y1) / 2;
 tag("Truck court <b>−4.00</b> at the wall", WALL + 22, -2, mid - 10, "low", "court");
 tag("Retaining wall, 4 ft", WALL + 1, 1, PH.y + PH.h + 12, "wall", "court");
-tag("Court climbs 8% past the trailers", WALL + STAND + 25, 0, PH.y + 120, "low", "court");
+var cmax = 0; for (var yc = COURT.y0 + RAMPN; yc <= COURT.y1; yc += 2) cmax = Math.max(cmax, climbAt(yc));
+tag("Court climbs up to " + Math.round(cmax * 100) + "% past the trailers", WALL + STAND + 25, 0, PH.y + 120, "low", "court");
+var et = (ECO.t0 + ECO.t1) / 2, ep = [ECO.a[0] + ECO.u[0] * et + ECO.n[0] * ECO.off, ECO.a[1] + ECO.u[1] * et + ECO.n[1] * ECO.off];
+tag("Ecoblock wall, up to " + ECO.h + " ft, facing the shop", ep[0], xAt(ep[0], ep[1]) + 1, ep[1], "wall", "court");
 tag("Ramp 8% · <b>0.00</b> at the north edge to <b>−4.00</b> before D2", WALL + 30, -1, PH.y + RAMPN / 2, "low", "court");
 tag("In from the north at grade", WALL + 30, 1, PH.y - 25, "low", "court");
 tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x0 + DRIVE.x1) / 2, DRIVE.y0 + 30) + 2, DRIVE.y0 + 30, "low", "court");
@@ -656,9 +697,9 @@ G = MODELS[scheme].G;
 
 /* ---------- camera ---------- */
 /* where each view looks: the buildings sit mid-screen, with a little of the yard east of them */
-var CENTRE = { iso:new THREE.Vector3(590, -2, 593), plan:new THREE.Vector3(565, -2, 593) };
-var target = CENTRE.iso.clone(), cam = { az:2.25, pol:0.95, r:330 }, goal = null, needs = true;
-var VIEWS = { iso:{ az:2.25, pol:0.95, r:330 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI / 2, pol:0.02, r:520 } };   /* plan looks down with west up */
+var CENTRE = { iso:new THREE.Vector3(625, -2, 585), plan:new THREE.Vector3(565, -2, 593) };
+var target = CENTRE.iso.clone(), cam = { az:2.25, pol:0.95, r:430 }, goal = null, needs = true;
+var VIEWS = { iso:{ az:2.25, pol:0.95, r:430 }, east:{ az:Math.PI / 2, pol:1.3, r:400 }, south:{ az:0, pol:1.2, r:460 }, plan:{ az:Math.PI / 2, pol:0.02, r:520 } };   /* plan looks down with west up */
 function applyCam(){ var s = Math.sin(cam.pol); camera.position.set(target.x + cam.r * s * Math.sin(cam.az), target.y + cam.r * Math.cos(cam.pol), target.z + cam.r * s * Math.cos(cam.az)); camera.lookAt(target); }
 function go(k){ ["iso","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); }); target.copy(CENTRE[k]);   /* each view centres on the buildings */
   goal = { from:Object.assign({}, cam), to:VIEWS[k], t:0 }; needs = true; }
