@@ -232,12 +232,12 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <footer>
   <span>Spec: packhouse-spec.md · 2026-09-11</span>
   <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=5bc5ec0</span>
+  <span>Layouts: packhouse-layouts.js?v=2ba6460</span>
   <span>Compass is the CEAd drawing frame, not true north</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=5bc5ec0"></script>
+<script src="packhouse-layouts.js?v=2ba6460"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -256,7 +256,7 @@ var COPY = {
     lede: "Dry storage takes the north 70 ft on standard counterbalance aisles, the fert room the south 30 ft behind a full-height partition. The same 5,600 / 2,400 split as the original fert room model.",
     open: "Both docks are on the east wall with their aprons 4 ft below the floor: D1 for containers on the south part, D2 for the box truck on the north part. Boxes leave for the packhouse through I1 and R1, a forklift roll-up at grade on the fert room's north wall facing the bin wash. Fertiliser runs at most 70 ft from the dock to the fert room through I1. The fert room's vents are on its south wall; people leave the building by P1 at the east end of that wall and P3 on the fert room's north wall.",
     note: "<b>This shape needs no reach truck.</b> Eight rack lines on 12 ft aisles carry 300 pallets two high on the floor plus a shelf, against 204 needed for three months after the expansion. The fert room holds 88 positions two-high against 71, with the tanks on the south wall.",
-    stamp: [["Footprint","100 × 80 ft"],["Eave","17 ft"],["Docks","2 + 1 roll-up"]]
+    stamp: [["Footprint","100 × 80 ft"],["Eave","15 ft"],["Docks","2 + 1 roll-up"]]
   }
 };
 
@@ -721,7 +721,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=5bc5ec0), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=2ba6460), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
