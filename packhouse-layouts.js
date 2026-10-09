@@ -28,10 +28,11 @@ window.PH_ROAD = [[516, 397], [522, 412], [532, 420], [580, 420.5], [598, 426], 
 /* the shop on Lot 9, traced from the CEAd sheet (±3 ft): its south-west corner, length along the property line, depth
    away from it. Its concrete pad between it and the line is the upper road, at existing grade above the Ecoblock wall. */
 window.PH_SHOP = { sw: [683.3, 485.9], len: 175, dep: 41 };
-/* the upper bypass road, at existing grade the whole way: it leaves the north entry road before the court drops, runs
-   along the shop pad on Lot 9 about 11 ft outside the property line, comes back onto our lot past the Ecoblock wall's
-   south end and joins the road south past the court. Centreline in site feet, and its width. */
-window.PH_BYPASS = { w: 20, pts: [[590, 436], [622, 440], [648, 447], [760, 634], [762, 650], [752, 690], [735, 735], [730, 760]] };
+/* the upper bypass road, one way, one lane, at existing grade the whole way: it leaves the north entry road before the
+   court drops and crosses onto Lot 9 north of the Ecoblock wall's north end step, runs along the shop pad about 7 ft
+   outside the property line, comes back onto our lot well past the wall's south end and joins the road south past the
+   court. Centreline in site feet, and its width. */
+window.PH_BYPASS = { w: 12, pts: [[588, 434], [606, 427], [629.6, 421.4], [756.7, 636.4], [758, 652], [750, 690], [735, 735], [730, 760]] };
 window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 567.3, y: 782.1 }];
 
 window.PH_LAYOUTS = {
@@ -117,6 +118,7 @@ window.PH_LAYOUTS = {
   fert80: {
     id: "fert80", building: "fert", shape: "A", name: "Fert Room & Storage", W: 80, D: 100, eave: 17, color: "#A9702B",
     lightBand: [14, 16.5],   /* translucent light panels round the top of all four walls, under the eave */
+    roofVents: 4,
     drains: [
       { name: "Trench drain, forklift grade", x0: 2, z0: 89.5, x1: 51, z1: 90.5 },   /* along the front of the skid and tanks, stopping just past the last tank */
       { name: "Sump", x0: 51, z0: 88.5, x1: 54, z1: 91.5 }      /* fert rinse to a sump, not the septic */

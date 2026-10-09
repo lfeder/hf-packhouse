@@ -120,7 +120,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       <p>Drag the parking and septic · arrow keys nudge whatever is selected · feet, drawing frame</p>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=c8299c1" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=5bc5ec0" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="grading"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
@@ -178,7 +178,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
     red until the real separation is confirmed with whoever designs the system.</li>
   <li><b>Trucks are 40 and 45 ft containers on a chassis</b>, not 53 ft vans. Aprons are 115 ft deep, the usual
     depth for a 45 ft trailer backing square to a dock; the spec's 130 ft was the 53 ft figure.</li>
-  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=c8299c1). Packhouse: two docks on the east
+  <li><b>Doors per the spec</b>, as drawn in the 3D models (packhouse-layouts.js?v=5bc5ec0). Packhouse: two docks on the east
     wall, both box-truck roll-ups on the north wall, the staff door P4 into the break room on the north wall, and the
     forklift roll-up R3 onto the bin wash. No door on the west wall: the bathrooms are there. Fert building: a container dock and a box-truck dock on the east wall, both 4 ft down, and the
     forklift roll-up R1 on the fert room's north wall toward the packhouse.</li>
@@ -207,15 +207,15 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 <footer>
   <span>Base: CEAd 1725 · 101 · A2 · Site Plan Option 5 · 2026-02-11</span>
   <span>Spec: packhouse-spec.md</span>
-  <span>Rooms and doors: packhouse-layouts.js?v=c8299c1 · packhouses-3d.html</span>
+  <span>Rooms and doors: packhouse-layouts.js?v=5bc5ec0 · packhouses-3d.html</span>
 </footer>
 </div>
 
-<script src="packhouse-layouts.js?v=c8299c1"></script>
+<script src="packhouse-layouts.js?v=5bc5ec0"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=c8299c1 */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=5bc5ec0 */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
@@ -230,7 +230,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=c8299c1; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=5bc5ec0; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
@@ -479,7 +479,7 @@ function drawGrading(){
     if(vw<=700){ const p=B.pts[2], q=B.pts[3], m=[(p[0]+q[0])/2,(p[1]+q[1])/2];
       const t=el("text",{x:m[0],y:m[1],"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.55,fill:"#fff",stroke:"#2E2C29","stroke-width":fs*.2,"paint-order":"stroke",
         transform:`rotate(${(Math.atan2(q[1]-p[1],q[0]-p[0])*180/Math.PI).toFixed(1)} ${m[0]} ${m[1]})`});
-      t.textContent="UPPER BYPASS ROAD · AT GRADE · "+B.w+" FT · EXISTING CONCRETE PAD"; t.setAttribute("fill","#15181C"); t.setAttribute("stroke","#fff"); g.append(t);
+      t.textContent="UPPER BYPASS · ONE WAY · "+B.w+" FT · EXISTING CONCRETE PAD"; t.setAttribute("fill","#15181C"); t.setAttribute("stroke","#fff"); g.append(t);
       [[B.pts[1],B.pts[2]],[B.pts[5],B.pts[6]]].forEach(([p2,q2])=>{ const m2=[(p2[0]+q2[0])/2,(p2[1]+q2[1])/2], ang=Math.atan2(q2[1]-p2[1],q2[0]-p2[0])*180/Math.PI;
         const t2=el("text",{x:m2[0],y:m2[1],"text-anchor":"middle","dominant-baseline":"middle","font-size":fs*.5,fill:"#fff",stroke:"#2E2C29","stroke-width":fs*.2,"paint-order":"stroke",
           transform:`rotate(${(ang>90||ang<-90?ang+180:ang).toFixed(1)} ${m2[0]} ${m2[1]})`}); t2.textContent="NEW ASPHALT"; g.append(t2); }); } }
