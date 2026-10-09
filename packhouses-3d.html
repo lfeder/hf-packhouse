@@ -63,6 +63,7 @@ h1 em{font-style:normal;color:var(--survey)}
 .viewer{position:relative;margin-top:14px;border:1px solid var(--rule-2);background:var(--vellum-2);overflow:hidden}
 #stage{display:block;width:100%;height:clamp(440px,66vh,740px);touch-action:none;cursor:grab}
 #stage.drag{cursor:grabbing}
+.viewer.big #stage{height:calc(100vh - 24px)}
 .overlay{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .tag{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Archivo Narrow",Arial,sans-serif;font-weight:600;
   text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;color:var(--ink);background:var(--vellum);border:1px solid var(--rule-2);padding:2px 7px}
@@ -150,6 +151,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
       <button type="button" id="v-dock" aria-pressed="false">North end</button>
       <button type="button" id="v-south" aria-pressed="false">South end</button>
       <button type="button" id="v-plan" aria-pressed="true">Plan</button>
+      <button type="button" id="v-plan2" aria-pressed="false">2× Plan</button>
     </div>
     <div class="grp">
       <button type="button" id="t-roof" aria-pressed="false">Roof</button>
@@ -205,32 +207,10 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
   <ul class="notes" id="flowNotes"></ul>
 </section>
 
-<section id="addons">
-  <h2>Could add to the packhouse</h2>
-  <p class="lede">Not drawn yet. Pick what the operation needs and they can be placed.</p>
-  <div class="tbl"><table>
-    <thead><tr><th>Item</th><th>Likely spot</th></tr></thead>
-    <tbody>
-      <tr><td>Scale / checkweigher</td><td>End of the packing machine, before palletizing</td></tr>
-      <tr><td>Label and lot-code printer</td><td>Palletizing area</td></tr>
-      <tr><td>Cull and reject bins</td><td>Beside the machine infeed and the Keiki tables</td></tr>
-      <tr><td>Empty pallet stack</td><td>Palletizing area, cooler side</td></tr>
-      <tr><td>Forklift and pallet jack parking</td><td>Box store, out of the walkway</td></tr>
-      <tr><td>Air compressor</td><td>Box store or a small exterior enclosure</td></tr>
-      <tr><td>Boot wash and sanitiser station</td><td>Pack room door and the break room's glass door</td></tr>
-      <tr><td>PPE station</td><td>Break room, by P4 and the lockers</td></tr>
-      <tr><td>Cardboard baler and recycling</td><td>Outside by the bin wash</td></tr>
-      <tr><td>Cleaning chemical lockup</td><td>Cleaning store, locked cabinet</td></tr>
-      <tr><td>Electrical and panel room</td><td>Box store, on the bathroom wall</td></tr>
-      <tr><td>First aid and fire extinguishers</td><td>Each personnel door</td></tr>
-      <tr><td>Shipping paperwork spot</td><td>Desks, or a stand at the docks</td></tr>
-    </tbody>
-  </table></div>
-</section>
 
 </div>
 
-<script src="packhouse-layouts.js?v=05d2b03"></script>
+<script src="packhouse-layouts.js?v=42efab8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -287,7 +267,7 @@ mat("wall","--vellum",{opacity:0.22, side:THREE.DoubleSide, depthWrite:false});
 mat("part","--rule-2",{opacity:0.35, side:THREE.DoubleSide, depthWrite:false});
 mat("roof","--rule"); mat("steel","--ink-2"); mat("pallet","--flow-dry"); mat("crate","--rule-2");
 mat("bin","--flow-crop"); mat("empty","--empty");   /* colour code: green unpacked cucumbers, steel blue empty bins, brown packed cases */ mat("truck","--vellum"); mat("truckd","--ink-3"); mat("tank","--ink-3");
-mat("table","--rule-2"); mat("conv","--flow-box");
+mat("table","--rule-2"); mat("conv","--flow-box"); mat("safety","--survey");
 mat("canopy","--rule-2",{opacity:0.45, side:THREE.DoubleSide, depthWrite:false});
 mat("glass","--flow-box",{opacity:0.3, side:THREE.DoubleSide, depthWrite:false});
 mat("daylight","--empty",{opacity:0.5, side:THREE.DoubleSide, depthWrite:false});   /* translucent light panels */
@@ -553,11 +533,19 @@ function build(id){
     for (var bx = 0; bx < 3; bx++) for (var bz = 0; bz < 4; bz++) for (var bl = 0; bl < 3; bl++){
       box(3.8, 2.3, 3.8, M.empty, o.x1 - 8 - bx * 4.3, 1.2 + bl * 2.4, o.z1 - 6 - bz * 4.3);   /* clean bins stacked at the west end */
     }
+    if (o.id === "binwash"){ for (var ep = 0; ep < 8; ep++) box(4, 0.4, 4, M.pallet, o.x1 - 6, 0.2 + ep * 0.45, o.z0 + 6); addTag("Empty pallets", o.x1 - 6, 5.5, o.z0 + 6, "equip"); }
     addTag(o.name, (o.x0 + o.x1) / 2, o.roof + 2, (o.z0 + o.z1) / 2, "room", "--flow-box");
   });
 
   /* fit-out */
   FIT[base]();
+  /* first aid kit and fire extinguisher on the wall beside each personnel door */
+  B.openings.filter(function(o){ return o.type === "door"; }).forEach(function(o){
+    var z = o.b + 1.2, x = o.face === "W" ? 0.5 : o.face === "E" ? B.W - 0.5 : null;
+    if (x === null) return;
+    box(0.6, 1.4, 1, M.safety, x, 4.5, z); box(0.7, 2, 0.7, M.safety, x, 1, z + 1.2);
+    addTag("First aid, extinguisher", x, 6.5, z + 0.6, "equip");
+  });
   drawFlows(id);
   /* opens in plan view */
   target.set(centre()[0], 6, centre()[1]); Object.assign(cam, VIEWS.plan); goal = null;
@@ -630,6 +618,10 @@ function fitFert80(){
   f.lanes.forEach(function(l){ pallets(l.x0, l.z0, l.nx, l.nz, 4.0, 4.0, 2, M.crate, G.fit, 0.92); });
   f.tanks.forEach(function(t){ tanks([t[0]], t[1]); });
   box(f.skid[2], 4.5, f.skid[3], M.steel, f.skid[0], 2.35, f.skid[1]);
+  /* forklift parking in the corner by P1, out of the dock staging */
+  line([[73, 0.12, 5.5], [79, 0.12, 5.5], [79, 0.12, 5.5], [79, 0.12, 14.5], [79, 0.12, 14.5], [73, 0.12, 14.5], [73, 0.12, 14.5], [73, 0.12, 5.5]], M.mark, G.fit);
+  box(4, 3.5, 7, M.steel, 76, 1.75, 10); box(3.6, 7, 0.4, M.steel, 76, 3.5, 6.2);
+  addTag("Forklift parking", 76, 8.5, 10, "equip");
 }
 /* the five 6 × 3 ft Keiki tables as [centre x, centre z, size along x, size along z]: two columns, long side along the room */
 function keikiTables(b){ return b.tables || [[27, 49, 3, 6], [27, 59, 3, 6], [27, 69, 3, 6], [35, 54, 3, 6], [35, 64, 3, 6]]; }
@@ -705,16 +697,25 @@ function fitPackhouse80(){
   addTag("Mini lockers", 3, 7, 91, "equip");
   box(0.8, 4, 1.6, M.steel, 31.4, 2, 96); addTag("Eyewash", 29, 5.5, 96, "equip");   /* on the cleaning store wall, beside the bathroom doors */
   [[12, 82], [12, 88.5], [22, 82], [22, 88.5]].forEach(function(t){ box(6, 2.6, 3, M.table, t[0], 1.3, t[1]); });   /* break room tables */
-  box(11, 3, 1.8, M.table, 32.5, 1.5, 76.2);   /* counter under the east window */
+  box(3, 6, 3, M.steel, 29.5, 3, 77);   /* fridge, against the window wall */
+  box(4, 3, 2, M.table, 35, 1.5, 76.5); box(2, 1.2, 1.4, M.steel, 35, 3.6, 76.5);   /* table with the microwave */
+  addTag("Fridge", 29.5, 7, 77, "equip"); addTag("Microwave", 35, 5.5, 76.5, "equip");
+  box(1, 5, 3, M.steel, 0.6, 2.5, 85.5); addTag("PPE station", 3, 6.5, 85.5, "equip");   /* by P4 and the lockers */
+  /* boot wash and sanitiser at the pack room door and the break room's glass door */
+  [[77, 47], [17.5, 73.4]].forEach(function(q){ box(2.5, 3, 2, M.conv, q[0], 1.5, q[1]); });
+  addTag("Boot wash", 77, 5, 47, "equip"); addTag("Boot wash", 17.5, 5, 73.4, "equip");
   box(5, 5, 2, M.steel, 35, 2.5, 98.8);         /* cleaning store shelving */
   /* box and bag store: one lane against the far wall, 12 ft aisle in from the pack room */
   pallets(50, 88, 7, 2, 4.2, 4.2, 2, M.crate, G.fit, 0.85);
   box(2, 6, 12, M.steel, 78, 3, 82);         /* labels and small-supply shelving */
+  box(3, 6, 2, M.safety, 76.5, 3, 98.6); addTag("Chemical lockup", 76.5, 7.5, 98.6, "equip");   /* cleaning chemicals, locked */
+  line([[52, 0.12, 77], [56, 0.12, 77], [56, 0.12, 77], [56, 0.12, 84], [56, 0.12, 84], [52, 0.12, 84], [52, 0.12, 84], [52, 0.12, 77]], M.mark, G.fit);
+  box(2.3, 1.2, 5, M.steel, 54, 0.6, 80.5); addTag("Pallet jack", 54, 3.5, 80.5, "equip");
 }
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=05d2b03), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=42efab8), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
@@ -1300,7 +1301,6 @@ function renderTables(id){
     var have = st.slots[k].reduce(function(t, s){ return t + s.n; }, 0), d = have - NEED[k].n;
     return "<b>" + NEED[k].name + "</b> " + have + " of " + NEED[k].n + " needed (" + (d < 0 ? "short " + -d : "spare " + d) + ")";
   }).join(" · ") + ".";
-  $("#addons").hidden = B.building !== "ph";
   renderFlows(id);
   $("#roomLede").textContent = B.variantLede || c.lede; $("#openLede").textContent = c.open;
   $("#note").innerHTML = (B.variantNote ? "<b>" + B.variantLabel + ".</b> " + B.variantNote + "<br><br>" : "") + c.note;
@@ -1348,7 +1348,7 @@ function selectRoom(rid, quiet){
 /* ============ camera ============ */
 var target = new THREE.Vector3(25, 6, 60);
 /* camera az 0 stands south looking north, so every view reads like the site map: north up, east right */
-var VIEWS = { iso:{ az:0.45, pol:0.95, r:290 }, dock:{ az:Math.PI, pol:1.22, r:250 }, south:{ az:0, pol:1.22, r:250 }, plan:{ az:0, pol:0.03, r:210 } };
+var VIEWS = { iso:{ az:0.45, pol:0.95, r:290 }, dock:{ az:Math.PI, pol:1.22, r:250 }, south:{ az:0, pol:1.22, r:250 }, plan:{ az:0, pol:0.03, r:210 }, plan2:{ az:0, pol:0.03, r:120 } };
 var cam = { az:VIEWS.iso.az, pol:VIEWS.iso.pol, r:VIEWS.iso.r }, goal = null;
 var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function applyCam(){
@@ -1359,13 +1359,15 @@ function applyCam(){
   $("#needle").setAttribute("transform", "rotate(" + (cam.az * 180 / Math.PI).toFixed(1) + " 30 34)");
 }
 function goTo(k){
-  ["iso","dock","south","plan"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); });
+  ["iso","dock","south","plan","plan2"].forEach(function(n){ $("#v-" + n).setAttribute("aria-pressed", String(n === k)); });
+  var vw = canvas.closest(".viewer"), big = k === "plan2";   /* 2x plan: the viewer fills the window, the plan comes in closer */
+  if (vw.classList.contains("big") !== big){ vw.classList.toggle("big", big); resize(); if (big) vw.scrollIntoView({ behavior:"smooth", block:"start" }); }
   target.set(centre()[0], 6, centre()[1]);
   var to = VIEWS[k];
   if (reduce){ Object.assign(cam, to); needsDraw = true; return; }
   goal = { from:{ az:cam.az, pol:cam.pol, r:cam.r }, to:to, t:0 };
 }
-["iso","dock","south","plan"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ goTo(k); }); });
+["iso","dock","south","plan","plan2"].forEach(function(k){ $("#v-" + k).addEventListener("click", function(){ goTo(k); }); });
 
 var drag = null;
 canvas.addEventListener("pointerdown", function(e){ canvas.setPointerCapture(e.pointerId); canvas.classList.add("drag"); drag = { x:e.clientX, y:e.clientY, sx:e.clientX, sy:e.clientY, pan:e.shiftKey || e.button === 2 }; goal = null; });
