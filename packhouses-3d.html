@@ -209,35 +209,29 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
   <h2>Could add to the packhouse</h2>
   <p class="lede">Not drawn yet. Pick what the operation needs and they can be placed.</p>
   <div class="tbl"><table>
-    <thead><tr><th>Item</th><th>Why</th><th>Likely spot</th></tr></thead>
+    <thead><tr><th>Item</th><th>Likely spot</th></tr></thead>
     <tbody>
-      <tr><td>Scale / checkweigher</td><td>Hit box weights for Costco and Japanese specs</td><td>End of the packing machine, before palletizing</td></tr>
-      <tr><td>Label and lot-code printer</td><td>Traceability on every case and pallet</td><td>Palletizing area</td></tr>
-      <tr><td>Cull and reject bins</td><td>Off-grade out of the flow</td><td>Beside the machine infeed and the Keiki tables</td></tr>
-      <tr><td>Empty pallet stack</td><td>Pallets on hand for the line and the docks</td><td>Palletizing area, cooler side</td></tr>
-      <tr><td>Forklift and pallet jack parking</td><td>Charging, with an eyewash if batteries are lead-acid</td><td>Box store, out of the walkway</td></tr>
-      <tr><td>Air compressor</td><td>Most box erectors run on shop air</td><td>Box store or a small exterior enclosure</td></tr>
-      <tr><td>Boot wash and sanitiser station</td><td>Food safety at the way in</td><td>Pack room door and the break room's glass door</td></tr>
-      <tr><td>PPE station</td><td>Hairnets, gloves, aprons</td><td>Break room, by P4 and the lockers</td></tr>
-      <tr><td>Cardboard baler and recycling</td><td>Knocked-down cartons and wrap</td><td>Outside by the bin wash</td></tr>
-      <tr><td>Cleaning chemical lockup</td><td>Kept apart from packaging and product</td><td>Cleaning store, locked cabinet</td></tr>
-      <tr><td>Electrical and panel room</td><td>Line, cooler compressors, lighting</td><td>Box store, on the bathroom wall</td></tr>
-      <tr><td>Cooler temperature alarm</td><td>Cucumbers chill-injure below 50 °F</td><td>Cooler, readout at the desks</td></tr>
-      <tr><td>First aid and fire extinguishers</td><td>Required at exits</td><td>Each personnel door</td></tr>
-      <tr><td>Shipping paperwork spot</td><td>Bills of lading and pallet tags</td><td>Desks, or a stand at the docks</td></tr>
+      <tr><td>Scale / checkweigher</td><td>End of the packing machine, before palletizing</td></tr>
+      <tr><td>Label and lot-code printer</td><td>Palletizing area</td></tr>
+      <tr><td>Cull and reject bins</td><td>Beside the machine infeed and the Keiki tables</td></tr>
+      <tr><td>Empty pallet stack</td><td>Palletizing area, cooler side</td></tr>
+      <tr><td>Forklift and pallet jack parking</td><td>Box store, out of the walkway</td></tr>
+      <tr><td>Air compressor</td><td>Box store or a small exterior enclosure</td></tr>
+      <tr><td>Boot wash and sanitiser station</td><td>Pack room door and the break room's glass door</td></tr>
+      <tr><td>PPE station</td><td>Break room, by P4 and the lockers</td></tr>
+      <tr><td>Cardboard baler and recycling</td><td>Outside by the bin wash</td></tr>
+      <tr><td>Cleaning chemical lockup</td><td>Cleaning store, locked cabinet</td></tr>
+      <tr><td>Electrical and panel room</td><td>Box store, on the bathroom wall</td></tr>
+      <tr><td>Cooler temperature alarm</td><td>Cooler, readout at the desks</td></tr>
+      <tr><td>First aid and fire extinguishers</td><td>Each personnel door</td></tr>
+      <tr><td>Shipping paperwork spot</td><td>Desks, or a stand at the docks</td></tr>
     </tbody>
   </table></div>
 </section>
 
-<footer>
-  <span>Spec: packhouse-spec.md · 2026-09-11</span>
-  <span>Placement: site-placement.html</span>
-  <span>Layouts: packhouse-layouts.js?v=48968cc</span>
-  <span>Compass is the CEAd drawing frame, not true north</span>
-</footer>
 </div>
 
-<script src="packhouse-layouts.js?v=48968cc"></script>
+<script src="packhouse-layouts.js?v=e9134d1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -721,7 +715,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=48968cc), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=e9134d1), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
