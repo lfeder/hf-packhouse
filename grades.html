@@ -104,7 +104,6 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
     </div>
     <div class="grp">
       <button type="button" id="k-court" aria-pressed="true">1 · Lowered court</button>
-      <button type="button" id="k-mid" aria-pressed="false">2 · One floor, mid-level</button>
     </div>
         <div class="grp">
       <button type="button" id="t-bld" aria-pressed="false">Buildings and trucks</button>
@@ -125,7 +124,7 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
   <tbody id="summary"></tbody>
 </table></div>
 <div class="tbl" style="margin-top:12px"><table>
-  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th><th class="n">2 · One floor, mid-level</th></tr></thead>
+  <thead><tr><th>Where the retaining walls are</th><th class="n">1 · Lowered court</th></tr></thead>
   <tbody id="wallWhere"></tbody>
 </table></div>
 
@@ -139,8 +138,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=2ba6460"></script>
-<script src="topo-site.js?v=2ba6460"></script>
+<script src="packhouse-layouts.js?v=800bc4d"></script>
+<script src="topo-site.js?v=800bc4d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -186,7 +185,7 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
    meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  var E = window.PH_ECO;   /* packhouse-layouts.js?v=2ba6460, shared with the site map */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=800bc4d, shared with the site map */
   return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
@@ -343,7 +342,7 @@ function model(zoneFn){
   return { G:G, K:K, cf:cf, tot:tot, over:over };
 }
 var MODELS, scheme = "court", G, K;
-function runModels(){ MODELS = { court:model(SCHEMES.court), mid:model(SCHEMES.mid) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
+function runModels(){ MODELS = { court:model(SCHEMES.court) }; G = MODELS[scheme].G; K = MODELS[scheme].K; }
 function gAt(x, y){ return bil(G, x, y); }
 
 /* ---------- volumes, both schemes ---------- */
@@ -438,7 +437,7 @@ function westSouth(k){
   for (var x = PH.x; x < WALL; x += 2) so = Math.max(so, fl.fe - xAt(x, FE.y + FE.h + 10));
   return { w:w, s:so };
 }
-var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"2 · One floor, mid-level" }, ALL = ["court", "mid"];
+var OPT = { court:"1 · Lowered court", split:"2 · Buildings at grade", recess:"3 · Recessed docks", mid:"2 · One floor, mid-level" }, ALL = ["court"];
 function renderSummary(){
   $("#summary").innerHTML = ALL.map(function(k){
     var m = MODELS[k], t = m.tot, net = t.cut - t.fill, fl = floors(k), ws = wallsOf(k), ft = footingsOf(k), wsd = westSouth(k), worst = Math.max(wsd.w, wsd.s);
@@ -469,7 +468,6 @@ function renderLevels(){
     return '<td class="n"' + (d === 0 ? ' style="font-weight:700"' : o ? ' style="color:var(--ink-3)"' : "") + ">$" + Math.round(c / 1000) + "k" + (o ? "*" : "") + "</td>"; }).join(""); };
   var html = "<tr><td>" + OPT.court + "</td>" + row("court", function(d){ setFloor(OPT1 - d); }) + "</tr>";
   setFloor(keepL);
-  html += "<tr><td>" + OPT.mid + "</td>" + row("mid", function(d){ MID = keepM - d; }) + "</tr>"; MID = keepM;
   $("#levels").innerHTML = html;
 }
 
@@ -677,18 +675,6 @@ tag("Ramp 8% · <b>0.00</b> at the north edge to <b>−4.00</b> before D2", WALL
 tag("In from the north at grade", WALL + 30, 1, PH.y - 25, "low", "court");
 tag("Drive in from the south, up to 6%", (DRIVE.x0 + DRIVE.x1) / 2, gAt((DRIVE.x0 + DRIVE.x1) / 2, DRIVE.y0 + 30) + 2, DRIVE.y0 + 30, "low", "court");
 tag("Forklift ramp " + FRAMP.pct + "%", (FRAMP.x0 + FRAMP.x1) / 2, 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", "court");
-/* recessed docks: wing walls down each well's sides where the yard stands above it, a wall across the lane's east end,
-   and the forklift ramp's side wall */
-["mid"].forEach(function(k){
-  var fl = floors(k), f = fl.fe; G = MODELS[k].G;
-  drawWalls(k);
-  WELLS.forEach(function(w){ var tc = (w.t0 + w.t1) / 2;
-    tag("Dock well " + w.marks + " · <b>" + rel(f - DROP) + "</b> at the face", w.c[0] + w.n[0] * tc + w.d[0] * 25, f - 2, w.c[1] + w.n[1] * tc + w.d[1] * 25, "low", k); });
-  var e3 = xAt(WALL + 2, (FRAMP.y0 + FRAMP.y1) / 2); if (e3 < f) tag("Forklift ramp " + FRAMP.pct + "% down to the yard", WALL - (f - e3) / (FRAMP.pct / 50), f + 1, (FRAMP.y0 + FRAMP.y1) / 2, "low", k);
-  trucks(k);
-  tag("Yard at existing grade", WALL + 70, xAt(WALL + 70, PH.y + 110) + 1, PH.y + 110, "", k);
-  var lw = f - xAt(WALL + 2, FRAMP.y0 - 2); if (lw > 0.5) tag("Wall across the lane's east end, up to " + lw.toFixed(1) + " ft", WALL + 1, f + 1, PH.y + PH.h + 18, "wall", k);
-});
 G = MODELS.court.G;
 /* property line, on existing ground so it reads the same in both schemes */
 (function(){
@@ -702,7 +688,7 @@ G = MODELS.court.G;
 })();
 /* the north entry road (PH_ROAD), draped on finished grade */
 var ROAD = window.PH_ROAD, roadM = lam(0x6E7378);
-["court", "mid"].forEach(function(k){
+["court"].forEach(function(k){
   G = MODELS[k].G;
   var pos = [], idx = [];
   for (var j = 0; j < NY - 1; j++) for (var i = 0; i < NX - 1; i++){
@@ -766,7 +752,6 @@ function pickScheme(k){
   paintGround(); drapeTopo(); saveHash(); if (typeof applyBld === "function") applyBld(); needs = true;
 }
 $("#k-court").addEventListener("click", function(){ pickScheme("court"); });
-$("#k-mid").addEventListener("click", function(){ pickScheme("mid"); });
 /* buildings, trucks and walls switch off together, leaving the ground and its cut and fill */
 function applyBld(){ $("#t-bld").setAttribute("aria-pressed", String(showBld));
   ["ph80", "fert80"].forEach(function(id){ BG[id].visible = showBld; BT[id].forEach(function(q){ q.t.el.hidden = !showBld; }); BT[id].name.el.hidden = !showBld; });
@@ -807,6 +792,6 @@ resize(); frame();
 
 /* the scheme and floor ride in the hash, e.g. #recess,lower1 */
 function saveHash(){ try { history.replaceState(null, "", "#" + [scheme].concat(LOWER ? ["lower" + LOWER] : []).join(",")); } catch(e){} }
-(function(){ var h = location.hash.slice(1).split(","); scheme = h.indexOf("recess") >= 0 ? "mid" : ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(OPT1); setTimeout(renderLevels, 50); })();
+(function(){ var h = location.hash.slice(1).split(","); scheme = ALL.filter(function(k){ return h.indexOf(k) >= 0; })[0] || "court"; pickFloor(OPT1); setTimeout(renderLevels, 50); })();
 })();
 </script>
