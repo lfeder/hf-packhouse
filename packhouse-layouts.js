@@ -22,9 +22,16 @@ window.PH_ECO = { off: 3, y0: 440, y1: 575, h: 4, step: 6 };
    the packhouse's north-wall stalls (491.1, 470); PB2 in Grow 3 on the post column at x 567.3 (where the sheet's dashed
    lines fan out), four posts south of the north edge. The buried line between them is drawn straight: its real route is
    unknown. */
-/* the upper road from the north, traced from the CEAd sheet: in at existing grade, about a foot above the floor, past the
+/* the north entry road, traced from the CEAd sheet: in at existing grade, about a foot above the floor, past the
    packhouse's north side and into the truck court's north entry. Read by the site map and the grades page. */
 window.PH_ROAD = [[516, 397], [522, 412], [532, 420], [580, 420.5], [598, 426], [612, 438], [622, 452], [632, 470], [608, 478], [606, 466], [598, 455], [584, 448], [516, 448]];
+/* the shop on Lot 9, traced from the CEAd sheet (±3 ft): its south-west corner, length along the property line, depth
+   away from it. Its concrete pad between it and the line is the upper road, at existing grade above the Ecoblock wall. */
+window.PH_SHOP = { sw: [683.3, 485.9], len: 175, dep: 41 };
+/* the upper bypass road, at existing grade the whole way: it leaves the north entry road before the court drops, runs
+   along the shop pad on Lot 9 about 11 ft outside the property line, comes back onto our lot past the Ecoblock wall's
+   south end and joins the road south past the court. Centreline in site feet, and its width. */
+window.PH_BYPASS = { w: 20, pts: [[590, 436], [622, 440], [648, 447], [760, 634], [762, 650], [752, 690], [735, 735], [730, 760]] };
 window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 567.3, y: 782.1 }];
 
 window.PH_LAYOUTS = {

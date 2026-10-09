@@ -139,8 +139,8 @@ svg text.el{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing
 
 </div>
 
-<script src="packhouse-layouts.js?v=2eb885e"></script>
-<script src="topo-site.js?v=2eb885e"></script>
+<script src="packhouse-layouts.js?v=c8299c1"></script>
+<script src="topo-site.js?v=c8299c1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -186,7 +186,7 @@ function courtE(x, y){ var dx = Math.max(0, x - WALL);
    meets the line at the north entry to where the court's east edge pulls away from the line. Along it the court runs out to the wall; everywhere the turning
    room past the trailers climbs only as steeply as it must to keep the cut at the court's east edge to ECO.h ft. */
 var ECO = (function(){ var a = PROP[2], b = PROP[3], L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-  var E = window.PH_ECO;   /* packhouse-layouts.js?v=2eb885e, shared with the site map */
+  var E = window.PH_ECO;   /* packhouse-layouts.js?v=c8299c1, shared with the site map */
   return { a:a, u:u, n:[-u[1], u[0]], off:E.off, h:E.h, step:E.step, t0:(E.y0 - a[1]) / u[1], t1:(E.y1 - a[1]) / u[1] }; })();   /* n points into the property */
 function lineX(y, off){ var t = (y - ECO.a[1] - ECO.n[1] * off) / ECO.u[1]; return { x:ECO.a[0] + ECO.n[0] * off + ECO.u[0] * t, t:t }; }
 function onEco(y){ var w = lineX(y, ECO.off); return w.t >= ECO.t0 && w.t <= ECO.t1; }
@@ -619,9 +619,10 @@ function rig(x, y, ang, len, parent){
    Facility behind it. The topo stops at the property line, so each one sits on the ground at the line beside its middle;
    its pad level is a guess until it is surveyed. Heights are massing only. */
 var NEIGH = [
-  { name:"Shop (Lot 9)", sw:[683.3, 485.9], len:175, dep:41, h:14 },
+  { name:"Shop (Lot 9)", sw:window.PH_SHOP.sw, len:window.PH_SHOP.len, dep:window.PH_SHOP.dep, h:14, shop:true },
   { name:"Existing Facility (Lot 9)", sw:[712.2, 406.5], len:250, dep:170, h:14 }
 ];
+var shopBase = 0;
 (function(){
   var u = ECO.u, out = [u[1], -u[0]], mN = lam(0xC9C2B4, { op:.8 });   /* out: away from the property, toward Lot 9 */
   NEIGH.forEach(function(n){
@@ -629,6 +630,7 @@ var NEIGH = [
     var tl = (c[0] - ECO.a[0]) * u[0] + (c[1] - ECO.a[1]) * u[1], base = xAt(ECO.a[0] + u[0] * tl + ECO.n[0], ECO.a[1] + u[1] * tl + ECO.n[1]);
     var o = box(n.len, n.h, n.dep, mN, c[0], base + n.h / 2, c[1]); o.rotation.y = -Math.atan2(u[1], u[0]); edges(o);
     tag(n.name + " · pad about <b>" + (FF + base).toFixed(1) + "</b>, assumed", c[0], base + n.h + 3, c[1], "");
+    if (n.shop) shopBase = base;
   });
 })();
 var SG = { court:new THREE.Group(), split:new THREE.Group(), recess:new THREE.Group(), mid:new THREE.Group() }, PL = new THREE.Group(); root.add(SG.court, SG.split, SG.recess, SG.mid, PL);
@@ -698,7 +700,7 @@ G = MODELS.court.G;
   PL.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color:0xB23A2B })));
   tag("Property line · Lot 9 beyond (Hawaii Farming)", 700, 2, 600, "wall");
 })();
-/* the upper road from the north (PH_ROAD), draped on finished grade */
+/* the north entry road (PH_ROAD), draped on finished grade */
 var ROAD = window.PH_ROAD, roadM = lam(0x6E7378);
 ["court", "mid"].forEach(function(k){
   G = MODELS[k].G;
@@ -710,7 +712,23 @@ var ROAD = window.PH_ROAD, roadM = lam(0x6E7378);
   }
   var rg = new THREE.BufferGeometry(); rg.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); rg.setIndex(idx); rg.computeVertexNormals();
   var rm = new THREE.Mesh(rg, roadM); rm.receiveShadow = true; SG[k].add(rm);
-  tag("Upper road, in at grade", 555, gAt(555, 434) + 2, 434, "", k);
+  /* the upper bypass (PH_BYPASS): a ribbon at grade, the shop's existing concrete pad alongside the shop and new asphalt
+     north and south of it. Where the topo stops, short of the shop, it takes the ground at the property line */
+  var BP = window.PH_BYPASS, hw = BP.w / 2, SH = window.PH_SHOP, uu = ECO.u, sp = { conc:{ pos:[], idx:[] }, asph:{ pos:[], idx:[] } };
+  var tOf = function(x, y){ return (x - ECO.a[0]) * uu[0] + (y - ECO.a[1]) * uu[1]; }, ts0 = tOf(SH.sw[0], SH.sw[1]), ts1 = ts0 + SH.len;
+  var zAt = function(x, y){ var z = gAt(x, y); if (!isNaN(z)) return z; var t = tOf(x, y); return xAt(ECO.a[0] + uu[0] * t + ECO.n[0] * 0.5, ECO.a[1] + uu[1] * t + ECO.n[1] * 0.5); };   /* past the topo: the ground at the line */
+  for (var s0 = 0; s0 < BP.pts.length - 1; s0++){ var p = BP.pts[s0], q = BP.pts[s0 + 1], sl = Math.hypot(q[0] - p[0], q[1] - p[1]), dx = (q[0] - p[0]) / sl, dy = (q[1] - p[1]) / sl;
+    for (var d = 0; d < sl; d += 2){
+      var c0 = [p[0] + dx * d, p[1] + dy * d], d1 = Math.min(sl, d + 2), c1 = [p[0] + dx * d1, p[1] + dy * d1], tm = tOf((c0[0] + c1[0]) / 2, (c0[1] + c1[1]) / 2);
+      var o = sp[s0 === 2 && tm >= ts0 && tm <= ts1 ? "conc" : "asph"], b = o.pos.length / 3;
+      [c0, c1].forEach(function(c){ [-1, 1].forEach(function(sd){ var x = c[0] - dy * hw * sd, y = c[1] + dx * hw * sd; o.pos.push(x, zAt(x, y) + 0.5, y); }); });
+      o.idx.push(b, b + 2, b + 1, b + 1, b + 2, b + 3);
+    } }
+  [["conc", 0x9C978B], ["asph", 0x4F555B]].forEach(function(m){ var o = sp[m[0]], bg = new THREE.BufferGeometry();
+    bg.setAttribute("position", new THREE.Float32BufferAttribute(o.pos, 3)); bg.setIndex(o.idx); bg.computeVertexNormals();
+    var bm = new THREE.Mesh(bg, lam(m[1], { side:THREE.DoubleSide })); bm.receiveShadow = true; SG[k].add(bm); });
+  tag("Upper bypass road, at grade · " + BP.w + " ft · existing concrete pad along the shop, new asphalt north and south", 700, zAt(690, 540) + 3, 540, "", k);
+  tag("North entry road, in at grade", 555, gAt(555, 434) + 2, 434, "", k);
 });
 tag = tag0;
 G = MODELS[scheme].G;
