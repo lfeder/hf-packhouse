@@ -43,7 +43,7 @@ window.PH_LAYOUTS = {
       { id: "cold", name: "Cold storage", tone: "--flow-box", x0: 0, x1: 80, z0: 0, z1: 30,
         note: "Finished goods at 50–55 °F across the whole dock face. 60 floor positions block-stacked 4 deep off a 12 ft dock aisle, clear of the route to the pack-room door. Insulated panel walls, full height." },
       { id: "pack", name: "Pack room", tone: "--flow-crop", noTag: true, x0: 0, x1: 80, z0: 30, z1: 75,
-        note: "Harvest comes in through R1 on the north wall at the cooler end, over the floor scale to staging. The Japanese/English packing machine (one machine for both) sits in the vendor's 36 × 36 ft cell, turned so its infeed is at the cooler end, fed straight from staging, and its outfeed at the west end, where the pack table boxes wrapped Js onto the J/E pallet. The five 6 × 3 ft Keiki tables form one row beside it, with two pallet spaces for packed cases and the empty-bin pallet just south of them. A clear 28 × 16 ft palletizing area with the pallet wrapper against the cooler wall just north of the cooler door, 3 desks, hand-wash sinks at the pack room door and the break room door. Epoxy floor." },
+        note: "Harvest comes in through R1 on the north wall at the cooler end, over the floor scale to staging. The Japanese/English packing machine (one machine for both) sits in the vendor's 36 × 36 ft cell, turned so its infeed is at the cooler end, fed straight from staging, and its outfeed at the west end, where the pack table boxes wrapped Js onto the J/E pallet. The five 6 × 3 ft Keiki tables form one row beside it, with two pallet spaces for packed cases and the empty-bin pallet just south of them. A clear 28 × 16 ft palletizing area with the pallet wrapper against the cooler wall just north of the cooler door, 2 desks on the cooler wall, hand-wash sinks at the pack room door and the break room door. Epoxy floor." },
       { id: "break", name: "Break room", tone: "--survey", x0: 0, x1: 48, z0: 75, z1: 100, parts: [[0, 75, 48, 92], [0, 92, 32, 100]],
         note: "1,072 ft² at the west end, an L around the bathrooms. Staff come in from the parking through P4 at the west end of the north wall, with a 6 × 6 ft block of mini lockers beside the door. Windows and a glass door look into the pack room. Walls 12 ft, no ceiling: open to the roof above." },
       { id: "clean", name: "Cleaning store", short: "Cleaning", tone: "--ink-3", x0: 32, x1: 38, z0: 92, z1: 100,
@@ -56,6 +56,8 @@ window.PH_LAYOUTS = {
         note: "800 ft² at the southwest corner, open to the pack room with no wall between: the forklift comes in R3 and sets pallets straight down. A 2-deep lane of boxes and bags two high (28 pallets) off a 12 ft aisle, with shelving for labels and small supplies. The box erector stands here against the bathroom wall, with the cartons it feeds off." }
     ],
     partitions: [
+      /* cooler wall, insulated panels to the roof, with the 8 x 9 ft cooler door just south of the pallet wrapper */
+      { axis: "z", at: 30, from: 0, to: 80, h: "eave", holes: [[59, 67, 0, 9]] },
       /* break room to pack room: a glass door, and windows either side of it from 3.5 to 7 ft */
       { axis: "z", at: 75, from: 0, to: 48, h: 12, holes: [[3, 17, 3.5, 7, "glass"], [20, 24, 0, 7, "glass"], [27, 38, 3.5, 7, "glass"]] },
       /* cleaning store and bathrooms along the west wall, doors from the break room; 8 ft tall with a ceiling */
