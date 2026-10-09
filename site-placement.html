@@ -121,7 +121,7 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
       </div>
     </div>
     <svg id="map" viewBox="380 38 440 752" role="img" aria-label="Site plan with both packhouses, their docks and truck aprons">
-      <image href="site-plan-option5.jpg?v=42efab8" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
+      <image href="site-plan-option5.jpg?v=091357a" x="0" y="0" width="1096.5" height="1644.7" preserveAspectRatio="none"/>
       <g id="moved"></g>
       <g id="grading"></g>
       <path id="setback" fill="none" stroke="#E8590C" stroke-width="2.6" stroke-dasharray="10 4" vector-effect="non-scaling-stroke"/>
@@ -158,11 +158,11 @@ svg text{font-family:"Archivo Narrow","Arial Narrow",Arial,sans-serif;font-weigh
 
 </div>
 
-<script src="packhouse-layouts.js?v=42efab8"></script>
+<script src="packhouse-layouts.js?v=091357a"></script>
 <script>
 const SETBACK = 20, GAP = 15, APRON = 115, RIG = 45;   /* 45 ft containers on a chassis unless a dock says less (rig); apron 115 ft for a 45, shorter with the rig */
 const rigOf = o => o.rig || RIG, apronOf = o => APRON - (RIG - rigOf(o));
-const PROP = PH_PROP;   /* packhouse-layouts.js?v=42efab8 */
+const PROP = PH_PROP;   /* packhouse-layouts.js?v=091357a */
 const BLDG = [
   {name:"Existing Facility",x:112.1,y:148.6,w:373.5,h:312.4},
   {name:"Headhouse",x:321.6,y:85.3,w:165.7,h:53.6},
@@ -177,7 +177,7 @@ const VIEWS = {pad:[380,38,440,752], site:[0,0,1096.5,1644.7]};   /* pad: proper
 const TONE = {"--flow-box":"#43647F","--flow-crop":"#3B7645","--flow-dry":"#A9702B","--ink-3":"#848C92","--survey":"#B23A2B"};
 const FACES = ["N","E","S","W"];
 /* the set position of each building; the arrow keys bump it from here */
-const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=42efab8; the apron clears the property line with about 2.5 ft to spare */
+const HOME = ["ph", "fert"].map(id => ({id, ...PH_SITE[id + "80"]}));   /* packhouse-layouts.js?v=091357a; the apron clears the property line with about 2.5 ft to spare */
 let phs = HOME.map(h => ({...h})), sel = "ph";
 /* Things that are not buildings, dragged freely: parking blocks and the septic. Each is a rectangle around its
    centre (x, y), turned ang degrees clockwise from running along x. A parking block is rows of 9 × 18 ft stalls, two
