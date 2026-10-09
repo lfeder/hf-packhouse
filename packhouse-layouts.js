@@ -121,8 +121,7 @@ window.PH_LAYOUTS = {
     lightBand: [12.5, 14.5],   /* translucent light panels round the top of all four walls, under the eave */
     roofVents: 4,
     drains: [
-      { name: "Trench drain, forklift grade", x0: 2, z0: 89.5, x1: 51, z1: 90.5 },   /* along the front of the skid and tanks, stopping just past the last tank */
-      { name: "Sump", x0: 51, z0: 88.5, x1: 54, z1: 91.5 }      /* fert rinse to a sump, not the septic */
+      { name: "Trench drain, forklift grade", x0: 2, z0: 89.5, x1: 51, z1: 90.5 }   /* along the front of the skid and tanks, stopping just past the last tank */
     ],            /* along the ridge; the packhouse has none, its roof and walls are insulated */
     rooms: [
       { id: "dry", name: "Dry storage", tone: "--flow-box", x0: 0, x1: 80, z0: 0, z1: 70,
