@@ -54,10 +54,6 @@ h1 em{font-style:normal;color:var(--survey)}
 .switch button i{width:10px;height:10px;display:inline-block}
 .switch button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
 .switch .fp{margin-left:auto;align-self:center;box-shadow:none}
-.vsel{align-self:center;margin-left:12px;display:flex;gap:8px;align-items:center;font:600 11px/1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.vsel[hidden]{display:none}
-.vsel select{font:500 13px/1.2 "Archivo",Arial,sans-serif;color:var(--ink);background:var(--vellum);border:1px solid var(--rule-2);padding:6px 8px;text-transform:none;letter-spacing:0;max-width:340px}
-.vsel select:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
 .switch button:focus-visible,.grp button:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
 
 .viewer{position:relative;margin-top:14px;border:1px solid var(--rule-2);background:var(--vellum-2);overflow:hidden}
@@ -138,7 +134,6 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 <div class="switch" role="tablist" aria-label="Building">
   <button type="button" role="tab" id="b-ph" aria-selected="true"><i style="background:#3B7645"></i>Packhouse</button>
   <button type="button" role="tab" id="b-fert" aria-selected="false"><i style="background:#A9702B"></i>Fert Room &amp; Storage</button>
-  <label class="vsel" id="vwrap" hidden>Layout <select id="variant"></select></label>
 </div>
 
 <div class="viewer">
@@ -210,7 +205,7 @@ footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--rule-2);color
 
 </div>
 
-<script src="packhouse-layouts.js?v=d4224c4"></script>
+<script src="packhouse-layouts.js?v=e95c590"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -602,7 +597,7 @@ function tanks(xs, z){
     var t = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 7, 20), M.tank); t.position.set(x, 3.6, z); t.castShadow = true; G.fit.add(t);
   });
 }
-/* The wide fert building's fit-out as data, so a layout variant can move racks, stacks and tanks. The flow
+/* The wide fert building's fit-out as data. The flow
    routing reads the same spec, so what is drawn is what the forklift drives round. */
 function fitSpec(b){
   return Object.assign({
@@ -611,7 +606,7 @@ function fitSpec(b){
             { x0:54, z0:90.5, nx:6, nz:2, face:"-z" }],                 /* 2 deep, south-east */
     tanks: [[17, 95.5], [23, 95.5], [29, 95.5], [35, 95.5], [41, 95.5], [47, 95.5]],
     skid: [7, 95.5, 10, 7]                                                /* centre x, z, size along x, z */
-  }, b.fit || {});
+  });
 }
 function fitFert80(){
   var f = fitSpec(B);
@@ -716,7 +711,7 @@ function fitPackhouse80(){
 var FIT = { ph80:fitPackhouse80, fert80:fitFert80 };
 
 /* ============ flows ============ */
-/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=d4224c4), so a route can leave one
+/* Where each building sits on the site map (PH_SITE in packhouse-layouts.js?v=e95c590), so a route can leave one
    building and enter the other. Site units are feet, x east, y south. */
 var PLACE = window.PH_SITE;
 /* Handling standards: each pallet move is HANDLE minutes to pick up and set down, plus the trip there loaded and
@@ -847,13 +842,11 @@ var FLOWS = {
   }
 };
 function cfgOf(id){ return FLOWS[L[id].id]; }
-/* a variant can re-route a flow without moving any door */
-function routeOf(id, f){ return (L[id].flowRoutes || {})[f.id] || f.route; }
-function whatOf(id, f){ return (L[id].flowWhat || {})[f.id] || f.what; }
-/* the base layout's spots with any the variant moves */
+function routeOf(id, f){ return f.route; }
+function whatOf(id, f){ return f.what; }
 function spotsOf(id){
-  var cfg = cfgOf(id), out = {}, ov = L[id].flowSpots || {};
-  Object.keys(cfg ? cfg.spots : {}).forEach(function(k){ out[k] = Object.assign({}, cfg.spots[k], ov[k] || {}); });
+  var cfg = cfgOf(id), out = {};
+  Object.keys(cfg ? cfg.spots : {}).forEach(function(k){ out[k] = Object.assign({}, cfg.spots[k]); });
   return out;
 }
 var PERIODS = { day:{ n:1 / 7, unit:"day" }, week:{ n:1, unit:"week" }, month:{ n:4.345, unit:"month" }, year:{ n:52, unit:"year" } }, period = "week";
@@ -1303,8 +1296,8 @@ function renderTables(id){
     return "<b>" + NEED[k].name + "</b> " + have + " of " + NEED[k].n + " needed (" + (d < 0 ? "short " + -d : "spare " + d) + ")";
   }).join(" · ") + ".";
   renderFlows(id);
-  $("#roomLede").textContent = B.variantLede || c.lede; $("#openLede").textContent = c.open;
-  $("#note").innerHTML = (B.variantNote ? "<b>" + B.variantLabel + ".</b> " + B.variantNote + "<br><br>" : "") + c.note;
+  $("#roomLede").textContent = c.lede; $("#openLede").textContent = c.open;
+  $("#note").innerHTML = c.note;
   /* the pallet counts ride in the header stamp so they are visible with the model */
   var caps = !st ? [] : Object.keys(NEED).filter(function(k){ return st.slots[k]; }).map(function(k){
     var have = st.slots[k].reduce(function(t, x){ return t + x.n; }, 0);
@@ -1408,32 +1401,20 @@ function applyState(){
 [["#t-roof","roof"],["#t-ghost","ghost"],["#t-fit","fit"],["#t-tags","tags"],["#t-flows","flows"]].forEach(function(t){
   $(t[0]).addEventListener("click", function(){ state[t[1]] = !state[t[1]]; $(t[0]).setAttribute("aria-pressed", String(state[t[1]])); applyState(); });
 });
-var cur = { b:"ph", v:"" };
-/* the layouts for one building: the base plus any "<base>~<variant>" keys */
-function variantsOf(base){ return Object.keys(L).filter(function(k){ return k === base || k.indexOf(base + "~") === 0; }); }
-function fillVariants(base, key){
-  var ks = variantsOf(base), sel = $("#variant");
-  $("#vwrap").hidden = ks.length < 2;
-  sel.innerHTML = ks.map(function(k){
-    var t = flowTotal(k); t = t === null ? NaN : t * PERIODS[period].n;
-    return '<option value="' + k + '"' + (k === key ? " selected" : "") + ">" + (L[k].variantLabel || "As drawn") + (isNaN(t) ? "" : " · " + (PERIODS[period].n <= 1 ? Math.round(t) + " min/" + PERIODS[period].unit : (t / 60).toFixed(1) + " hrs/" + PERIODS[period].unit)) + "</option>";
-  }).join("");
-}
-function pick(b, v){
-  if (b && b !== cur.b) cur.v = "";
-  cur.b = b || cur.b; if (v !== undefined) cur.v = v;
-  var base = cur.b + "80", id = cur.v && L[base + "~" + cur.v] ? base + "~" + cur.v : base;
+var cur = { b:"ph" };
+function pick(b){
+  cur.b = b || cur.b;
+  var id = cur.b + "80";
   ["ph","fert"].forEach(function(k){ $("#b-" + k).setAttribute("aria-selected", String(k === cur.b)); });
   flowSel = null;
-  build(id); fillVariants(base, id);
+  build(id);
   try { history.replaceState(null, "", "#" + id); } catch(e){}
 }
 $("#b-ph").addEventListener("click", function(){ pick("ph"); });
 $("#b-fert").addEventListener("click", function(){ pick("fert"); });
-$("#variant").addEventListener("change", function(e){ var k = e.target.value; pick(null, k.indexOf("~") > 0 ? k.split("~")[1] : ""); });
 $("#anim").addEventListener("click", function(){
   if (anim) { stopAnim(); needsDraw = true; return; }
-  var id = cur.b + "80" + (cur.v ? "~" + cur.v : "");
+  var id = cur.b + "80";
   if (!state.fit){ state.fit = true; $("#t-fit").setAttribute("aria-pressed", "true"); applyState(); }
   goTo("plan"); startAnim(id);
 });
@@ -1486,7 +1467,7 @@ function frame(t){
   placeTags();
 }
 retheme(); resize();
-(function(){ var h = location.hash.slice(1), k = h.split("~"); pick(h.indexOf("fert") === 0 ? "fert" : "ph", k[1] || ""); })();
+(function(){ pick(location.hash.slice(1).indexOf("fert") === 0 ? "fert" : "ph"); })();
 frame();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme);
 new MutationObserver(retheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });

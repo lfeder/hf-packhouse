@@ -155,27 +155,3 @@ window.PH_LAYOUTS = {
     ]
   }
 };
-
-/* Layout variants, for comparing options side by side on the 3D page (its Layout dropdown). A variant is a copy
-   of a base layout with some rooms, doors or fit-out moved; it keeps the base's id, so the site map, the page copy
-   and the flow routes all treat it as the same building. Keyed "<base>~<variant>". */
-(function(L){
-  function variant(base, key, label, note, patch){
-    var v = JSON.parse(JSON.stringify(L[base]));
-    patch(v);
-    v.variant = key; v.variantLabel = label; v.variantNote = note;
-    L[base + "~" + key] = v;
-  }
-  L.fert80.variantLabel = "As drawn";
-
-  variant("fert80", "i1east", "I1 beside the dock",
-    "I1 moves to the east end of the partition, in line with the D1 aisle, so fertiliser runs straight down from the dock. " +
-    "The pick and build area moves with it. The lane along the partition shortens to stay clear of I1: 84 positions instead of 88.",
-    function(v){
-      v.partitions[0].holes = [[64, 72, 0, 10]];
-      v.openings.forEach(function(o){ if (o.mark === "I1"){ o.a = 64; o.b = 72; } });
-      v.rooms[1].note = v.rooms[1].note.replace("88 positions", "84 positions");
-      v.fit = { lanes: [{ x0: 2, z0: 70.5, nx: 15, nz: 2, face: "+z" }, { x0: 54, z0: 90.5, nx: 6, nz: 2, face: "-z" }] };
-      v.flowSpots = { pick: { x: 67, z: 84 } };
-    });
-})(window.PH_LAYOUTS);
