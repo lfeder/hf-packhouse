@@ -7,7 +7,7 @@ GitHub Pages:
 **https://lfeder.github.io/hf-packhouse/**
 
 This is the only home for the design work. It used to live in `greenhouse-quote-tracker/packhouse/`
-and be mirrored here; that repo is archived as of 2026-10-11. The estimator, vendor quotes and
+and be mirrored here; that repo is retired as of 2026-10-11. The estimator, vendor quotes and
 cost ledgers are in aloha-app (Managers/Expand, the `expansion` schema and storage bucket).
 
 Two buildings at 8,000 ft2 each: the packhouse, and the fert room and storage building.
