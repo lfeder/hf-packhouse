@@ -101,8 +101,8 @@ const s1 = [SH.sw[0] + u[0] * SH.len, SH.sw[1] + u[1] * SH.len]; poly("ROAD", [o
 M.ITEM_HOME.forEach(it => { const l = it.kind === "septic" ? it.len : it.stalls / (it.rows || 1) * M.STALL, d = it.kind === "septic" ? it.wid : (it.rows || 1) * M.STALL_D + (it.aisle ? M.AISLE : 0);
   poly("SITE", rotRect(it.x, it.y, l, d, it.ang), true); text("SITE", [it.x - 10, it.y], 2, `${it.name} ${Math.round(l)} x ${Math.round(d)} ft`, -it.ang); });
 
-/* pull boxes and the buried line, drawn straight: route unknown */
-const [p1, p2] = window.PH_PULL; line("ELEC-PULLBOX", [p1.x, p1.y], [p2.x, p2.y]);
+/* the buried solar line and its pull boxes, drawn straight: route unknown */
+const p1 = window.PH_SOLAR, p2 = window.PH_PULL[0]; line("ELEC-PULLBOX", [p1.x, p1.y], [p2.x, p2.y]);
 window.PH_PULL.forEach(p => { poly("ELEC-PULLBOX", rect(p.x - 1.5, p.y - 1.5, 3, 3), true); text("ELEC-PULLBOX", [p.x + 3, p.y], 2, p.mark); });
 text("ELEC-PULLBOX", [(p1.x + p2.x) / 2 + 3, (p1.y + p2.y) / 2], 2, "Buried electrical, route unknown - locate before digging");
 

@@ -18,10 +18,11 @@ window.PH_PROP = [[69.6, 55.7], [608.7, 54.6], [609.2, 400.6], [1025.3, 1104.3],
    y0 and y1 measured on the line, `h` ft above the court. A 2 ft step one block long (`step`) finishes each end, where
    the court or road turns off the line and an ordinary 2:1 slope takes over. Read by the site map and the grades page. */
 window.PH_ECO = { off: 2.5, y0: 440, y1: 575, h: 4, step: 6 };   /* blocks 2.5 ft deep: the back sits on the property line, against the shop's concrete */
-/* electrical pull boxes, site feet. PB1 halfway between the Existing Facility's SE corner (485.6, 461) and the NW corner of
-   the packhouse's north-wall stalls (491.1, 470); PB2 in Grow 3 on the post column at x 567.3 (where the sheet's dashed
-   lines fan out), four posts south of the north edge. The buried line between them is drawn straight: its real route is
-   unknown. */
+/* the buried solar line, site feet: from the centre of the solar field's north side (its NW-facing edge, corners
+   (938.9, 1025) and (814.9, 1100.8) traced from the CEAd sheet) to PB1, drawn straight: its real route is unknown.
+   Pull boxes on it: PB1 halfway between the Existing Facility's SE corner (485.6, 461) and the NW corner of the
+   packhouse's north-wall stalls (491.1, 470); PB2 where the line crosses y 782.1, four Grow 3 posts south of its north edge. */
+window.PH_SOLAR = { x: 876.9, y: 1062.9 };
 /* the north entry road, traced from the CEAd sheet: in at existing grade, about a foot above the floor, past the
    packhouse's north side and into the truck court's north entry. Read by the site map and the grades page. */
 window.PH_ROAD = [[516, 397], [522, 412], [532, 420], [580, 420.5], [598, 426], [612, 438], [622, 452], [632, 470], [608, 478], [606, 466], [598, 455], [584, 448], [516, 448]];
@@ -33,7 +34,7 @@ window.PH_SHOP = { sw: [683.3, 485.9], len: 175, dep: 41 };
    outside the property line, comes back onto our lot well past the wall's south end and joins the road south past the
    court. Centreline in site feet, and its width. */
 window.PH_BYPASS = { w: 12, pts: [[588, 434], [606, 427], [629.6, 421.4], [756.7, 636.4], [758, 652], [750, 690], [735, 735], [730, 760]] };
-window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 567.3, y: 782.1 }];
+window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 694.3, y: 782.1 }];
 
 window.PH_LAYOUTS = {
   /* docks on the 80 ft N face (east on the site map) */
