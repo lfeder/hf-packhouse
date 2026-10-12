@@ -20,9 +20,9 @@ window.PH_PROP = [[69.6, 55.7], [608.7, 54.6], [609.2, 400.6], [1025.3, 1104.3],
 window.PH_ECO = { off: 2.5, y0: 440, y1: 575, h: 4, step: 6 };   /* blocks 2.5 ft deep: the back sits on the property line, against the shop's concrete */
 /* the buried solar line, site feet: from the centre of the solar field's north side (its NW-facing edge, corners
    (938.9, 1025) and (814.9, 1100.8) traced from the CEAd sheet) to PB1, drawn straight: its real route is unknown.
-   Pull boxes: PB1 on it, halfway between the Existing Facility's SE corner (485.6, 461) and the NW corner of the
-   packhouse's north-wall stalls (491.1, 470); PB2 in Grow 3 on the post column at x 567.3 (where the sheet's dashed
-   lines fan out), four posts south of the north edge, about 127 ft west of the line. */
+   Pull boxes on it: PB1 halfway between the Existing Facility's SE corner (485.6, 461) and the NW corner of the
+   packhouse's north-wall stalls (491.1, 470); PB2 in the gap between the fert building and Grow 3, level with the
+   "to Grow 3" dimension (y 711.2, midway between the fert building's south wall at 698 and Grow 3 at 724.4). */
 window.PH_SOLAR = { x: 876.9, y: 1062.9 };
 /* the north entry road, traced from the CEAd sheet: in at existing grade, about a foot above the floor, past the
    packhouse's north side and into the truck court's north entry. Read by the site map and the grades page. */
@@ -35,7 +35,7 @@ window.PH_SHOP = { sw: [683.3, 485.9], len: 175, dep: 41 };
    outside the property line, comes back onto our lot well past the wall's south end and joins the road south past the
    court. Centreline in site feet, and its width. */
 window.PH_BYPASS = { w: 12, pts: [[588, 434], [606, 427], [629.6, 421.4], [756.7, 636.4], [758, 652], [750, 690], [735, 735], [730, 760]] };
-window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 567.3, y: 782.1 }];
+window.PH_PULL = [{ mark: "PB1", x: 488.4, y: 465.5 }, { mark: "PB2", x: 648.2, y: 711.2 }];
 
 window.PH_LAYOUTS = {
   /* docks on the 80 ft N face (east on the site map) */
