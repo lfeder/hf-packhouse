@@ -31,6 +31,10 @@ the root.
 - `sources/site-map-plan.pdf` → `site-plan-option5.jpg` (the sheet with the old SUPPORT block
   erased), via `scripts/site-plan-image.py`.
 - `sources/topo-model.pdf` → `topo-site.js` (the ground under the pad), via `scripts/topo-site.py`.
+- `sources/topo-points-6-6-005-003.txt` — the point survey of TMK 6-6-005-003 (point, northing/easting, elevation,
+  description), received 2026-10-13. Mostly the existing buildings, greenhouses and utilities at the north end of the
+  lot. Its six lot pins (1014, 11009, 11010, 1011, 1012, 1013) are the six PROP corners, so it registers to site feet
+  within 1 ft; its few shots on the pad and truck court agree with the Pattison topo, so `topo-site.js` is unchanged.
 - `scripts/*.sql` query aloha-prod for storage, cooler occupancy and fert-room flows.
 
 ## Editing
