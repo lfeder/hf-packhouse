@@ -7,25 +7,23 @@
 | Footprint | 100 × 80 ft, 8,000 ft² | 100 × 80 ft, 8,000 ft² |
 | Heights | Eave 14 ft, ridge about 17 ft 4 in (1:12 roof) | Eave 15 ft, ridge about 18 ft 4 in (1:12 roof) |
 | Light panels | No | Yes, 12.5 to 14.5 ft |
-| Slab | – 4,000 psi<br>– Pack room slopes to its trench drain at 1/8 in per ft (1%) | – 8,000 lb forklift wheel loads<br>– Courtyard between buildings, 8,000 lb, crowned to drain east/west |
+| Slab | – 4,000 psi<br>– Pack room slopes to its trench drain at 1/8 in per ft (1%) | – 8,000 lb forklift wheel loads<br>– Courtyard between buildings, 8,000 lb, sloping north/south to a centre drain that falls east |
 | Parking | – North wall: 5 stalls flush against the packhouse<br>– 20 stalls, one row (180 × 42 ft with its aisle), east property line |  |
 | Septic | 100 × 15 ft between the packhouse and the Lettuce Grow |  |
 | Floor finish | Epoxy |  |
 | Drains | – Pack room: trench drain<br>– Bin wash | Trench drain along the front of the fertigator, forklift grade |
-| HVAC | Cold storage 55 °F, rest 70 °F |  |
-| Ventilation | None | Yes |
+| HVAC | Mini-splits throughout: cold storage 55 °F on CoolBot Pros, rest 70 °F |  |
+| Ventilation | None | – Fert room: one exhaust fan high in the gable end, a low intake vent, no roof vents<br>– Storage: roof vents only, no fans |
 | Insulation | See open questions | See open questions |
 | Water | Potable for sanitation; hot water for bin wash | Fill tanks. Ag water only |
-| Fitout | – 6 × 6 ft block of lockers<br>– Eyewash station near the bathrooms<br>– Manual leveller and dock shelter. Thomas: can we get angled prefab shelters?<br>– All doors auto<br>– Japanese/English shrinkwrap and labeller<br>– 5 Keiki tables<br>– Box erector<br>– Pallet wrapper<br>– 2 desks<br>– Bin wash awning, open, 70 × 30 ft off the south wall | – Dry storage pallet racking (two high on the floor plus one shelf)<br>– Manual dock levellers, no shelters<br>– All doors auto<br>– Exhaust fans centred high in each gable end |
+| Fitout | – 6 × 6 ft block of lockers<br>– Eyewash station near the bathrooms<br>– Manual leveller and dock shelter. Thomas: can we get angled prefab shelters?<br>– All doors auto<br>– Japanese/English shrinkwrap and labeller<br>– 5 Keiki tables<br>– Box erector<br>– Pallet wrapper<br>– 2 desks<br>– Bin wash awning, open, 70 × 30 ft off the south wall | – Dry storage pallet racking (two high on the floor plus one shelf)<br>– Manual dock levellers, no shelters<br>– All doors auto<br>– Exhaust fan centred high in the fert room's gable end |
 
 ## 2. Open questions
 
-- Office: size and place
-- Courtyard drainage: can it go to the septic?
-- Septic: distance from the buildings
-- Cold storage cooling: Cool-bots?
-- Cold room: SIP or Chinese box-in-box (quotes pending)
-- Fert ventilation: roof vents, or exhaust fans and low/distant vents?
+- Courtyard drainage: slopes north/south to a centre drain that falls east
+- Septic: location?
+- Cold room: SIP or Chinese box-in-box (quotes pending). Thomas: add the China source to the list
+- Fert room: no roof vent. With the exhaust fan pulling high, a roof vent beside it would short-circuit the low intake
 - Insulation: Thomas to confirm roof R-30 and walls R-19 (packhouse), roof R-19 (fert)
 - Electrical: one service for both buildings, or one each?
 
@@ -48,7 +46,7 @@
 | Forklift charging | Packhouse | Box store | 6 | 48 V charger; eyewash if lead-acid |
 | General receptacles | Packhouse | All rooms | 3 | Desks, tools |
 | Fertigator and irrigation pumps | Fert | Fert room | 15 | Placeholder: two 10 hp pumps; count and hp TBD |
-| Exhaust fans, 2 | Fert | F1 west gable end, F2 east gable end | 1.5 | 36 in, 1 hp each |
+| Exhaust fan | Fert | F1, fert room gable end | 0.75 | 36 in, 1 hp; storage has roof vents only |
 | Roll-up operator | Fert | R1 | 0.75 | 1 hp |
 | Lighting | Fert | All rooms | 4 | LED at 0.5 W/ft²; less by day under the light panels |
 | General receptacles | Fert | All rooms | 3 | |

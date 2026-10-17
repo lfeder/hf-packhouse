@@ -475,7 +475,7 @@ function build(id){
   /* roof vents along the ridge, shown with the roof */
   if (B.roofVents){
     for (var rv = 0; rv < B.roofVents; rv++){
-      var rz = D * (rv + 0.5) / B.roofVents;
+      var rzr = B.roofVentZ || [0, D], rz = rzr[0] + (rzr[1] - rzr[0]) * (rv + 0.5) / B.roofVents;
       edges(box(3, 2, 4, M.steel, W / 2, R + 1.4, rz, G.roof), M.edge, G.roof);
     }
   }

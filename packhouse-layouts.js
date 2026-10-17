@@ -125,7 +125,7 @@ window.PH_LAYOUTS = {
   fert80: {
     id: "fert80", building: "fert", shape: "A", name: "Fert Room & Storage", W: 80, D: 100, eave: 15, color: "#A9702B",
     lightBand: [12.5, 14.5],   /* translucent light panels round the top of all four walls, under the eave */
-    roofVents: 4,
+    roofVents: 3, roofVentZ: [0, 70],   /* over dry storage only: the fert room is fan-ventilated, and a roof vent there would short-circuit F1's low intake */
     drains: [
       { name: "Trench drain, forklift grade", x0: 2, z0: 89.5, x1: 51, z1: 90.5 }   /* along the front of the skid and tanks, stopping just past the last tank */
     ],            /* along the ridge; the packhouse has none, its roof and walls are insulated */
@@ -153,8 +153,6 @@ window.PH_LAYOUTS = {
         detail: "Low intake for the gable-end exhaust fan F1" },
       { mark: "F1", type: "louvre", fan: true, face: "S", a: 38.25, b: 41.75, h: 18, sill: 15, size: "36 in fan", room: "Fert room",
         detail: "One exhaust fan centred high in the fert room's gable end (west wall on the site map), above the light band, about 10,000 cfm. Air comes in low through V1 and the doors" },
-      { mark: "F2", type: "louvre", fan: true, face: "N", a: 38.25, b: 41.75, h: 18, sill: 15, size: "36 in fan", room: "Dry storage",
-        detail: "One exhaust fan centred high in dry storage's gable end (east wall on the site map, over the truck court), above the light band, about 10,000 cfm. Air comes in through the docks and doors" },
       { mark: "I1", type: "internal", face: "I", a: 3, b: 11, h: 10, size: "8 × 10 ft", room: "Partition",
         detail: "Store to fert room, forklift route" }
     ]
