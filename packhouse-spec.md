@@ -13,7 +13,7 @@
 | Floor finish | Epoxy |  |
 | Drains | – Pack room: trench drain<br>– Bin wash | Trench drain along the front of the fertigator, forklift grade |
 | HVAC | Mini-splits throughout: cold storage 55 °F on CoolBot Pros, rest 70 °F |  |
-| Ventilation | None | – Fert room: one exhaust fan high in the gable end, a low intake vent, no roof vents<br>– Storage: roof vents only, no fans |
+| Ventilation | None | – Fert room: one exhaust fan high in the gable end, a low intake vent<br>– Storage: roof vents only, no fans |
 | Insulation | See open questions | See open questions |
 | Water | Potable for sanitation; hot water for bin wash | Fill tanks. Ag water only |
 | Fitout | – 6 × 6 ft block of lockers<br>– Eyewash station near the bathrooms<br>– Manual leveller and dock shelter. Thomas: can we get angled prefab shelters?<br>– All doors auto<br>– Japanese/English shrinkwrap and labeller<br>– 5 Keiki tables<br>– Box erector<br>– Pallet wrapper<br>– 2 desks<br>– Bin wash awning, open, 70 × 30 ft off the south wall | – Dry storage pallet racking (two high on the floor plus one shelf)<br>– Manual dock levellers, no shelters<br>– All doors auto<br>– Exhaust fan centred high in the fert room's gable end |
@@ -22,10 +22,9 @@
 
 - Courtyard drainage: slopes north/south to a centre drain that falls east
 - Septic: location?
-- Cold room: SIP or Chinese box-in-box (quotes pending). Thomas: add the China source to the list
-- Fert room: no roof vent. With the exhaust fan pulling high, a roof vent beside it would short-circuit the low intake
+- Cold room: Thomas to add the China source to the list
+- Fert room: remove the roof vent?
 - Insulation: Thomas to confirm roof R-30 and walls R-19 (packhouse), roof R-19 (fert)
-- Electrical: one service for both buildings, or one each?
 
 ## 3. Electrical schedule
 
