@@ -31,8 +31,8 @@
 
 | Load | Building | Where | Est. kW | Basis |
 |---|---|---|---|---|
-| Cooler refrigeration | Packhouse | Cold storage | 12 | Mini-splits on CoolBot Pros, held at 55 °F. About 8 tons for 2,400 ft² at 50–55 °F with dock-door traffic, at 1.5 kW/ton with fans and defrost |
-| HVAC | Packhouse | Pack room, box store, break room | 18 | Mini-splits. About 5,600 ft² held at 70 °F, insulated, about 1 ton per 400 ft² (15 tons) at 1.2 kW/ton |
+| Cooler refrigeration | Packhouse | Cold storage | 12 | Mini-splits on CoolBot Pros, held at 55 °F. kW is a placeholder until the HVAC sizing |
+| HVAC | Packhouse | Pack room, box store, break room | 18 | Mini-splits, held at 70 °F. kW is a placeholder until the HVAC sizing |
 | Packing machine (J/E) | Packhouse | Pack room | 10 | Wrapper, packers and rotary table; vendor to confirm |
 | Box erector | Packhouse | Box store | 3 | |
 | Air compressor | Packhouse | Box store | 7.5 | 10 hp, for the box erector and packing machine |
