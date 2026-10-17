@@ -24,8 +24,8 @@
 - SIP: add the Chinese vendor to the bidder list
 - Fert room: remove the roof vent?
 - Insulation: Thomas to confirm roof R-30 and walls R-19 (packhouse), roof R-19 (fert)
-- How much of the packhouse to epoxy?
-- Do we need a cleanable wall finish?
+- Epoxy: whole building?
+- Cleanable wall: ??
 
 ## 3. Electrical schedule
 
