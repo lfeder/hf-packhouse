@@ -12,7 +12,6 @@
 | Septic | 100 × 15 ft between the packhouse and the Lettuce Grow |  |
 | Floor finish | Epoxy |  |
 | Drains | – Pack room: trench drain<br>– Bin wash | Trench drain along the front of the fertigator, forklift grade |
-| HVAC | Mini-splits throughout: cold storage 55 °F on CoolBot Pros, rest 70 °F |  |
 | Ventilation | None | – Fert room: one exhaust fan high in the gable end, a low intake vent<br>– Storage: roof vents only, no fans |
 | Insulation | See open questions | See open questions |
 | Water | Potable for sanitation; hot water for bin wash | Fill tanks. Ag water only |
@@ -32,8 +31,8 @@
 
 | Load | Building | Where | Est. kW | Basis |
 |---|---|---|---|---|
-| Cooler refrigeration | Packhouse | Cold storage | 12 | About 8 tons for 2,400 ft² at 50–55 °F with dock-door traffic, at 1.5 kW/ton with fans and defrost |
-| HVAC | Packhouse | Pack room, box store, break room | 18 | About 5,600 ft² held at 70 °F, insulated, about 1 ton per 400 ft² (15 tons) at 1.2 kW/ton |
+| Cooler refrigeration | Packhouse | Cold storage | 12 | Mini-splits on CoolBot Pros, held at 55 °F. About 8 tons for 2,400 ft² at 50–55 °F with dock-door traffic, at 1.5 kW/ton with fans and defrost |
+| HVAC | Packhouse | Pack room, box store, break room | 18 | Mini-splits. About 5,600 ft² held at 70 °F, insulated, about 1 ton per 400 ft² (15 tons) at 1.2 kW/ton |
 | Packing machine (J/E) | Packhouse | Pack room | 10 | Wrapper, packers and rotary table; vendor to confirm |
 | Box erector | Packhouse | Box store | 3 | |
 | Air compressor | Packhouse | Box store | 7.5 | 10 hp, for the box erector and packing machine |
