@@ -25,6 +25,8 @@
 - Cold room: Thomas to add the China source to the list
 - Fert room: remove the roof vent?
 - Insulation: Thomas to confirm roof R-30 and walls R-19 (packhouse), roof R-19 (fert)
+- How much of the packhouse to epoxy?
+- Do we need a cleanable wall finish?
 
 ## 3. Electrical schedule
 
