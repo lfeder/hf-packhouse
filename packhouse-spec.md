@@ -21,7 +21,7 @@
 
 - Courtyard drainage: slopes north/south to a centre drain that falls east
 - Septic: location?
-- Cold room: Thomas to add the China source to the list
+- SIP: add the Chinese vendor to the bidder list
 - Fert room: remove the roof vent?
 - Insulation: Thomas to confirm roof R-30 and walls R-19 (packhouse), roof R-19 (fert)
 - How much of the packhouse to epoxy?
