@@ -82,7 +82,7 @@ window.PH_LAYOUTS = {
       { mark: "R1", type: "rollup", face: "W", a: 31.5, b: 41.5, h: 10, size: "10 × 10 ft", room: "Pack room",
         detail: "At grade on the north wall (site map), at the east end of the pack room by the cooler door. Box trucks bringing cucumbers in from the grows. Auto" },
       { mark: "P3", type: "door", face: "E", a: 50, b: 53, h: 7, size: "3 × 7 ft", room: "Pack room",
-        detail: "Pack room door on the south wall, straight onto the covered bin wash" },
+        detail: "Pack room door on the south wall, straight onto the bin wash pad" },
       { mark: "R3", type: "rollup", face: "E", a: 32, b: 40, h: 10, forklift: true, size: "8 × 10 ft", room: "Pack room",
         detail: "Forklift roll-up on the south wall (site map) at the east end of the pack room, by the cooler wall: boxes and bags come in from the fert building across the lane and the bin wash pad to the box store. No trucks" },
       { mark: "I1", type: "internal", face: "I", a: 59, b: 67, h: 9, size: "8 × 9 ft", room: "Cold storage",
@@ -90,8 +90,8 @@ window.PH_LAYOUTS = {
     ],
     /* outdoor areas, local coords; x > W is outside the E face (south wall on the site map) */
     outdoor: [
-      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 30, z1: 100, roof: 14,   /* z0 just east of R3 (32–40), so its post clears the opening */
-        note: "Covered bin wash, 70 ft along the west end of the south wall × 30 ft out (2,100 ft²) under an open awning, in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Its east posts stand just east of R3, clear of the opening. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
+      { id: "binwash", name: "Bin wash", x0: 80, x1: 110, z0: 30, z1: 100,
+        note: "Open bin wash pad, no awning, 70 ft along the west end of the south wall × 30 ft out (2,100 ft²), in the 50 ft gap between the packhouse and the fert building, leaving a 20 ft lane. Sloped pad to a trench drain, hot water. The pack room door opens onto it, and forklifts cross it to R3 with boxes from the fert building. Clean bins are stacked at its west end for the harvest trucks." }
     ],
     /* drains, local coords as [x0, z0, x1, z1]: trench drains are long strips, floor drains 1.5 ft squares */
     drains: [

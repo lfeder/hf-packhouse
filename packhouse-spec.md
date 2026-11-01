@@ -15,7 +15,7 @@
 | Ventilation | None | – Fert room: one exhaust fan high in the gable end, a low intake vent<br>– Storage: roof vents only, no fans |
 | Insulation | See open questions | See open questions |
 | Water | Potable for sanitation; hot water for bin wash | Fill tanks. Ag water only |
-| Fitout | – 6 × 6 ft block of lockers<br>– Eyewash station near the bathrooms<br>– Manual leveller and dock shelter. Thomas: can we get angled prefab shelters?<br>– All doors auto<br>– Japanese/English shrinkwrap and labeller<br>– 5 Keiki tables<br>– Box erector<br>– Pallet wrapper<br>– 2 desks<br>– Bin wash awning, open, 70 × 30 ft off the south wall | – Dry storage pallet racking (two high on the floor plus one shelf)<br>– Manual dock levellers, no shelters<br>– All doors auto<br>– Exhaust fan centred high in the fert room's gable end |
+| Fitout | – 6 × 6 ft block of lockers<br>– Eyewash station near the bathrooms<br>– Manual leveller and dock shelter. Thomas: can we get angled prefab shelters?<br>– All doors auto<br>– Japanese/English shrinkwrap and labeller<br>– 5 Keiki tables<br>– Box erector<br>– Pallet wrapper<br>– 2 desks | – Dry storage pallet racking (two high on the floor plus one shelf)<br>– Manual dock levellers, no shelters<br>– All doors auto<br>– Exhaust fan centred high in the fert room's gable end |
 
 ## 2. Open questions
 
