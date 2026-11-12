@@ -96,3 +96,18 @@
 | — | Packhouse | 14 × 3.5 ft | Break room to pack room, sill 3.5 ft | Interior glazing |
 | — | Packhouse | 11 × 3.5 ft | Break room to pack room, sill 3.5 ft | Interior glazing |
 | — | Fert | Band, 2 ft high | All four walls, 12.5 to 14.5 ft | Translucent light panels |
+
+## 5. Legacy Improvements
+
+| Item | Class | Amount |
+|---|---|---:|
+| Box erector | | 140,000 |
+| JTL entrance gate | | 10,000 |
+| Lettuce office bathroom | | 12,000 |
+| Cluster housing: gang septic | | 250,000 |
+| Concrete: Hamakua curbs | | 10,000 |
+| Concrete: shop apron | | 12,000 |
+| Concrete: greenwaste path and vestibule | Lettuce | 35,000 |
+| Concrete: paving and container apron | Lettuce | 50,000 |
+| Concrete: Cuke BIP path to greenhouses | | 50,000 |
+| **Total** | | **569,000** |
